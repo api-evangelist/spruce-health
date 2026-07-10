@@ -1,0 +1,149 @@
+aid: spruce-health
+url: https://raw.githubusercontent.com/api-evangelist/spruce-health/refs/heads/main/apis.yml
+name: Spruce Health
+kind: company
+description: >-
+  Spruce Health is a HIPAA-compliant healthcare communication platform that
+  gives modern clinics secure messaging, voice, video, team chat, e-fax,
+  secure payments, and phone lines in one system. The Spruce Public API is a
+  RESTful, Bearer-token-authenticated interface (base https://api.sprucehealth.com/v1)
+  that lets an organization manage Contacts, Conversations, conversation items
+  and Messages, internal endpoints and phone lines, and register Webhook
+  endpoints for real-time events. API access is gated - it is part of the
+  Communicator plan and organizations must contact Spruce Support to have API
+  access enabled before generating tokens.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- Healthcare
+- HIPAA
+- Communication
+- Secure Messaging
+- Telehealth
+- Contacts
+- Conversations
+- Messaging
+- Webhooks
+- VoIP
+created: '2026-07-10'
+modified: '2026-07-10'
+specificationVersion: '0.19'
+apis:
+- aid: spruce-health:spruce-health-contacts-api
+  name: Spruce Contacts API
+  tags:
+  - Contacts
+  - Directory
+  - Healthcare
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.sprucehealth.com/reference/listcontacts
+  baseURL: https://api.sprucehealth.com/v1
+  properties:
+  - url: https://developer.sprucehealth.com/docs/overview
+    type: Documentation
+  - url: https://developer.sprucehealth.com/reference/listcontacts
+    type: APIReference
+  - url: openapi/spruce-health-openapi.yml
+    type: OpenAPI
+  - url: collections/spruce-health.postman_collection.json
+    type: PostmanCollection
+  - url: collections/spruce-health.opencollection.json
+    type: OpenCollection
+  description: >-
+    List, search, create, retrieve, update, and delete the contacts (patients
+    and other parties) in a Spruce organization, plus manage contact custom
+    fields, contact tags, contact-to-conversation relationships, integration
+    links to external systems (EHR/PM), and send Spruce invites to contacts.
+- aid: spruce-health:spruce-health-conversations-api
+  name: Spruce Conversations API
+  tags:
+  - Conversations
+  - Threads
+  - Healthcare
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.sprucehealth.com/reference/listconversations
+  baseURL: https://api.sprucehealth.com/v1
+  properties:
+  - url: https://developer.sprucehealth.com/docs/overview
+    type: Documentation
+  - url: https://developer.sprucehealth.com/reference/listconversations
+    type: APIReference
+  - url: openapi/spruce-health-openapi.yml
+    type: OpenAPI
+  - url: collections/spruce-health.postman_collection.json
+    type: PostmanCollection
+  - url: collections/spruce-health.opencollection.json
+    type: OpenCollection
+  description: >-
+    List, create, retrieve, and update conversations (message threads) in an
+    organization, and manage conversation tags. Listing supports cursor
+    pagination and ordering by creation time or last message.
+- aid: spruce-health:spruce-health-messages-api
+  name: Spruce Messages API
+  tags:
+  - Messages
+  - Conversation Items
+  - Scheduled Messages
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.sprucehealth.com/reference/postconversationmessage
+  baseURL: https://api.sprucehealth.com/v1
+  properties:
+  - url: https://developer.sprucehealth.com/docs/overview
+    type: Documentation
+  - url: https://developer.sprucehealth.com/reference/postconversationmessage
+    type: APIReference
+  - url: openapi/spruce-health-openapi.yml
+    type: OpenAPI
+  - url: collections/spruce-health.postman_collection.json
+    type: PostmanCollection
+  - url: collections/spruce-health.opencollection.json
+    type: OpenCollection
+  description: >-
+    Post messages into a conversation, list and retrieve conversation items
+    (messages, calls, faxes, secure conversation events), delete a conversation
+    item, upload media for attachment, send messages from an internal endpoint
+    or phone line, create proxy calls, and schedule / list / delete scheduled
+    and saved messages.
+- aid: spruce-health:spruce-health-webhooks-api
+  name: Spruce Webhooks API
+  tags:
+  - Webhooks
+  - Events
+  - Notifications
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.sprucehealth.com/docs/webhooks-overview
+  baseURL: https://api.sprucehealth.com/v1
+  properties:
+  - url: https://developer.sprucehealth.com/docs/webhooks-overview
+    type: Documentation
+  - url: https://developer.sprucehealth.com/reference/listwebhookendpoints
+    type: APIReference
+  - url: openapi/spruce-health-openapi.yml
+    type: OpenAPI
+  - url: collections/spruce-health.postman_collection.json
+    type: PostmanCollection
+  - url: collections/spruce-health.opencollection.json
+    type: OpenCollection
+  description: >-
+    Register and manage webhook endpoints so an organization receives real-time
+    HTTP callbacks for contact, conversation, and conversation-item events
+    (created / updated / deleted / merged / restored). Create endpoints (which
+    returns a signing secret), list them, retrieve one, list an endpoint's
+    events, pause or resume dispatch, and delete an endpoint.
+common:
+- type: Website
+  url: https://sprucehealth.com
+- type: LinkedIn
+  url: https://www.linkedin.com/company/spruce-health
+- type: Documentation
+  url: https://developer.sprucehealth.com/docs/overview
+- type: SignUp
+  url: https://sprucehealth.com/plans
+- type: Plans
+  url: plans/spruce-health-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/spruce-health-rate-limits.yml
+- type: FinOps
+  url: finops/spruce-health-finops.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

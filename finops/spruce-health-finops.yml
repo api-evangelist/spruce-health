@@ -1,0 +1,84 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: Spruce Health
+providerId: spruce-health
+created: '2026-07-10'
+modified: '2026-07-10'
+reconciled: true
+tags:
+- Healthcare
+- HIPAA
+- Communication
+- FinOps
+- Cost Management
+- FOCUS
+description: >-
+  FinOps view of Spruce Health spend. Spruce bills a flat per-user
+  subscription - Basic at $24/user/month and Communicator at $49/user/month -
+  rather than usage-metered API calls. The Public API does not carry a separate
+  per-request charge; it is a feature of the Communicator plan (and must be
+  enabled by Spruce Support). The dominant cost driver is therefore the number
+  of billed users (teammates) on the plan, not API traffic. Some communication
+  activity (for example telephony or fax volume) may incur usage charges outside
+  the base subscription; verify against a current invoice.
+notes: >-
+  Per-user prices are grounded from sprucehealth.com/plans. Any overage or
+  usage-based telephony/fax charges are not itemized here and should be
+  reconciled from an actual Spruce invoice during a FinOps review.
+sources:
+- https://sprucehealth.com/plans
+- https://developer.sprucehealth.com/docs/overview
+- https://focus.finops.org/focus-specification/v1-3/
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: Spruce Health
+serviceCategory: Healthcare Communication
+billingModel:
+  pricingCategory: Subscription-Based
+  billingFrequency: Monthly
+  billingCurrency: USD
+  chargeCategories:
+  - Purchase
+  - Usage
+  - Adjustment
+focusColumns:
+  ServiceName: Spruce Health
+  ServiceCategory: Healthcare Communication
+  ProviderName: Spruce Health
+  PublisherName: Spruce Health
+  InvoiceIssuerName: Spruce Health
+  BillingCurrency: USD
+  ChargeCategory: Purchase
+  PricingCategory: Subscription-Based
+meters:
+- name: user_seats
+  description: Billed teammates (clinicians, staff, employees) on the plan, charged per user per month.
+  unit: seats
+  aggregation: sum
+  dimensions:
+  - organization
+  - plan
+- name: telephony_usage
+  description: Optional voice / fax usage that may be billed beyond the base subscription.
+  unit: minutes
+  aggregation: sum
+  dimensions:
+  - organization
+  - phone_line
+principles:
+- name: Visibility
+  description: Track the number of active billed users per plan; the seat count, not API traffic, drives the invoice.
+- name: Allocation
+  description: Map user seats to locations, teams, or cost centers within the organization.
+- name: Optimization
+  description: Right-size the plan tier (Basic vs Communicator) to who actually needs API/integration and telephony features; deactivate unused teammates.
+- name: Accountability
+  description: Assign an owner for the Spruce subscription; review seat count and any telephony overages monthly.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

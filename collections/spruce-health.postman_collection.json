@@ -1,0 +1,245 @@
+{
+  "info": {
+    "name": "Spruce Public API",
+    "description": "The Spruce Public API connects a Spruce Health organization to internal tools, EHRs, and external systems to manage Contacts, Conversations, Messages, and Webhooks. Base URL: https://api.sprucehealth.com/v1. All requests require a Bearer token (Authorization: Bearer <your-token>) generated in Settings after Spruce Support enables API access (Communicator plan). Confirmed paths: GET /contacts, GET /conversations, POST /conversations/{conversationId}/messages, GET /webhooks/endpoints, POST /webhooks/endpoints, GET /internalendpoints. Other paths are honestly modeled from the published operation catalog.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{bearerToken}}", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://api.sprucehealth.com/v1", "type": "string" },
+    { "key": "bearerToken", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Contacts",
+      "item": [
+        {
+          "name": "List contacts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/contacts", "host": ["{{baseUrl}}"], "path": ["contacts"] },
+            "description": "Lists all contacts available to a given organization. Confirmed path."
+          }
+        },
+        {
+          "name": "Search contacts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/contacts/search?query=", "host": ["{{baseUrl}}"], "path": ["contacts", "search"], "query": [{ "key": "query", "value": "" }] },
+            "description": "Search contacts by name, phone, or email. Modeled."
+          }
+        },
+        {
+          "name": "Create a contact",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"displayName\": \"Jane Doe\",\n  \"phones\": [{ \"value\": \"+15555550123\", \"label\": \"mobile\" }]\n}" },
+            "url": { "raw": "{{baseUrl}}/contacts", "host": ["{{baseUrl}}"], "path": ["contacts"] },
+            "description": "Creates a new contact. Modeled."
+          }
+        },
+        {
+          "name": "Get a contact",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/contacts/:contactId", "host": ["{{baseUrl}}"], "path": ["contacts", ":contactId"], "variable": [{ "key": "contactId", "value": "" }] },
+            "description": "Retrieves a single contact by ID. Modeled."
+          }
+        },
+        {
+          "name": "Update a contact",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"displayName\": \"Jane A. Doe\"\n}" },
+            "url": { "raw": "{{baseUrl}}/contacts/:contactId", "host": ["{{baseUrl}}"], "path": ["contacts", ":contactId"], "variable": [{ "key": "contactId", "value": "" }] },
+            "description": "Updates an existing contact. Modeled."
+          }
+        },
+        {
+          "name": "Delete a contact",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/contacts/:contactId", "host": ["{{baseUrl}}"], "path": ["contacts", ":contactId"], "variable": [{ "key": "contactId", "value": "" }] },
+            "description": "Deletes a contact. Modeled."
+          }
+        },
+        {
+          "name": "List a contact's conversations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/contacts/:contactId/conversations", "host": ["{{baseUrl}}"], "path": ["contacts", ":contactId", "conversations"], "variable": [{ "key": "contactId", "value": "" }] },
+            "description": "Lists conversations for a contact. Modeled."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Conversations",
+      "item": [
+        {
+          "name": "List conversations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/conversations?orderBy=created", "host": ["{{baseUrl}}"], "path": ["conversations"], "query": [{ "key": "orderBy", "value": "created" }, { "key": "pageSize", "value": "50", "disabled": true }, { "key": "paginationToken", "value": "", "disabled": true }] },
+            "description": "Lists conversations. orderBy is required (created or last_message). Confirmed path."
+          }
+        },
+        {
+          "name": "Create a conversation",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"New thread\"\n}" },
+            "url": { "raw": "{{baseUrl}}/conversations", "host": ["{{baseUrl}}"], "path": ["conversations"] },
+            "description": "Creates a new conversation. Modeled."
+          }
+        },
+        {
+          "name": "Get a conversation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/conversations/:conversationId", "host": ["{{baseUrl}}"], "path": ["conversations", ":conversationId"], "variable": [{ "key": "conversationId", "value": "" }] },
+            "description": "Retrieves a conversation by ID. Modeled."
+          }
+        },
+        {
+          "name": "Update a conversation",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Renamed thread\"\n}" },
+            "url": { "raw": "{{baseUrl}}/conversations/:conversationId", "host": ["{{baseUrl}}"], "path": ["conversations", ":conversationId"], "variable": [{ "key": "conversationId", "value": "" }] },
+            "description": "Updates a conversation. Modeled."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Messages",
+      "item": [
+        {
+          "name": "Post a message to a conversation",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"body\": \"Hello from the Spruce API\"\n}" },
+            "url": { "raw": "{{baseUrl}}/conversations/:conversationId/messages", "host": ["{{baseUrl}}"], "path": ["conversations", ":conversationId", "messages"], "variable": [{ "key": "conversationId", "value": "" }] },
+            "description": "Posts a message into a conversation. Confirmed path."
+          }
+        },
+        {
+          "name": "List conversation items",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/conversations/:conversationId/items", "host": ["{{baseUrl}}"], "path": ["conversations", ":conversationId", "items"], "variable": [{ "key": "conversationId", "value": "" }] },
+            "description": "Lists items (messages, calls, faxes) in a conversation. Modeled."
+          }
+        },
+        {
+          "name": "Get a conversation item",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/conversations/:conversationId/items/:itemId", "host": ["{{baseUrl}}"], "path": ["conversations", ":conversationId", "items", ":itemId"], "variable": [{ "key": "conversationId", "value": "" }, { "key": "itemId", "value": "" }] },
+            "description": "Gets a conversation item for a given id. Modeled path."
+          }
+        },
+        {
+          "name": "List internal endpoints",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/internalendpoints", "host": ["{{baseUrl}}"], "path": ["internalendpoints"] },
+            "description": "Lists internal endpoints the organization can communicate with. Confirmed path."
+          }
+        },
+        {
+          "name": "Upload media",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": { "mode": "formdata", "formdata": [{ "key": "file", "type": "file", "src": [] }] },
+            "url": { "raw": "{{baseUrl}}/media", "host": ["{{baseUrl}}"], "path": ["media"] },
+            "description": "Uploads media for a message attachment. Modeled."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Webhooks",
+      "item": [
+        {
+          "name": "List webhook endpoints",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/webhooks/endpoints", "host": ["{{baseUrl}}"], "path": ["webhooks", "endpoints"] },
+            "description": "Lists registered webhook endpoints (secret keys not returned). Confirmed path."
+          }
+        },
+        {
+          "name": "Create a webhook endpoint",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"My integration\",\n  \"url\": \"https://example.com/spruce/webhooks\",\n  \"events\": [\"contact.created\", \"conversationItem.created\"]\n}" },
+            "url": { "raw": "{{baseUrl}}/webhooks/endpoints", "host": ["{{baseUrl}}"], "path": ["webhooks", "endpoints"] },
+            "description": "Registers a webhook endpoint; response includes a signing secret. Confirmed path."
+          }
+        },
+        {
+          "name": "Get a webhook endpoint",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/webhooks/endpoints/:endpointId", "host": ["{{baseUrl}}"], "path": ["webhooks", "endpoints", ":endpointId"], "variable": [{ "key": "endpointId", "value": "" }] },
+            "description": "Retrieves a webhook endpoint by ID. Modeled."
+          }
+        },
+        {
+          "name": "List webhook endpoint events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/webhooks/endpoints/:endpointId/events", "host": ["{{baseUrl}}"], "path": ["webhooks", "endpoints", ":endpointId", "events"], "variable": [{ "key": "endpointId", "value": "" }] },
+            "description": "Lists events delivered to a webhook endpoint. Modeled."
+          }
+        },
+        {
+          "name": "Pause or resume a webhook endpoint",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"paused\": true\n}" },
+            "url": { "raw": "{{baseUrl}}/webhooks/endpoints/:endpointId/paused", "host": ["{{baseUrl}}"], "path": ["webhooks", "endpoints", ":endpointId", "paused"], "variable": [{ "key": "endpointId", "value": "" }] },
+            "description": "Pauses or resumes event dispatch. Modeled."
+          }
+        },
+        {
+          "name": "Delete a webhook endpoint",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/webhooks/endpoints/:endpointId", "host": ["{{baseUrl}}"], "path": ["webhooks", "endpoints", ":endpointId"], "variable": [{ "key": "endpointId", "value": "" }] },
+            "description": "Deletes a webhook endpoint. Modeled."
+          }
+        }
+      ]
+    }
+  ]
+}

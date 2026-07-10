@@ -1,0 +1,110 @@
+aid: spruce-health
+name: Spruce Health
+review:
+  question: Does Spruce Health expose a documented public WebSocket API?
+  answer: false
+  date: '2026-07-10'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was authored. Spruce's public developer surface is the
+    Spruce Public API - a request/response REST API over HTTPS
+    (https://api.sprucehealth.com/v1) authenticated with a Bearer token. Spruce's
+    real-time delivery is done with outbound webhooks: the platform POSTs event
+    payloads (contact.*, conversation.*, conversationItem.*) to HTTPS endpoints an
+    organization registers. That is server-to-endpoint HTTP, not a bidirectional
+    WebSocket transport on Spruce's own API, so there is no ws:// or wss:// surface
+    to model.
+findings:
+  summary: |
+    Spruce Health does not publish a documented public WebSocket API. Spruce is a
+    HIPAA-compliant healthcare communication platform (secure messaging, voice,
+    video, team chat, e-fax, payments, phone lines). Its developer offering, the
+    Spruce Public API, is REST over HTTPS at base https://api.sprucehealth.com/v1,
+    authenticated with an organization Bearer token generated in Settings after
+    Spruce Support enables API access. The API manages Contacts, Conversations,
+    conversation items / Messages, internal endpoints and phone lines, media, and
+    scheduled messages, and it registers Webhook endpoints for real-time events.
+    Real-time notification is delivered by outbound webhooks (HTTP callbacks), not
+    by a WebSocket. No realtime, bidirectional, or streaming WebSocket endpoint is
+    documented anywhere in Spruce's developer materials.
+  openSource: |
+    Spruce Health is a proprietary, closed-source commercial SaaS. There is no
+    self-hostable open-source component. API access is gated: it is part of the
+    Communicator plan ($49/user/month) and an organization must contact Spruce
+    Support to have API access enabled before administrators can generate tokens.
+  transports:
+    - protocol: REST
+      scheme: https
+      baseURL: https://api.sprucehealth.com/v1
+      documented: true
+      note: Spruce Public API - Contacts, Conversations, Messages, endpoints, and webhook management. Bearer token auth.
+    - protocol: Webhook
+      scheme: https
+      documented: true
+      note: Outbound HTTP callbacks for contact / conversation / conversationItem events. Server-to-endpoint HTTP, not WebSocket. 1000 events/min per endpoint, 5s 2XX window, retries every 2 min up to 10 attempts.
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: No WebSocket endpoint is documented in Spruce's API reference or webhooks overview as of the review date.
+  endpointsConfirmedRest:
+    - GET    https://api.sprucehealth.com/v1/contacts
+    - GET    https://api.sprucehealth.com/v1/conversations
+    - POST   https://api.sprucehealth.com/v1/conversations/{conversationId}/messages
+    - GET    https://api.sprucehealth.com/v1/internalendpoints
+    - GET    https://api.sprucehealth.com/v1/webhooks/endpoints
+    - POST   https://api.sprucehealth.com/v1/webhooks/endpoints
+  endpointsModeled: true
+  endpointsModeledNote: |
+    The base URL, Bearer auth, and the six endpoints listed under
+    endpointsConfirmedRest are confirmed directly from the Spruce developer
+    reference. The remaining paths in the OpenAPI (individual contact/conversation
+    CRUD, contact fields/tags, integration links, conversation items, media
+    upload, proxy calls, scheduled/saved messages, and webhook get/delete/events/
+    pause) are honestly modeled from Spruce's published operation catalog
+    (developer.sprucehealth.com/llms.txt) and documented behavior; exact paths and
+    request/response schemas should be reconciled against the live reference and
+    the machine-readable OpenAPI Spruce publishes.
+  webhookEvents:
+    - contact.created
+    - contact.updated
+    - contact.deleted
+    - contact.merged
+    - conversation.created
+    - conversation.updated
+    - conversation.deleted
+    - conversationItem.created
+    - conversationItem.updated
+    - conversationItem.deleted
+    - conversationItem.restored
+sources:
+  - url: https://developer.sprucehealth.com/docs/overview
+    type: Documentation
+    note: API overview - Bearer auth, gated access (contact Spruce Support), Contacts/Conversations resource groups.
+  - url: https://developer.sprucehealth.com/llms.txt
+    type: Documentation
+    note: Machine-readable index of all docs pages and API reference operations.
+  - url: https://developer.sprucehealth.com/reference/listcontacts
+    type: APIReference
+    note: Confirms base URL https://api.sprucehealth.com/v1 and GET /contacts.
+  - url: https://developer.sprucehealth.com/reference/listconversations
+    type: APIReference
+    note: GET /conversations with pageSize, paginationToken, required orderBy, startFrom.
+  - url: https://developer.sprucehealth.com/reference/postconversationmessage
+    type: APIReference
+    note: POST /conversations/{conversationId}/messages.
+  - url: https://developer.sprucehealth.com/docs/webhooks-overview
+    type: Documentation
+    note: Webhook events, POST /webhooks/endpoints, 1000/min per endpoint, 5s 2XX, retry every 2 min up to 10 times. No WebSocket mentioned.
+  - url: https://sprucehealth.com/plans
+    type: Pricing
+    note: Basic $24/user/mo, Communicator $49/user/mo (includes Integrations & API Access); 14-day free trial.
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket protocol surface exists. Spruce's own public API is
+    request/response REST (the Spruce Public API) plus outbound webhooks for
+    real-time events. No AsyncAPI document was created because there is no
+    server-push WebSocket transport on Spruce's own API to model; webhooks are
+    modeled as an HTTP callback surface within the REST catalog and the review.

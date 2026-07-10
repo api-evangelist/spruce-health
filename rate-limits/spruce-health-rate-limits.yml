@@ -1,0 +1,66 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: Spruce Health
+providerId: spruce-health
+created: '2026-07-10'
+modified: '2026-07-10'
+reconciled: false
+tags:
+- Healthcare
+- HIPAA
+- Communication
+- Rate Limiting
+- Quotas
+- Webhooks
+description: >-
+  Spruce does not publish a fixed numeric request-rate limit for the Public API
+  itself. One concrete limit is documented on the webhook delivery side: a
+  registered webhook endpoint is rate limited to 1000 events per minute per
+  endpoint, an endpoint must respond with a 2XX status within 5 seconds, and
+  failed deliveries are retried every 2 minutes for up to 10 attempts. An
+  incorrect or disabled API token returns a 403. Per-account request throttling
+  values for the REST surface are not published and should be reconciled against
+  the live documentation.
+notes: >-
+  The 1000 events/minute per endpoint, 5-second 2XX response requirement, and
+  retry (every 2 minutes, up to 10 attempts) are grounded from the Spruce
+  Webhooks Overview. Numeric REST request-per-minute limits are not documented
+  as of the review date.
+sources:
+- https://developer.sprucehealth.com/docs/webhooks-overview
+- https://developer.sprucehealth.com/docs/overview
+responseCodes:
+  throttled: 429
+  forbidden: 403
+limits:
+- name: Public API Requests
+  scope: organization
+  metric: requests
+  limit: not published
+  notes: No fixed numeric per-minute request limit is documented for the REST API.
+- name: Webhook Delivery Rate
+  scope: endpoint
+  metric: events
+  limit: 1000 per minute
+  notes: Each registered webhook endpoint is limited to 1000 events per minute.
+- name: Webhook Response Window
+  scope: endpoint
+  metric: seconds
+  limit: 5
+  notes: Endpoints must return a 2XX status within 5 seconds or the delivery is treated as failed.
+- name: Webhook Retries
+  scope: endpoint
+  metric: attempts
+  limit: 10
+  notes: Failed deliveries are retried every 2 minutes for up to 10 attempts.
+policies:
+- name: Bearer Authentication
+  description: Requests require Authorization Bearer with an org token; incorrect or disabled tokens return 403.
+- name: Backoff Strategy
+  description: Clients should implement exponential backoff with jitter and honor Retry-After on 429 responses.
+- name: Webhook Signature Verification
+  description: Endpoints receive a signing secret at creation and should verify event signatures.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

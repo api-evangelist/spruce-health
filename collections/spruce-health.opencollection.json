@@ -1,0 +1,212 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Spruce Public API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": { "name": "Contacts", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List contacts.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.sprucehealth.com/v1/contacts" },
+          "docs": "Lists all contacts available to a given organization. Confirmed path."
+        },
+        {
+          "info": { "name": "Search contacts.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.sprucehealth.com/v1/contacts/search" },
+          "docs": "Search contacts by name, phone, or email. Modeled."
+        },
+        {
+          "info": { "name": "Create a contact.", "type": "http" },
+          "http": { "method": "POST", "url": "https://api.sprucehealth.com/v1/contacts", "body": { "type": "json", "data": "{}" } },
+          "docs": "Creates a new contact. Modeled."
+        },
+        {
+          "info": { "name": "Get a contact.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/contacts/:contactId",
+            "params": [{ "name": "contactId", "value": "", "type": "path", "description": "The contact ID." }]
+          },
+          "docs": "Retrieves a single contact by ID. Modeled."
+        },
+        {
+          "info": { "name": "Update a contact.", "type": "http" },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.sprucehealth.com/v1/contacts/:contactId",
+            "params": [{ "name": "contactId", "value": "", "type": "path" }],
+            "body": { "type": "json", "data": "{}" }
+          },
+          "docs": "Updates an existing contact. Modeled."
+        },
+        {
+          "info": { "name": "Delete a contact.", "type": "http" },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.sprucehealth.com/v1/contacts/:contactId",
+            "params": [{ "name": "contactId", "value": "", "type": "path" }]
+          },
+          "docs": "Deletes a contact. Modeled."
+        },
+        {
+          "info": { "name": "List a contact's conversations.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/contacts/:contactId/conversations",
+            "params": [{ "name": "contactId", "value": "", "type": "path" }]
+          },
+          "docs": "Lists conversations for a contact. Modeled."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Conversations", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List conversations.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/conversations",
+            "params": [
+              { "name": "orderBy", "value": "created", "type": "query", "description": "Required. created or last_message." },
+              { "name": "pageSize", "value": "50", "type": "query", "description": "Max 200." },
+              { "name": "paginationToken", "value": "", "type": "query" }
+            ]
+          },
+          "docs": "Lists conversations. orderBy is required. Confirmed path."
+        },
+        {
+          "info": { "name": "Create a conversation.", "type": "http" },
+          "http": { "method": "POST", "url": "https://api.sprucehealth.com/v1/conversations", "body": { "type": "json", "data": "{}" } },
+          "docs": "Creates a new conversation. Modeled."
+        },
+        {
+          "info": { "name": "Get a conversation.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/conversations/:conversationId",
+            "params": [{ "name": "conversationId", "value": "", "type": "path" }]
+          },
+          "docs": "Retrieves a conversation by ID. Modeled."
+        },
+        {
+          "info": { "name": "Update a conversation.", "type": "http" },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.sprucehealth.com/v1/conversations/:conversationId",
+            "params": [{ "name": "conversationId", "value": "", "type": "path" }],
+            "body": { "type": "json", "data": "{}" }
+          },
+          "docs": "Updates a conversation. Modeled."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Messages", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Post a message to a conversation.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/conversations/:conversationId/messages",
+            "params": [{ "name": "conversationId", "value": "", "type": "path" }],
+            "body": { "type": "json", "data": "{}" }
+          },
+          "docs": "Posts a message into a conversation. Confirmed path."
+        },
+        {
+          "info": { "name": "List conversation items.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/conversations/:conversationId/items",
+            "params": [{ "name": "conversationId", "value": "", "type": "path" }]
+          },
+          "docs": "Lists items in a conversation. Modeled."
+        },
+        {
+          "info": { "name": "Get a conversation item.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/conversations/:conversationId/items/:itemId",
+            "params": [
+              { "name": "conversationId", "value": "", "type": "path" },
+              { "name": "itemId", "value": "", "type": "path" }
+            ]
+          },
+          "docs": "Gets a conversation item for a given id. Modeled path."
+        },
+        {
+          "info": { "name": "List internal endpoints.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.sprucehealth.com/v1/internalendpoints" },
+          "docs": "Lists internal endpoints. Confirmed path."
+        },
+        {
+          "info": { "name": "Upload media.", "type": "http" },
+          "http": { "method": "POST", "url": "https://api.sprucehealth.com/v1/media" },
+          "docs": "Uploads media for a message attachment. Modeled."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Webhooks", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List webhook endpoints.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.sprucehealth.com/v1/webhooks/endpoints" },
+          "docs": "Lists registered webhook endpoints. Confirmed path."
+        },
+        {
+          "info": { "name": "Create a webhook endpoint.", "type": "http" },
+          "http": { "method": "POST", "url": "https://api.sprucehealth.com/v1/webhooks/endpoints", "body": { "type": "json", "data": "{}" } },
+          "docs": "Registers a webhook endpoint; response includes a signing secret. Confirmed path."
+        },
+        {
+          "info": { "name": "Get a webhook endpoint.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/webhooks/endpoints/:endpointId",
+            "params": [{ "name": "endpointId", "value": "", "type": "path" }]
+          },
+          "docs": "Retrieves a webhook endpoint by ID. Modeled."
+        },
+        {
+          "info": { "name": "List webhook endpoint events.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/webhooks/endpoints/:endpointId/events",
+            "params": [{ "name": "endpointId", "value": "", "type": "path" }]
+          },
+          "docs": "Lists events delivered to a webhook endpoint. Modeled."
+        },
+        {
+          "info": { "name": "Pause or resume a webhook endpoint.", "type": "http" },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.sprucehealth.com/v1/webhooks/endpoints/:endpointId/paused",
+            "params": [{ "name": "endpointId", "value": "", "type": "path" }],
+            "body": { "type": "json", "data": "{}" }
+          },
+          "docs": "Pauses or resumes event dispatch. Modeled."
+        },
+        {
+          "info": { "name": "Delete a webhook endpoint.", "type": "http" },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.sprucehealth.com/v1/webhooks/endpoints/:endpointId",
+            "params": [{ "name": "endpointId", "value": "", "type": "path" }]
+          },
+          "docs": "Deletes a webhook endpoint. Modeled."
+        }
+      ]
+    }
+  ]
+}
