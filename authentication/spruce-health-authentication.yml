@@ -1,0 +1,14 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/spruce-health-openapi.yml
+summary:
+  types:
+  - http
+schemes:
+- name: bearerAuth
+  type: http
+  scheme: bearer
+  description: Organization API token generated in Settings after Spruce Support enables API
+    access.
+  sources:
+  - openapi/spruce-health-openapi.yml

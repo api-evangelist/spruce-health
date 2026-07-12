@@ -130,6 +130,10 @@ apis:
     returns a signing secret), list them, retrieve one, list an endpoint's
     events, pause or resume dispatch, and delete an endpoint.
 common:
+- type: DomainSecurity
+  url: security/spruce-health-domain-security.yml
+- type: Authentication
+  url: authentication/spruce-health-authentication.yml
 - type: Website
   url: https://sprucehealth.com
 - type: LinkedIn
