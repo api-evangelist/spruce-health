@@ -130,6 +130,8 @@ apis:
     returns a signing secret), list them, retrieve one, list an endpoint's
     events, pause or resume dispatch, and delete an endpoint.
 common:
+- type: AgenticAccess
+  url: agentic-access/spruce-health-agentic-access.yml
 - type: DomainSecurity
   url: security/spruce-health-domain-security.yml
 - type: Authentication
