@@ -1,0 +1,20 @@
+{
+  "provider": "spruce-health",
+  "sources": [
+    "spruce-health-contacts-api-openapi.yml",
+    "spruce-health-conversations-api-openapi.yml",
+    "spruce-health-messages-api-openapi.yml",
+    "spruce-health-webhooks-api-openapi.yml"
+  ],
+  "outputs": [
+    "spruce-health-contacts-api-openapi.yml",
+    "spruce-health-conversations-api-openapi.yml",
+    "spruce-health-messages-api-openapi.yml",
+    "spruce-health-webhooks-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
