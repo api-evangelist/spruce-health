@@ -2,16 +2,19 @@ aid: spruce-health
 url: https://raw.githubusercontent.com/api-evangelist/spruce-health/refs/heads/main/apis.yml
 name: Spruce Health
 kind: company
-description: >-
-  Spruce Health is a HIPAA-compliant healthcare communication platform that
-  gives modern clinics secure messaging, voice, video, team chat, e-fax,
-  secure payments, and phone lines in one system. The Spruce Public API is a
-  RESTful, Bearer-token-authenticated interface (base https://api.sprucehealth.com/v1)
-  that lets an organization manage Contacts, Conversations, conversation items
-  and Messages, internal endpoints and phone lines, and register Webhook
-  endpoints for real-time events. API access is gated - it is part of the
-  Communicator plan and organizations must contact Spruce Support to have API
-  access enabled before generating tokens.
+description: 'Spruce Health is a HIPAA-compliant healthcare communication platform that unifies phone,
+  SMS, secure messaging, video, e-fax, team chat, mobile payments and VoIP phone lines into one system
+  for medical practices, with AI-enabled voicemail transcription, summarization and call routing. Every
+  eligible organization receives a signed HIPAA Business Associate Agreement as part of the terms of service,
+  and since July 2026 that BAA also carries formal Qualified Service Organization support for 42 CFR Part
+  2. Spruce is SOC 2 Type II audited annually. The Spruce Public API is a RESTful, Bearer-token interface
+  at https://api.sprucehealth.com/v1 spanning 47 operations across contacts, conversations, conversation
+  items, internal endpoints and phone lines, media, organization members and teams, saved and scheduled
+  messages, AI transcriptions, and webhook endpoint management. It ships a real OpenAPI 3.0 definition,
+  a first-class s-idempotency-key on every mutating request, four rate-limit response headers across a
+  60-second and a 24-hour window, and 15 HMAC-signed webhook event types. API access is gated twice: it
+  is part of the Communicator plan, and an organization must additionally contact Spruce Support to have
+  API access enabled before an administrator can generate a token.'
 accessModel:
   pricing: freemium
   onboarding: open
@@ -29,122 +32,387 @@ image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/spruce-hea
 tags:
 - Healthcare
 - HIPAA
+- Health Care
 - Communication
 - Secure Messaging
 - Telehealth
+- Patient Engagement
 - Contacts
 - Conversations
 - Messaging
-- Webhooks
+- SMS
+- Voice
 - VoIP
+- Fax
+- Video
+- Webhooks
+- Scheduling
+- Transcription
+- EHR Integration
+- Compliance
 created: '2026-07-10'
-modified: '2026-07-10'
+modified: '2026-08-15'
 specificationVersion: '0.19'
 apis:
-- aid: spruce-health:spruce-health-contacts-api
+- aid: spruce-health:spruce-health-contact-fields
+  name: Spruce Health Contact Fields API
+  description: Organization contact fields — the custom fields that appear on every contact in the organization.
+  humanURL: https://developer.sprucehealth.com/reference/contactfields
+  baseURL: https://api.sprucehealth.com/v1
+  tags:
+  - Contact Fields
+  properties:
+  - type: OpenAPI
+    url: openapi/spruce-health-contact-fields-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-fields.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-fields.opencollection.json
+  - type: Documentation
+    url: https://developer.sprucehealth.com/docs/overview
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contactfields
+  - type: Overlay
+    url: overlays/spruce-health-contact-fields-overlay.yaml
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  x-operations: 2
+- aid: spruce-health:spruce-health-contact-tags
+  name: Spruce Health Contact Tags API
+  description: Contact tags — the tags available to an organization that can be applied to contacts.
+  humanURL: https://developer.sprucehealth.com/reference/contacttags
+  baseURL: https://api.sprucehealth.com/v1
+  tags:
+  - Contact Tags
+  properties:
+  - type: OpenAPI
+    url: openapi/spruce-health-contact-tags-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-tags.opencollection.json
+  - type: Documentation
+    url: https://developer.sprucehealth.com/docs/overview
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contacttags
+  - type: Overlay
+    url: overlays/spruce-health-contact-tags-overlay.yaml
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  x-operations: 2
+- aid: spruce-health:spruce-health-contacts
   name: Spruce Health Contacts API
-  description: Contacts (patients and other parties) in a Spruce organization.
+  description: 'Contacts — the patients and other parties in a Spruce organization: list, search, create,
+    retrieve, update and delete contacts, list a contact''s conversations, manage integration links to
+    external EHR/PM systems, and send a patient a Spruce invite.'
   humanURL: https://developer.sprucehealth.com/reference/listcontacts
   baseURL: https://api.sprucehealth.com/v1
   tags:
   - Contacts
   properties:
   - type: OpenAPI
-    url: openapi/spruce-health-contacts-api-openapi.yml
+    url: openapi/spruce-health-contacts-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contacts.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contacts.opencollection.json
   - type: Documentation
     url: https://developer.sprucehealth.com/docs/overview
   - type: APIReference
     url: https://developer.sprucehealth.com/reference/listcontacts
+  - type: Overlay
+    url: overlays/spruce-health-contacts-overlay.yaml
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  x-operations: 11
+- aid: spruce-health:spruce-health-conversation-item
+  name: Spruce Health Conversation Item API
+  description: 'Conversation items — the individual messages, calls, faxes and events inside a conversation:
+    retrieve one by id, or soft-delete it asynchronously.'
+  humanURL: https://developer.sprucehealth.com/reference/conversationitem
+  baseURL: https://api.sprucehealth.com/v1
+  tags:
+  - Conversation Item
+  properties:
+  - type: OpenAPI
+    url: openapi/spruce-health-conversation-item-openapi.yml
   - type: PostmanCollection
-    url: collections/spruce-health.postman_collection.json
+    url: collections/spruce-health-conversation-item.postman_collection.json
   - type: OpenCollection
-    url: collections/spruce-health.opencollection.json
-  - type: APIReference
-    url: https://developer.sprucehealth.com/reference/listconversations
-  - type: APIReference
-    url: https://developer.sprucehealth.com/reference/postconversationmessage
+    url: collections/spruce-health-conversation-item.opencollection.json
   - type: Documentation
-    url: https://developer.sprucehealth.com/docs/webhooks-overview
+    url: https://developer.sprucehealth.com/docs/overview
   - type: APIReference
-    url: https://developer.sprucehealth.com/reference/listwebhookendpoints
-- aid: spruce-health:spruce-health-conversations-api
+    url: https://developer.sprucehealth.com/reference/conversationitem
+  - type: Overlay
+    url: overlays/spruce-health-conversation-item-overlay.yaml
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  x-operations: 2
+- aid: spruce-health:spruce-health-conversation-tags
+  name: Spruce Health Conversation Tags API
+  description: Conversation tags — the tags available to an organization that can be applied to conversations.
+  humanURL: https://developer.sprucehealth.com/reference/conversationtags
+  baseURL: https://api.sprucehealth.com/v1
+  tags:
+  - Conversation Tags
+  properties:
+  - type: OpenAPI
+    url: openapi/spruce-health-conversation-tags-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-tags.opencollection.json
+  - type: Documentation
+    url: https://developer.sprucehealth.com/docs/overview
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationtags
+  - type: Overlay
+    url: overlays/spruce-health-conversation-tags-overlay.yaml
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  x-operations: 2
+- aid: spruce-health:spruce-health-conversations
   name: Spruce Health Conversations API
-  description: Conversations (message threads) in a Spruce organization.
-  humanURL: https://developer.sprucehealth.com/reference/listcontacts
+  description: 'Conversations — the message threads in an organization: list and filter conversations
+    with cursor pagination and ordering by created or last_message, create secure and note conversations,
+    retrieve and update a conversation, list its items, and post a message into it.'
+  humanURL: https://developer.sprucehealth.com/reference/listconversations
   baseURL: https://api.sprucehealth.com/v1
   tags:
   - Conversations
   properties:
   - type: OpenAPI
-    url: openapi/spruce-health-conversations-api-openapi.yml
+    url: openapi/spruce-health-conversations-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-conversations.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversations.opencollection.json
   - type: Documentation
     url: https://developer.sprucehealth.com/docs/overview
   - type: APIReference
-    url: https://developer.sprucehealth.com/reference/listcontacts
-  - type: PostmanCollection
-    url: collections/spruce-health.postman_collection.json
-  - type: OpenCollection
-    url: collections/spruce-health.opencollection.json
-  - type: APIReference
     url: https://developer.sprucehealth.com/reference/listconversations
-  - type: APIReference
-    url: https://developer.sprucehealth.com/reference/postconversationmessage
-  - type: Documentation
-    url: https://developer.sprucehealth.com/docs/webhooks-overview
-  - type: APIReference
-    url: https://developer.sprucehealth.com/reference/listwebhookendpoints
-- aid: spruce-health:spruce-health-messages-api
-  name: Spruce Health Messages API
-  description: Conversation items, messages, media, endpoints, and scheduled messages.
-  humanURL: https://developer.sprucehealth.com/reference/listcontacts
+  - type: Overlay
+    url: overlays/spruce-health-conversations-overlay.yaml
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  x-operations: 6
+- aid: spruce-health:spruce-health-internal-endpoints
+  name: Spruce Health Internal Endpoints API
+  description: 'Internal endpoints — the Spruce phone numbers, fax numbers, email addresses and Spruce
+    Links an organization communicates from: list them, send a secure/SMS/email/fax message from one,
+    and create an outbound proxy call.'
+  humanURL: https://developer.sprucehealth.com/reference/internalendpoints
   baseURL: https://api.sprucehealth.com/v1
   tags:
-  - Messages
+  - Internal Endpoints
   properties:
   - type: OpenAPI
-    url: openapi/spruce-health-messages-api-openapi.yml
+    url: openapi/spruce-health-internal-endpoints-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-internal-endpoints.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-internal-endpoints.opencollection.json
   - type: Documentation
     url: https://developer.sprucehealth.com/docs/overview
   - type: APIReference
-    url: https://developer.sprucehealth.com/reference/listcontacts
+    url: https://developer.sprucehealth.com/reference/internalendpoints
+  - type: Overlay
+    url: overlays/spruce-health-internal-endpoints-overlay.yaml
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  x-operations: 3
+- aid: spruce-health:spruce-health-media
+  name: Spruce Health Media API
+  description: Media — upload images, video and files to Spruce and receive a media ID that can be attached
+    to messages.
+  humanURL: https://developer.sprucehealth.com/reference/uploadmedia
+  baseURL: https://api.sprucehealth.com/v1
+  tags:
+  - Media
+  properties:
+  - type: OpenAPI
+    url: openapi/spruce-health-media-openapi.yml
   - type: PostmanCollection
-    url: collections/spruce-health.postman_collection.json
+    url: collections/spruce-health-media.postman_collection.json
   - type: OpenCollection
-    url: collections/spruce-health.opencollection.json
-  - type: APIReference
-    url: https://developer.sprucehealth.com/reference/listconversations
-  - type: APIReference
-    url: https://developer.sprucehealth.com/reference/postconversationmessage
+    url: collections/spruce-health-media.opencollection.json
   - type: Documentation
-    url: https://developer.sprucehealth.com/docs/webhooks-overview
+    url: https://developer.sprucehealth.com/docs/overview
   - type: APIReference
-    url: https://developer.sprucehealth.com/reference/listwebhookendpoints
-- aid: spruce-health:spruce-health-webhooks-api
+    url: https://developer.sprucehealth.com/reference/uploadmedia
+  - type: Overlay
+    url: overlays/spruce-health-media-overlay.yaml
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  x-operations: 1
+- aid: spruce-health:spruce-health-organization
+  name: Spruce Health Organization API
+  description: Organization — read the organization record and its members (teammates, teams and the organization
+    entity itself).
+  humanURL: https://developer.sprucehealth.com/reference/organization-1
+  baseURL: https://api.sprucehealth.com/v1
+  tags:
+  - Organization
+  properties:
+  - type: OpenAPI
+    url: openapi/spruce-health-organization-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-organization.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-organization.opencollection.json
+  - type: Documentation
+    url: https://developer.sprucehealth.com/docs/overview
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/organization-1
+  - type: Overlay
+    url: overlays/spruce-health-organization-overlay.yaml
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  x-operations: 3
+- aid: spruce-health:spruce-health-phone-lines
+  name: Spruce Health Phone Lines API
+  description: Phone lines — list the organization's phone lines and retrieve one by id.
+  humanURL: https://developer.sprucehealth.com/reference/phonelines
+  baseURL: https://api.sprucehealth.com/v1
+  tags:
+  - Phone Lines
+  properties:
+  - type: OpenAPI
+    url: openapi/spruce-health-phone-lines-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-phone-lines.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-phone-lines.opencollection.json
+  - type: Documentation
+    url: https://developer.sprucehealth.com/docs/overview
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/phonelines
+  - type: Overlay
+    url: overlays/spruce-health-phone-lines-overlay.yaml
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  x-operations: 2
+- aid: spruce-health:spruce-health-saved-messages
+  name: Spruce Health Saved Messages API
+  description: Saved messages — the reusable private and organization-wide message templates available
+    to the organization.
+  humanURL: https://developer.sprucehealth.com/reference/listsavedmessages
+  baseURL: https://api.sprucehealth.com/v1
+  tags:
+  - Saved Messages
+  properties:
+  - type: OpenAPI
+    url: openapi/spruce-health-saved-messages-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-saved-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-saved-messages.opencollection.json
+  - type: Documentation
+    url: https://developer.sprucehealth.com/docs/overview
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listsavedmessages
+  - type: Overlay
+    url: overlays/spruce-health-saved-messages-overlay.yaml
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  x-operations: 1
+- aid: spruce-health:spruce-health-scheduled-messages
+  name: Spruce Health Scheduled Messages API
+  description: 'Scheduled messages — messages queued to send at a future time, organization-wide or within
+    a single conversation: list, schedule and delete.'
+  humanURL: https://developer.sprucehealth.com/reference/listscheduledmessages
+  baseURL: https://api.sprucehealth.com/v1
+  tags:
+  - Scheduled Messages
+  properties:
+  - type: OpenAPI
+    url: openapi/spruce-health-scheduled-messages-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-scheduled-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-scheduled-messages.opencollection.json
+  - type: Documentation
+    url: https://developer.sprucehealth.com/docs/overview
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listscheduledmessages
+  - type: Overlay
+    url: overlays/spruce-health-scheduled-messages-overlay.yaml
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  x-operations: 4
+- aid: spruce-health:spruce-health-teams
+  name: Spruce Health Teams API
+  description: Teams — list the members of a team by team id.
+  humanURL: https://developer.sprucehealth.com/reference/teammembers
+  baseURL: https://api.sprucehealth.com/v1
+  tags:
+  - Teams
+  properties:
+  - type: OpenAPI
+    url: openapi/spruce-health-teams-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-teams.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-teams.opencollection.json
+  - type: Documentation
+    url: https://developer.sprucehealth.com/docs/overview
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/teammembers
+  - type: Overlay
+    url: overlays/spruce-health-teams-overlay.yaml
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  x-operations: 1
+- aid: spruce-health:spruce-health-transcription
+  name: Spruce Health Transcription API
+  description: Transcriptions — retrieve the full transcription text and AI summarization for a transcription
+    id found on voicemails, call recordings and audio messages.
+  humanURL: https://developer.sprucehealth.com/reference/transcription
+  baseURL: https://api.sprucehealth.com/v1
+  tags:
+  - Transcription
+  properties:
+  - type: OpenAPI
+    url: openapi/spruce-health-transcription-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-transcription.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-transcription.opencollection.json
+  - type: Documentation
+    url: https://developer.sprucehealth.com/docs/overview
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/transcription
+  - type: Overlay
+    url: overlays/spruce-health-transcription-overlay.yaml
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  x-operations: 1
+- aid: spruce-health:spruce-health-webhooks
   name: Spruce Health Webhooks API
-  description: Webhook endpoints for real-time contact / conversation events.
-  humanURL: https://developer.sprucehealth.com/reference/listcontacts
+  description: Webhooks — register and manage the HTTPS destination endpoints that receive real-time contact,
+    conversation, conversationItem and scheduledMessage events; create (returns the signing secret), list,
+    retrieve, list delivered events, pause/resume and delete.
+  humanURL: https://developer.sprucehealth.com/reference/listwebhookendpoints
   baseURL: https://api.sprucehealth.com/v1
   tags:
   - Webhooks
   properties:
   - type: OpenAPI
-    url: openapi/spruce-health-webhooks-api-openapi.yml
+    url: openapi/spruce-health-webhooks-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-webhooks.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-webhooks.opencollection.json
   - type: Documentation
     url: https://developer.sprucehealth.com/docs/overview
   - type: APIReference
-    url: https://developer.sprucehealth.com/reference/listcontacts
-  - type: PostmanCollection
-    url: collections/spruce-health.postman_collection.json
-  - type: OpenCollection
-    url: collections/spruce-health.opencollection.json
-  - type: APIReference
-    url: https://developer.sprucehealth.com/reference/listconversations
-  - type: APIReference
-    url: https://developer.sprucehealth.com/reference/postconversationmessage
-  - type: Documentation
-    url: https://developer.sprucehealth.com/docs/webhooks-overview
-  - type: APIReference
     url: https://developer.sprucehealth.com/reference/listwebhookendpoints
+  - type: Overlay
+    url: overlays/spruce-health-webhooks-overlay.yaml
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  x-operations: 6
 common:
 - type: AgenticAccess
   url: agentic-access/spruce-health-agentic-access.yml
@@ -159,13 +427,91 @@ common:
 - type: Documentation
   url: https://developer.sprucehealth.com/docs/overview
 - type: SignUp
-  url: https://sprucehealth.com/plans
+  url: https://app.sprucehealth.com/signup
 - type: Plans
   url: plans/spruce-health-plans-pricing.yml
 - type: RateLimits
   url: rate-limits/spruce-health-rate-limits.yml
 - type: FinOps
   url: finops/spruce-health-finops.yml
+- type: Conventions
+  url: conventions/spruce-health-conventions.yml
+- type: Idempotency
+  url: conventions/spruce-health-conventions.yml
+- type: ErrorCatalog
+  url: errors/spruce-health-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/spruce-health-lifecycle.yml
+- type: StatusPage
+  url: https://status.sprucehealth.com
+- type: ChangeLog
+  url: changelog/spruce-health-changelog.yml
+- type: Webhooks
+  url: asyncapi/spruce-health-webhooks.yml
+- type: DataModel
+  url: data-model/spruce-health-data-model.yml
+- type: Conformance
+  url: conformance/spruce-health-conformance.yml
+- type: Compliance
+  url: conformance/spruce-health-conformance.yml
+- type: Packages
+  url: packages/spruce-health-packages.yml
+- type: MCPServer
+  url: mcp/spruce-health-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/spruce-health-tool-crosswalk.yml
+- type: LLMsTxt
+  url: llms/spruce-health-llms.txt
+- type: AgentSkill
+  url: skills/_index.yml
+- type: DeveloperPortal
+  url: https://developer.sprucehealth.com
+- type: APIReference
+  url: https://developer.sprucehealth.com/reference/listcontacts
+- type: GettingStarted
+  url: https://developer.sprucehealth.com/docs/overview
+- type: Support
+  url: https://help.sprucehealth.com/hc/en-us/articles/23003282513435-Spruce-Support
+- type: Blog
+  url: https://sprucehealth.com/blog
+- type: GitHubOrganization
+  url: https://github.com/sprucehealth
+- type: Pricing
+  url: https://sprucehealth.com/plans
+- type: TermsOfService
+  url: https://sprucehealth.com/terms-organizations/
+- type: PrivacyPolicy
+  url: https://sprucehealth.com/privacy
+- type: ChangeLog
+  url: https://sprucehealth.com/whats-new
+- type: BlogRSS
+  url: https://sprucehealth.com/whats-new/rss.xml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
+x-enrichment:
+  date: '2026-08-15'
+  status: enriched
+  artifacts_added: 29
+  pass: local-v1
+x-coverage:
+  state: covered
+  reason: machine-readable-contract-published
+  detail: Spruce Health publishes a real 47-operation OpenAPI 3.0 behind its ReadMe developer portal (oasPublicUrl
+    @spruce/v1.0#13needamst2v4m6); it was harvested verbatim, replacing the modeled spec a prior round
+    had authored, along with two llms.txt files, a dated changelog RSS feed, an Atlassian Statuspage that
+    tracks the API as its own component, and an authenticated MCP endpoint.
+  evidence:
+  - url: https://dash.readme.com/api/v1/api-registry/13needamst2v4m6
+    status: 200
+  - url: https://developer.sprucehealth.com/llms.txt
+    status: 200
+  - url: https://developer.sprucehealth.com/mcp
+    status: 401
+  - url: https://status.sprucehealth.com/api/v2/summary.json
+    status: 200
+  - url: https://sprucehealth.com/whats-new/rss.xml
+    status: 200
+  - url: https://sprucehealth.com/.well-known/security.txt
+    status: 404
+  checked: '2026-08-15'
