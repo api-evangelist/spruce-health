@@ -52,7 +52,7 @@ tags:
 - Compliance
 created: '2026-07-10'
 modified: '2026-08-15'
-specificationVersion: '0.19'
+specificationVersion: '0.23'
 apis:
 - aid: spruce-health:spruce-health-contact-fields
   name: Spruce Health Contact Fields API
