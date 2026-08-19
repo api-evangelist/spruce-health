@@ -1,0 +1,142 @@
+generated: '2026-08-15'
+method: derived
+source: openapi/_original/spruce-health-openapi.json
+docs: https://developer.sprucehealth.com/docs/overview
+provider: Spruce Health
+providerId: spruce-health
+description: >-
+  The error surface of the Spruce Health API, derived from every 4xx/5xx response
+  declared across the 47 operations in the OpenAPI Spruce publishes, and cross-checked
+  against the error section of the Spruce API Overview.
+
+format: custom-json
+rfc9457: false
+rfc9457_note: >-
+  Spruce does not use application/problem+json. Errors are a plain application/json
+  object with a fixed three-field shape. An RFC 9457 client will not find type as a URI,
+  title, detail or instance - Spruce's `type` is a short machine token, not a
+  dereferenceable URI, and `message` occupies the role of both title and detail.
+
+content_type: application/json
+
+envelope:
+  schema: '#/components/schemas/error'
+  required:
+  - statusCode
+  - type
+  - message
+  fields:
+  - name: statusCode
+    type: integer
+    description: The HTTP status code, repeated inside the body.
+    example: 400
+  - name: type
+    type: string
+    description: A short machine-readable token naming the error class.
+    examples:
+    - BAD_PARAMETER
+    - invalid_input
+    note: >-
+      The published examples are inconsistent in case - the OpenAPI error schema shows
+      BAD_PARAMETER while the overview page shows invalid_input. Spruce publishes no
+      enumeration of the token set, so a client should match case-insensitively and
+      treat an unknown token as retryable-by-status rather than by token.
+  - name: message
+    type: string
+    description: A human-readable description of what went wrong.
+    example: Invalid Contact ID
+  example: |
+    {
+        "statusCode": 400,
+        "type": "invalid_input",
+        "message": "invalid input"
+    }
+
+problem_types:
+- status: 400
+  title: bad request
+  operations: 42
+  retryable: false
+  meaning: >-
+    Malformed or invalid input - a bad id, an out-of-range pageSize, a missing required
+    query parameter, or an unparseable body.
+  remediation: >-
+    Fix the request before resending. Read `message` for the offending field; Spruce
+    names it in prose (for example "Invalid Contact ID") rather than in a structured
+    field, so there is no machine-readable pointer to the bad parameter.
+- status: 403
+  title: forbidden
+  operations: 1
+  declared_on:
+  - DeleteConversationItem
+  retryable: false
+  meaning: >-
+    Two distinct conditions share this status. In the spec it is declared only on
+    DeleteConversationItem and means the caller lacks permission to delete that item -
+    deletion follows the same rules as the in-app delete, so system messages and items
+    in conversations the organization does not own cannot be removed. Separately, and
+    NOT declared on any operation in the spec, the Spruce API Overview states that an
+    incorrect or disabled API token returns 403 on any request.
+  remediation: >-
+    Distinguish the two by whether every request is failing or only this one. A blanket
+    403 means the token is wrong or API access has been disabled for the organization -
+    contact Spruce Support. A 403 on a single delete is a permission or content
+    restriction and is not retryable.
+  note: >-
+    Authentication failure is documented in prose but absent from the OpenAPI. A client
+    generated purely from the spec will not have a 403 handler on 46 of 47 operations
+    and will surface an auth failure as an unhandled status.
+- status: 404
+  title: not found
+  operations: 19
+  retryable: false
+  meaning: The addressed resource does not exist, or is not visible to this organization.
+  remediation: >-
+    Do not retry. One documented special case is worth handling explicitly: voicemail
+    transcriptions created before November 2025 were stored in a legacy format, and
+    GET /transcriptions/{transcriptionId} answers 404 with an explanatory message for
+    them even though the id is still present on the conversation item.
+- status: 422
+  title: duplicate request
+  operations: 12
+  retryable: false
+  meaning: >-
+    An idempotency collision. A second request to the same path carrying an
+    s-idempotency-key already seen within the 24-hour retention window is rejected.
+  remediation: >-
+    Treat 422 on a retry as confirmation that the FIRST attempt was accepted, not as a
+    validation failure - Spruce rejects the duplicate rather than replaying the original
+    response, so the caller must fetch the resource to obtain its id. Use a fresh key
+    for a genuinely new request.
+  see: conventions/spruce-health-conventions.yml
+- status: 500
+  title: unexpected error
+  operations: 47
+  retryable: true
+  meaning: An unhandled server-side failure. Declared on every operation.
+  remediation: >-
+    Retry with exponential backoff and jitter. On a mutating call, reuse the SAME
+    s-idempotency-key so a retry that races a request which actually succeeded is
+    rejected as a duplicate rather than duplicating the effect.
+
+undocumented_statuses:
+- status: 429
+  note: >-
+    No operation declares a 429 and the overview does not name the status returned when
+    a rate limit is exhausted. Spruce signals headroom with the s-ratelimit-* response
+    headers instead. A client should watch s-ratelimit-remaining and
+    s-ratelimit-daily-remaining rather than waiting for a status it cannot confirm
+    exists.
+- status: 401
+  note: >-
+    Not used. Spruce returns 403 for a missing, incorrect, or disabled token.
+
+coverage:
+  operations_total: 47
+  operations_with_4xx: 47
+  distinct_error_statuses: 5
+  error_schema_shared: true
+
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

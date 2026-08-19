@@ -1,0 +1,95 @@
+generated: '2026-08-15'
+method: probed
+source: https://developer.sprucehealth.com/mcp
+provider: Spruce Health
+providerId: spruce-health
+description: >-
+  Spruce Health serves a remote MCP endpoint from its own developer documentation host at
+  https://developer.sprucehealth.com/mcp. It is real and reachable - an unauthenticated
+  GET answers "This URL can only be accessed with a MCP client" - but every JSON-RPC
+  method is authorization-gated, so the live tool list could not be enumerated
+  anonymously. No tool is recorded below that was not returned by the server, because
+  none were.
+
+deployment:
+  mode: remote
+  endpoint: https://developer.sprucehealth.com/mcp
+  install: null
+  package: null
+  auth: api-key
+  verified: probed
+
+status: published
+transport: streamable-http
+
+probe:
+  fetched: '2026-08-15'
+  checks:
+  - method: GET
+    url: https://developer.sprucehealth.com/mcp
+    http_status: 200
+    content_type: text/html
+    body: This URL can only be accessed with a MCP client.
+    note: Confirms an MCP endpoint is deployed at this path.
+  - method: 'POST (jsonrpc initialize)'
+    url: https://developer.sprucehealth.com/mcp
+    http_status: 401
+    content_type: application/json
+    body: '{"jsonrpc":"2.0","error":{"code":-32001,"message":"Authorization required"},"id":null}'
+  - method: 'POST (jsonrpc tools/list)'
+    url: https://developer.sprucehealth.com/mcp
+    http_status: 401
+    content_type: application/json
+    body: '{"jsonrpc":"2.0","error":{"code":-32001,"message":"Authorization required"},"id":null}'
+  - method: GET
+    url: https://developer.sprucehealth.com/.well-known/oauth-protected-resource/mcp
+    http_status: 404
+  - method: GET
+    url: https://developer.sprucehealth.com/.well-known/oauth-authorization-server
+    http_status: 404
+  www_authenticate_header: absent
+  rfc9728_metadata: absent
+
+authorization:
+  challenge: 'JSON-RPC error -32001 "Authorization required"'
+  discovery: >-
+    None. The 401 carries no WWW-Authenticate header and neither the RFC 9728
+    oauth-protected-resource document nor authorization-server metadata is served, so an
+    MCP client cannot discover how to authenticate from the endpoint itself.
+  expected_credential: >-
+    A Spruce organization API token - the same Bearer credential the REST API uses,
+    which requires the Communicator plan plus API access enabled by Spruce Support.
+    Recorded as the expectation implied by Spruce's single documented credential, not as
+    a value returned by the server.
+
+tools:
+  enumerated: false
+  reason: tools/list returns 401 without credentials
+  count: null
+  note: >-
+    No tool names, descriptions or inputSchemas are recorded. Spruce publishes no tool
+    list in its llms.txt either, so unlike providers whose llms.txt names their tools,
+    there is no anonymous fallback here. Enumerating this surface requires an
+    authenticated introspection pass with an organization token.
+
+hosting:
+  platform: ReadMe
+  evidence: >-
+    The endpoint is served from developer.sprucehealth.com, Spruce's own documentation
+    host, which runs on ReadMe (readme-deploy meta tag, cdn.readme.io preconnects,
+    x-readme-* CORS headers on the MCP response). The MCP server is provided by Spruce's
+    documentation platform rather than built in-house.
+  ownership_note: >-
+    Counted as a Spruce Health agent surface because Spruce serves it from a hostname it
+    controls, on the same host that serves its OpenAPI and its developer reference -
+    the same basis on which the OpenAPI itself is attributed. ReadMe is the vendor, not
+    the publisher.
+
+related:
+  openapi: openapi/_original/spruce-health-openapi.json
+  crosswalk: mcp/spruce-health-tool-crosswalk.yml
+  rest_base: https://api.sprucehealth.com/v1
+
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

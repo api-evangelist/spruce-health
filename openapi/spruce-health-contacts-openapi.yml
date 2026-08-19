@@ -1,0 +1,1813 @@
+openapi: 3.0.0
+info:
+  title: Spruce Health API — Contacts
+  version: 1.0.0
+  description: The Contacts operations of the Spruce Health API, split by tag from the OpenAPI Spruce
+    Health publishes for developer.sprucehealth.com (ReadMe registry @spruce/v1.0#13needamst2v4m6). Base
+    https://api.sprucehealth.com/v1, Bearer organization token.
+  contact:
+    name: Spruce Health
+    url: https://developer.sprucehealth.com
+servers:
+- url: https://api.sprucehealth.com/v1
+  variables:
+    domain:
+      default: api.sprucehealth.com
+security:
+- spruceAPIToken: []
+tags:
+- name: Contacts
+paths:
+  /contacts:
+    get:
+      description: 'This operation lists all contacts available to a given organization.
+
+
+        The `hasMore` field can be used to determine if there are remaining results to list. The `paginationToken`
+        field can be provided on subsequents calls to retrieve the next page of results.
+
+        '
+      operationId: ListContacts
+      parameters:
+      - description: How many contacts to return at one time
+        in: query
+        name: pageSize
+        required: false
+        schema:
+          format: int32
+          maximum: 500
+          minimum: 1
+          type: integer
+      - in: query
+        name: paginationToken
+        required: false
+        schema:
+          $ref: '#/components/schemas/paginationToken'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  contacts:
+                    items:
+                      $ref: '#/components/schemas/contact'
+                    type: array
+                  hasMore:
+                    $ref: '#/components/schemas/hasMore'
+                  paginationToken:
+                    $ref: '#/components/schemas/paginationToken'
+                  totalCount:
+                    $ref: '#/components/schemas/totalCount'
+                required:
+                - totalCount
+                - contacts
+                - hasMore
+                type: object
+          description: A paged array of contacts
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: List contacts
+      tags:
+      - Contacts
+    post:
+      description: 'This operation creates a contact within an organization.
+
+
+        Creating a new contact requires at least of the following fields to be populated (`givenName`,
+        `familyName`, `phoneNumbers`, `faxNumbers`, `emailAddresses`).
+
+        '
+      operationId: CreateContact
+      parameters:
+      - $ref: '#/components/parameters/s-idempotency-key'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createContact'
+              description: Contact json object. At least one name or piece of contact information is required
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/contact'
+          description: created
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: duplicate request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: Create a contact
+      tags:
+      - Contacts
+  /contacts/{contactId}:
+    delete:
+      description: 'This operation deletes a specific contact by id.
+
+
+        See the `canDelete` field on a given contact to determine if deletion is allowed.
+
+        '
+      operationId: DeleteContact
+      parameters:
+      - description: The id of the contact to delete
+        in: path
+        name: contactId
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ok response
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: Delete a contact
+      tags:
+      - Contacts
+    get:
+      description: This operation retrieves a specific contact by id.
+      operationId: Contact
+      parameters:
+      - description: The id of the contact to retrieve
+        in: path
+        name: contactId
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/contact'
+          description: Expected response to a valid request
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: Get a contact by Spruce Contact ID
+      tags:
+      - Contacts
+    patch:
+      description: 'This operation updates a specific contact by id.
+
+
+        Fields provided in the input object will be updated, omitted fields *(null)* will be unchanged.
+
+        '
+      operationId: UpdateContact
+      parameters:
+      - $ref: '#/components/parameters/s-idempotency-key'
+      - description: The id of the contact to update
+        in: path
+        name: contactId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateContact'
+              description: Contact json object. Omitted fields are not updated.
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/contact'
+          description: ok response
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: duplicate request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: Update a contact
+      tags:
+      - Contacts
+  /contacts/{contactId}/conversations:
+    get:
+      description: This operation retrieves the conversations associated with a contact
+      operationId: ContactConversations
+      parameters:
+      - description: The id of the contact to fetch conversations for
+        in: path
+        name: contactId
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  conversations:
+                    items:
+                      $ref: '#/components/schemas/conversation'
+                    type: array
+                required:
+                - conversations
+                type: object
+          description: Expected response to a valid request
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: List the conversations associated with a contact
+      tags:
+      - Contacts
+  /contacts/{contactId}/integrationlinks:
+    delete:
+      description: This operation deletes a specific integration link associated with a contact.
+      operationId: DeleteContactIntegrationLink
+      parameters:
+      - description: The id of the contact to delete the integration link for.
+        in: path
+        name: contactId
+        required: true
+        schema:
+          type: string
+      - description: The identifier of the integration type the existing integration link is for.
+        in: query
+        name: type
+        required: false
+        schema:
+          $ref: '#/components/schemas/contact_integrationLinkType'
+      - description: The id of the contact in the external integrated system.
+        in: query
+        name: externalId
+        required: false
+        schema:
+          $ref: '#/components/schemas/contact_externalId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/contact_deleteContactIntegrationLink'
+        required: false
+      responses:
+        '200':
+          description: ok response
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: Delete an integration link
+      tags:
+      - Contacts
+    get:
+      description: This operation retrieves the integration links associated with a contact
+      operationId: ContactIntegrationLinks
+      parameters:
+      - description: The unique identifier of the contact
+        in: path
+        name: contactId
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  integrationLinks:
+                    $ref: '#/components/schemas/contact_integrationLinks'
+                required:
+                - integrationLinks
+                type: object
+          description: Expected response to a valid request
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: List the integration links associated with a contact
+      tags:
+      - Contacts
+    post:
+      description: This operation creates a link between a contact and an external system with which the
+        Spruce account is integrated.
+      operationId: CreateContactIntegrationLink
+      parameters:
+      - $ref: '#/components/parameters/s-idempotency-key'
+      - description: The id of the contact for which the integration link should be created.
+        in: path
+        name: contactId
+        required: true
+        schema:
+          type: string
+      - description: The integration type of the existing integration link.
+        in: query
+        name: type
+        required: false
+        schema:
+          $ref: '#/components/schemas/contact_integrationLinkType'
+      - description: The id of the contact in the external integrated system.
+        in: query
+        name: externalId
+        required: false
+        schema:
+          $ref: '#/components/schemas/contact_externalId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/contact_createContactIntegrationLink'
+        required: false
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                properties:
+                  integrationLinks:
+                    $ref: '#/components/schemas/contact_integrationLinks'
+                required:
+                - integrationLinks
+                type: object
+          description: created
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: duplicate request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: Create an integration link
+      tags:
+      - Contacts
+  /contacts/{contactId}/invite:
+    post:
+      description: 'This operation sends an invite to a patient contact:
+
+        - If the contact is invited for the first time, a new secure conversation will be created,
+
+        - If the contact is already invited, the invite will be re-sent to the same secure conversation,
+
+        - If the contact is already on Spruce, an error will be returned.
+
+        '
+      operationId: SendInvite
+      parameters:
+      - description: The id of the contact to invite.
+        in: path
+        name: contactId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/sendInvite'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  contact:
+                    $ref: '#/components/schemas/contact'
+                  conversation:
+                    $ref: '#/components/schemas/conversation'
+                required:
+                - contact
+                - conversation
+                type: object
+          description: Expected response to a valid request
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: Invite patient to Spruce
+      tags:
+      - Contacts
+  /contacts/search:
+    post:
+      description: 'This operation searches all contacts available to a given organization and returns
+        a resulting set of results.
+
+
+
+        The `hasMore` field can be used to determine if there are remaining results to list. The `paginationToken`
+        field can be provided on subsequents calls to retrieve the next page of results.
+
+
+
+        ## Sort Order
+
+
+        Results are sorted by **entity ID in ascending order** when doing a structured search and by **relevance**
+        for free text search.
+
+
+        Why is this a `POST`? `GET` requests with a body are not supported by all HTTP libraries. To support
+        complex nested search filters and other tooling, the `POST` body is leveraged.
+
+        '
+      operationId: SearchContacts
+      parameters:
+      - description: How many contacts to return at one time
+        in: query
+        name: pageSize
+        required: false
+        schema:
+          format: int32
+          maximum: 500
+          minimum: 1
+          type: integer
+      - in: query
+        name: paginationToken
+        required: false
+        schema:
+          $ref: '#/components/schemas/paginationToken'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/contactSearch'
+              description: Contact Search json object.
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  contacts:
+                    items:
+                      $ref: '#/components/schemas/contact'
+                    type: array
+                  hasMore:
+                    $ref: '#/components/schemas/hasMore'
+                  paginationToken:
+                    $ref: '#/components/schemas/paginationToken'
+                  totalCount:
+                    $ref: '#/components/schemas/totalCount'
+                  totalCountRelation:
+                    $ref: '#/components/schemas/searchTotalCountRelation'
+                required:
+                - totalCount
+                - totalCountRelation
+                - contacts
+                - hasMore
+                type: object
+          description: A paged array of contacts
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: Search contacts
+      tags:
+      - Contacts
+components:
+  headers:
+    s-ratelimit-limit:
+      description: Request limit per minute
+      example: 100
+      schema:
+        type: integer
+    s-ratelimit-remaining:
+      description: Requests remaining this minute
+      example: 94
+      schema:
+        type: integer
+    s-request-id:
+      description: The ID of the request
+      example: 0E5QDGJC030000E5QDGJC03000
+      schema:
+        type: string
+  parameters:
+    s-idempotency-key:
+      description: A unique value generated by the client used to recognize subsequent retries of the
+        same request. Idempotency keys can be up to 255 characters long.
+      example: S7uiKYMMRzAcuG8S
+      in: header
+      name: s-idempotency-key
+      required: false
+      schema:
+        type: string
+  schemas:
+    contact:
+      properties:
+        apiURL:
+          description: An absolute URL for fetching this contact from the API
+          example: https://api.sprucehealth.com/contact/entity_0E5QDGJC03000
+          format: url
+          type: string
+        appURL:
+          description: An absolute URL to view the contact in the Spruce app
+          example: https://app.sprucehealth.com/org/entity_0D4QABCC06000/contact/entity_0E5QDGJC03000
+          format: url
+          type: string
+        canDelete:
+          description: Whether the contact may be deleted.
+          example: true
+          type: boolean
+        canEdit:
+          description: Whether the contact may be edited.
+          example: true
+          type: boolean
+        category:
+          $ref: '#/components/schemas/contact_category'
+        companyName:
+          $ref: '#/components/schemas/contact_companyName'
+        created:
+          description: The date this contact was added to Spruce
+          example: '2021-01-30T08:30:00Z'
+          format: date-time
+          type: string
+        customContactFields:
+          $ref: '#/components/schemas/contact_customContactFields'
+        dateOfBirth:
+          $ref: '#/components/schemas/contact_dateOfBirth'
+        displayName:
+          $ref: '#/components/schemas/contact_displayName'
+        emailAddresses:
+          $ref: '#/components/schemas/contact_emailAddresses'
+        familyName:
+          $ref: '#/components/schemas/contact_familyName'
+        faxNumbers:
+          $ref: '#/components/schemas/contact_faxNumbers'
+        gender:
+          $ref: '#/components/schemas/contact_gender'
+        genderDetail:
+          $ref: '#/components/schemas/contact_genderDetail'
+        givenName:
+          $ref: '#/components/schemas/contact_givenName'
+        hasAccount:
+          description: Whether the contact has created a Spruce account for secure messaging, video calling,
+            etc.
+          example: true
+          type: boolean
+        hasPendingInvite:
+          description: Whether the contact has a pending Spruce account invitation
+          example: true
+          type: boolean
+        id:
+          $ref: '#/components/schemas/contact_id'
+        integrationLinks:
+          $ref: '#/components/schemas/contact_integrationLinks'
+        internalMemberIds:
+          $ref: '#/components/schemas/contact_internalMemberIds'
+        middleName:
+          $ref: '#/components/schemas/contact_middleName'
+        object:
+          $ref: '#/components/schemas/objectType'
+        organizationContactFields:
+          $ref: '#/components/schemas/contact_organizationContactFields'
+        phoneNumbers:
+          $ref: '#/components/schemas/contact_phoneNumbers'
+        pronouns:
+          $ref: '#/components/schemas/contact_pronouns'
+        tags:
+          $ref: '#/components/schemas/contact_tags'
+      required:
+      - id
+      - displayName
+      - tags
+      - gender
+      - category
+      - created
+      - phoneNumbers
+      - emailAddresses
+      - customFields
+      - appURL
+      - apiURL
+      - hasAccount
+      - hasPendingInvite
+      - customContactFields
+      - organizationContactFields
+      - canDelete
+      - canEdit
+      - integrationLinks
+      - object
+      - internalMemberIds
+      type: object
+    contactSearch:
+      properties:
+        freeText:
+          type: string
+        structured:
+          $ref: '#/components/schemas/contact_searchStructuredFilter'
+      type: object
+    contact_category:
+      enum:
+      - patient
+      - professional
+      - clinic
+      - unknown
+      example: patient
+      type: string
+    contact_categoryInput:
+      enum:
+      - patient
+      - professional
+      example: patient
+      type: string
+    contact_companyName:
+      description: The contact's company. This field can also be used to specify the name of a non-patient
+        contact, such as another healthcare facility.
+      example: Walgreens
+      type: string
+    contact_createContactIntegrationLink:
+      properties:
+        externalId:
+          $ref: '#/components/schemas/contact_externalId'
+          description: The id of the contact in the external integrated system.
+        type:
+          $ref: '#/components/schemas/contact_integrationLinkType'
+          description: The integration type of the integration link.
+        url:
+          description: The URL to the contact in the external system (only for custom integration links).
+          example: https://example.com/contacts/123
+          type: string
+      type: object
+    contact_customContactField:
+      properties:
+        id:
+          $ref: '#/components/schemas/contact_customContactFieldId'
+        name:
+          $ref: '#/components/schemas/contact_customFieldName'
+        value:
+          $ref: '#/components/schemas/contact_customFieldValue'
+      required:
+      - id
+      - name
+      - value
+      type: object
+    contact_customContactFieldId:
+      description: Spruce's contact contact custom field ID
+      example: entityCustomField_0E5QDGJC03000
+      type: string
+    contact_customContactFields:
+      description: Fields on a contact that are custom
+      items:
+        $ref: '#/components/schemas/contact_customContactField'
+      type: array
+    contact_customFieldName:
+      description: A name for the field
+      example: Preferred Pharmacy
+      type: string
+    contact_customFieldValue:
+      description: The value of the field
+      example: CVS
+      type: string
+    contact_dateOfBirth:
+      description: The contact's date of birth in the format YYYY-MM-DD.
+      example: '2000-01-30'
+      format: date
+      type: string
+    contact_deleteContactIntegrationLink:
+      properties:
+        externalId:
+          $ref: '#/components/schemas/contact_externalId'
+          description: The id of the contact in the external integrated system.
+        type:
+          $ref: '#/components/schemas/contact_integrationLinkType'
+          description: The identifier of the integration type the existing integration link is for.
+      type: object
+    contact_displayName:
+      description: The contact's full name for easy display to a user. This is determined by combining
+        the givenName, middleName, and familyName, or if those are all empty, falling back to companyName,
+        phone number or email address.
+      example: Joe William Smith
+      type: string
+    contact_emailAddressInputs:
+      items:
+        $ref: '#/components/schemas/emailAddressInput'
+      type: array
+    contact_emailAddresses:
+      items:
+        $ref: '#/components/schemas/emailAddress'
+      type: array
+    contact_externalId:
+      description: The id of a contact in an external system.
+      example: elation_140797386655555
+      type: string
+    contact_familyName:
+      description: The contact's family name (typically last name in US)
+      example: Smith
+      type: string
+    contact_faxNumberInputs:
+      items:
+        $ref: '#/components/schemas/faxNumberInput'
+      type: array
+    contact_faxNumbers:
+      items:
+        $ref: '#/components/schemas/faxNumber'
+      type: array
+    contact_gender:
+      enum:
+      - unknown
+      - male
+      - female
+      - other
+      example: unknown
+      type: string
+    contact_genderDetail:
+      description: Optional free-text details for gender
+      example: Non-binary
+      type: string
+    contact_givenName:
+      description: The contact's given name (typically first name in US)
+      example: Joe
+      type: string
+    contact_id:
+      description: Spruce's contact ID
+      example: entity_0E5QDGJC03000
+      type: string
+    contact_integrationLink:
+      properties:
+        contactId:
+          $ref: '#/components/schemas/contact_id'
+        externalId:
+          $ref: '#/components/schemas/contact_externalId'
+        type:
+          $ref: '#/components/schemas/contact_integrationLinkType'
+        url:
+          description: The url of a contact in an integrated external system.
+          type: string
+      required:
+      - type
+      - externalId
+      - contactId
+      type: object
+    contact_integrationLinkType:
+      enum:
+      - elation
+      - hint
+      - athena
+      - custom
+      example: elation
+      type: string
+    contact_integrationLinks:
+      description: Links between a contact and an integrated external system.
+      items:
+        $ref: '#/components/schemas/contact_integrationLink'
+      type: array
+    contact_internalMemberIds:
+      description: The ids of the teammates, teams and/or your organization that are members of the contact.
+        Contact Membership must be enabled for the organization for this field to be interacted with.
+      items:
+        type: string
+      type: array
+    contact_middleName:
+      description: The contact's middle name
+      example: William
+      type: string
+    contact_organizationContactField:
+      properties:
+        id:
+          $ref: '#/components/schemas/contact_organizationContactFieldId'
+        name:
+          $ref: '#/components/schemas/contact_customFieldName'
+        value:
+          $ref: '#/components/schemas/contact_customFieldValue'
+      required:
+      - id
+      - name
+      - value
+      type: object
+    contact_organizationContactFieldId:
+      description: Spruce's contact organization contact custom field ID
+      example: managedCustomField_0E5QDGJC03000
+      type: string
+    contact_organizationContactFieldInput:
+      properties:
+        id:
+          $ref: '#/components/schemas/contact_organizationContactFieldId'
+        value:
+          $ref: '#/components/schemas/contact_customFieldValue'
+      required:
+      - id
+      - value
+      type: object
+    contact_organizationContactFieldInputs:
+      description: Fields on a contact that are custom to your organization
+      items:
+        $ref: '#/components/schemas/contact_organizationContactFieldInput'
+      type: array
+    contact_organizationContactFields:
+      description: Fields on a contact that are custom
+      items:
+        $ref: '#/components/schemas/contact_organizationContactField'
+      type: array
+    contact_phoneNumberInputs:
+      items:
+        $ref: '#/components/schemas/phoneNumberInput'
+      type: array
+    contact_phoneNumbers:
+      items:
+        $ref: '#/components/schemas/phoneNumber'
+      type: array
+    contact_pronouns:
+      description: The contact's pronouns
+      example: he/him
+      type: string
+    contact_searchAgeFilter:
+      properties:
+        ages:
+          items:
+            properties:
+              age:
+                format: int32
+                type: integer
+              comparison:
+                $ref: '#/components/schemas/searchComparisonFilter'
+            required:
+            - age
+            - comparison
+            type: object
+          type: array
+        match:
+          $ref: '#/components/schemas/searchListMatchFilter'
+      required:
+      - ages
+      - match
+      type: object
+    contact_searchAgeFilters:
+      items:
+        $ref: '#/components/schemas/contact_searchAgeFilter'
+      type: array
+    contact_searchCategoryFilter:
+      properties:
+        categories:
+          items:
+            $ref: '#/components/schemas/contact_category'
+          type: array
+        match:
+          $ref: '#/components/schemas/searchListMatchFilter'
+      required:
+      - categories
+      - match
+      type: object
+    contact_searchCategoryFilters:
+      items:
+        $ref: '#/components/schemas/contact_searchCategoryFilter'
+      type: array
+    contact_searchCreatedTimeFilter:
+      properties:
+        createdTimes:
+          items:
+            properties:
+              comparison:
+                $ref: '#/components/schemas/searchComparisonFilter'
+              time:
+                description: The date this contact was added to Spruce
+                example: '2021-01-30T08:30:00Z'
+                format: date-time
+                type: string
+            required:
+            - time
+            - comparison
+            type: object
+          type: array
+        match:
+          $ref: '#/components/schemas/searchListMatchFilter'
+      required:
+      - createdTimes
+      - match
+      type: object
+    contact_searchCreatedTimeFilters:
+      items:
+        $ref: '#/components/schemas/contact_searchCreatedTimeFilter'
+      type: array
+    contact_searchEmailAddressFilter:
+      properties:
+        match:
+          $ref: '#/components/schemas/searchListMatchFilter'
+        values:
+          items:
+            $ref: '#/components/schemas/emailAddressValue'
+          type: array
+      required:
+      - values
+      - match
+      type: object
+    contact_searchEmailAddressFilters:
+      items:
+        $ref: '#/components/schemas/contact_searchEmailAddressFilter'
+      type: array
+    contact_searchFaxNumberFilter:
+      properties:
+        match:
+          $ref: '#/components/schemas/searchListMatchFilter'
+        values:
+          items:
+            $ref: '#/components/schemas/phoneNumberValue'
+          type: array
+      required:
+      - values
+      - match
+      type: object
+    contact_searchFaxNumberFilters:
+      items:
+        $ref: '#/components/schemas/contact_searchFaxNumberFilter'
+      type: array
+    contact_searchGenderFilter:
+      properties:
+        genders:
+          items:
+            $ref: '#/components/schemas/contact_gender'
+          type: array
+        match:
+          $ref: '#/components/schemas/searchListMatchFilter'
+      required:
+      - genders
+      - match
+      type: object
+    contact_searchGenderFilters:
+      items:
+        $ref: '#/components/schemas/contact_searchGenderFilter'
+      type: array
+    contact_searchIntegrationIDFilter:
+      properties:
+        integrationIDs:
+          items:
+            properties:
+              id:
+                type: string
+              integrationLinkType:
+                $ref: '#/components/schemas/contact_integrationLinkType'
+            required:
+            - integrationLinkType
+            - id
+            type: object
+          type: array
+        match:
+          $ref: '#/components/schemas/searchListMatchFilter'
+      required:
+      - integrationIDs
+      - match
+      type: object
+    contact_searchIntegrationIDFilters:
+      items:
+        $ref: '#/components/schemas/contact_searchIntegrationIDFilter'
+      type: array
+    contact_searchInviteFilter:
+      properties:
+        inviteStates:
+          items:
+            $ref: '#/components/schemas/contact_searchInviteStateFilter'
+          type: array
+        match:
+          $ref: '#/components/schemas/searchListMatchFilter'
+      required:
+      - inviteStates
+      - match
+      type: object
+    contact_searchInviteFilters:
+      items:
+        $ref: '#/components/schemas/contact_searchInviteFilter'
+      type: array
+    contact_searchInviteStateFilter:
+      enum:
+      - has_account
+      - invited
+      - not_invited
+      example: has_account
+      type: string
+    contact_searchNameFilter:
+      properties:
+        match:
+          $ref: '#/components/schemas/searchListMatchFilter'
+        names:
+          items:
+            properties:
+              familyName:
+                type: string
+              givenName:
+                type: string
+            type: object
+          type: array
+      required:
+      - names
+      - match
+      type: object
+    contact_searchNameFilters:
+      items:
+        $ref: '#/components/schemas/contact_searchNameFilter'
+      type: array
+    contact_searchOrganizationContactFieldFilter:
+      properties:
+        match:
+          $ref: '#/components/schemas/searchListMatchFilter'
+        organizationContactFields:
+          items:
+            properties:
+              name:
+                type: string
+              value:
+                type: string
+            required:
+            - name
+            - value
+            type: object
+          type: array
+      required:
+      - organizationContactFields
+      - match
+      type: object
+    contact_searchOrganizationContactFieldFilters:
+      items:
+        $ref: '#/components/schemas/contact_searchOrganizationContactFieldFilter'
+      type: array
+    contact_searchPhoneNumberFilter:
+      properties:
+        match:
+          $ref: '#/components/schemas/searchListMatchFilter'
+        values:
+          items:
+            $ref: '#/components/schemas/phoneNumberValue'
+          type: array
+      required:
+      - values
+      - match
+      type: object
+    contact_searchPhoneNumberFilters:
+      items:
+        $ref: '#/components/schemas/contact_searchPhoneNumberFilter'
+      type: array
+    contact_searchStructuredFilter:
+      properties:
+        ageFilter:
+          $ref: '#/components/schemas/contact_searchAgeFilters'
+        categoryFilter:
+          $ref: '#/components/schemas/contact_searchCategoryFilters'
+        createdTimeFilter:
+          $ref: '#/components/schemas/contact_searchCreatedTimeFilters'
+        emailAddressFilter:
+          $ref: '#/components/schemas/contact_searchEmailAddressFilters'
+        faxNumberFilter:
+          $ref: '#/components/schemas/contact_searchFaxNumberFilters'
+        genderFilter:
+          $ref: '#/components/schemas/contact_searchGenderFilters'
+        integrationIDFilter:
+          $ref: '#/components/schemas/contact_searchIntegrationIDFilters'
+        inviteFilter:
+          $ref: '#/components/schemas/contact_searchInviteFilters'
+        nameFilter:
+          $ref: '#/components/schemas/contact_searchNameFilters'
+        organizationContactFieldFilter:
+          $ref: '#/components/schemas/contact_searchOrganizationContactFieldFilters'
+        phoneNumberFilter:
+          $ref: '#/components/schemas/contact_searchPhoneNumberFilters'
+        tagFilter:
+          $ref: '#/components/schemas/contact_searchTagFilters'
+      type: object
+    contact_searchTagFilter:
+      properties:
+        match:
+          $ref: '#/components/schemas/searchListMatchFilter'
+        tags:
+          items:
+            type: string
+          type: array
+      required:
+      - tags
+      - match
+      type: object
+    contact_searchTagFilters:
+      items:
+        $ref: '#/components/schemas/contact_searchTagFilter'
+      type: array
+    contact_tag:
+      properties:
+        id:
+          $ref: '#/components/schemas/contact_tagId'
+        object:
+          $ref: '#/components/schemas/objectType'
+        value:
+          $ref: '#/components/schemas/contact_tagValue'
+      required:
+      - id
+      - value
+      - object
+      type: object
+    contact_tagId:
+      description: Spruce's contact tag ID
+      example: tag_0E5QDGJC03000
+      type: string
+    contact_tagIds:
+      description: An array of Spruce contact tag ids
+      items:
+        $ref: '#/components/schemas/contact_tagId'
+      type: array
+    contact_tagValue:
+      description: The text value of a contact tag
+      example: Smith
+      type: string
+    contact_tags:
+      items:
+        $ref: '#/components/schemas/contact_tag'
+      type: array
+    conversation:
+      properties:
+        apiURL:
+          description: An absolute URL for fetching this conversation from the API
+          example: https://api.sprucehealth.com/conversations/t_0E5QDJJC03000
+          format: url
+          type: string
+        appURL:
+          description: An absolute URL to view the conversation in the Spruce app
+          example: https://app.sprucehealth.com/org/entity_0D4QABCC06000/thread/t_0E5QDJJC03000
+          format: url
+          type: string
+        archived:
+          description: Whether or not the conversation is archived
+          example: false
+          type: boolean
+        assignedToMemberId:
+          description: The id of the teammate the conversation is assigned to
+          example: entity_0D4QABCC06000
+          type: string
+        associatedContactIds:
+          description: The ids of the contacts associated with the conversation. This may include contacts
+            that are not a part of the conversation. For example, the conversation may be with parents,
+            but associated with a contact representing their child.
+          example:
+          - entity_0D4QABCC06000
+          items:
+            type: string
+          type: array
+        createdAt:
+          description: The date the conversation was created
+          example: '2020-04-01T00:00:00Z'
+          format: date-time
+          type: string
+        externalParticipants:
+          description: The external participants in the conversation.
+          items:
+            properties:
+              contact:
+                description: The id of the contact associated with the participant. This will be omitted
+                  if the participant is not a saved contact.
+                example: entity_0D4QABCC06000
+                type: string
+              displayName:
+                description: The display name of the participant
+                example:
+                - 555-555-5555
+                - John Doe
+                - patient@example.com
+                type: string
+              endpoint:
+                $ref: '#/components/schemas/endpoint'
+                description: The endpoint of the participant, such as their phone number or email address.
+                  For secure conversations, there will not be an endpoint.
+            required:
+            - displayName
+            type: object
+          type: array
+        id:
+          $ref: '#/components/schemas/conversation_id'
+        internalEndpoint:
+          $ref: '#/components/schemas/endpoint'
+          description: 'The internal endpoint of the conversation. For secure conversations, this will
+            be a Spruce Link.
+
+
+            Note: for secure endpoints, the `id` returned here is a derived value that will not equal
+            the `endpoint.id` returned for the same Spruce Link by the list internal endpoints API. Use
+            `rawValue` to match a conversation''s secure internal endpoint to the corresponding Spruce
+            Link. Endpoint ids for phone, fax, and email channels use the same format across responses
+            and can be compared directly.
+
+            '
+        internalMemberIds:
+          description: The ids of the teammates, teams and/or your organization that are members of the
+            conversation.
+          example:
+          - entity_0D4QABCC06000
+          items:
+            type: string
+          type: array
+        isReadOnly:
+          description: If the conversation is read-only, messages cannot be sent to it.
+          example: false
+          type: boolean
+        lastMessageAt:
+          description: The time of the conversations latest message
+          example: '2020-04-01T00:00:00Z'
+          format: date-time
+          type: string
+        object:
+          $ref: '#/components/schemas/objectType'
+        subtitle:
+          description: The subtitle of the conversation
+          example: Billing
+          type: string
+        tags:
+          $ref: '#/components/schemas/conversation_tags'
+        title:
+          description: The title of the conversation
+          example: John Doe
+          type: string
+        type:
+          description: The type of the conversation (e.g. 'email', 'phone', 'secure', etc.). Note that
+            SMS will be in a 'phone' conversation, and video calls will be in a 'secure' conversation.
+            More conversation types may be added in the future, so ensure while parsing this that you
+            gracefully handle any new/unexpected values.
+          enum:
+          - email
+          - phone
+          - secure
+          - fax
+          - team
+          - note
+          - other
+          type: string
+      required:
+      - appURL
+      - apiURL
+      - archived
+      - createdAt
+      - id
+      - isReadOnly
+      - tags
+      - type
+      - title
+      - object
+      type: object
+    conversation_id:
+      description: Spruce's conversation ID
+      example: t_0E5QDGJC03000
+      type: string
+    conversation_tag:
+      properties:
+        id:
+          $ref: '#/components/schemas/conversation_tagId'
+        object:
+          $ref: '#/components/schemas/objectType'
+        value:
+          $ref: '#/components/schemas/conversation_tagValue'
+      required:
+      - id
+      - value
+      - object
+      type: object
+    conversation_tagId:
+      description: Spruce's conversation tag ID
+      example: tag_0E5QDGJC03000
+      type: string
+    conversation_tagValue:
+      description: The text value of a conversation tag
+      example: Smith
+      type: string
+    conversation_tags:
+      items:
+        $ref: '#/components/schemas/conversation_tag'
+      type: array
+    createContact:
+      properties:
+        category:
+          $ref: '#/components/schemas/contact_categoryInput'
+        companyName:
+          $ref: '#/components/schemas/contact_companyName'
+        dateOfBirth:
+          $ref: '#/components/schemas/contact_dateOfBirth'
+        emailAddresses:
+          $ref: '#/components/schemas/contact_emailAddressInputs'
+        familyName:
+          $ref: '#/components/schemas/contact_familyName'
+        faxNumbers:
+          $ref: '#/components/schemas/contact_faxNumberInputs'
+        gender:
+          $ref: '#/components/schemas/contact_gender'
+        genderDetail:
+          $ref: '#/components/schemas/contact_genderDetail'
+        givenName:
+          $ref: '#/components/schemas/contact_givenName'
+        internalMemberIds:
+          $ref: '#/components/schemas/contact_internalMemberIds'
+        middleName:
+          $ref: '#/components/schemas/contact_middleName'
+        organizationContactFields:
+          $ref: '#/components/schemas/contact_organizationContactFieldInputs'
+        phoneNumbers:
+          $ref: '#/components/schemas/contact_phoneNumberInputs'
+        pronouns:
+          $ref: '#/components/schemas/contact_pronouns'
+        tagIds:
+          $ref: '#/components/schemas/contact_tagIds'
+      type: object
+    emailAddress:
+      properties:
+        id:
+          $ref: '#/components/schemas/entityContactID'
+        label:
+          description: A label for the email address such as 'Work', 'Home', etc.
+          example: Work
+          type: string
+        value:
+          $ref: '#/components/schemas/emailAddressValue'
+      required:
+      - id
+      - value
+      type: object
+    emailAddressInput:
+      properties:
+        label:
+          description: A label for the email address such as 'Work', 'Home', etc.
+          example: Work
+          type: string
+        value:
+          $ref: '#/components/schemas/emailAddressValue'
+      required:
+      - value
+      type: object
+    emailAddressValue:
+      example: contact@example.com
+      format: email
+      type: string
+    endpoint:
+      properties:
+        channel:
+          description: The channel of the endpoint (e.g. 'email', 'phone', 'fax', etc.). More endpoint
+            channels may be added in the future, so ensure while parsing this that you gracefully handle
+            any new/unexpected values.
+          enum:
+          - email
+          - phone
+          - fax
+          - secure
+          type: string
+        displayValue:
+          description: The display value of the endpoint. This is the value that should be displayed to
+            the user when showing the endpoint, along with the label if it's populated.
+          example:
+            email:
+              value: patient@example.com
+            phone:
+              value: (555) 555-5555
+            secure:
+              value: spruce.care/123456
+          type: string
+        id:
+          $ref: '#/components/schemas/endpoint_id'
+        isInternal:
+          description: Internal endpoints are endpoints that are owned by your organization, such as your
+            organization's Spruce Phone Numbers or Spruce Links.
+          example: false
+          type: boolean
+        label:
+          description: The optional label of the endpoint
+          example:
+          - Home
+          - Work
+          type: string
+        object:
+          $ref: '#/components/schemas/objectType'
+        rawValue:
+          description: The raw value of the endpoint. This can be used for programmatically comparing
+            contact values, and is the stable identifier to use when matching a secure endpoint on a conversation
+            back to the corresponding Spruce Link returned by the list internal endpoints API. The raw
+            value for a phone/fax number will be in E164 format.
+          example:
+            email:
+              value: patient@example.com
+            phone:
+              value: 15555555555
+            secure:
+              value: https://spruce.care/123456
+          type: string
+      required:
+      - id
+      - channel
+      - displayValue
+      - rawValue
+      - isInternal
+      - object
+      type: object
+    endpoint_id:
+      description: 'The id of the endpoint.
+
+
+        For secure (Spruce Link) endpoints, the id format depends on where the endpoint is returned: the
+        list internal endpoints API returns the underlying organization invite id, while a secure endpoint
+        that appears on a conversation is returned with a different, derived value. To determine whether
+        a conversation belongs to a particular Spruce Link, compare `endpoint.rawValue` rather than `endpoint.id`.
+        Endpoint ids for phone, fax, and email channels use the same format across responses.
+
+        '
+      example: 15555555555
+      type: string
+    entityContactID:
+      description: Spruce's phone number ID
+      example: entityContact_26RRC7PQ6JG00
+      format: string
+      type: string
+    error:
+      properties:
+        message:
+          example: Invalid Contact ID
+          type: string
+        statusCode:
+          example: 400
+          type: integer
+        type:
+          example: BAD_PARAMETER
+          type: string
+      required:
+      - message
+      - statusCode
+      - type
+      type: object
+    faxNumber:
+      properties:
+        displayValue:
+          $ref: '#/components/schemas/phoneNumberDisplayValue'
+        id:
+          $ref: '#/components/schemas/entityContactID'
+        label:
+          $ref: '#/components/schemas/phoneNumberLabel'
+        value:
+          $ref: '#/components/schemas/phoneNumberValue'
+      required:
+      - id
+      - value
+      - displayValue
+      type: object
+    faxNumberInput:
+      properties:
+        label:
+          $ref: '#/components/schemas/phoneNumberLabel'
+        value:
+          $ref: '#/components/schemas/phoneNumberValue'
+      required:
+      - value
+      type: object
+    hasMore:
+      type: boolean
+    objectType:
+      description: String representing the object's type
+      type: string
+    paginationToken:
+      description: Token given in a previous response to allow requesting the next page
+      example: abcdefghijklmnop
+      type: string
+    phoneNumber:
+      properties:
+        displayValue:
+          $ref: '#/components/schemas/phoneNumberDisplayValue'
+        id:
+          $ref: '#/components/schemas/entityContactID'
+        label:
+          $ref: '#/components/schemas/phoneNumberLabel'
+        value:
+          $ref: '#/components/schemas/phoneNumberValue'
+      required:
+      - id
+      - value
+      - displayValue
+      type: object
+    phoneNumberDisplayValue:
+      description: The contact phone number in an easily readable format.
+      example: (222) 555-0000
+      type: string
+    phoneNumberInput:
+      properties:
+        label:
+          $ref: '#/components/schemas/phoneNumberLabel'
+        value:
+          $ref: '#/components/schemas/phoneNumberValue'
+      required:
+      - value
+      type: object
+    phoneNumberLabel:
+      description: A label for the phone number such as 'Work', 'Home', 'Cell', etc.
+      example: Work
+      type: string
+    phoneNumberValue:
+      description: The contact phone number. An acceptable phone number is in the format 2065551234, +12065551234,
+        (206) 555-1234, or 206-555-1234.
+      example: 12225550000
+      format: string
+      type: string
+    searchComparisonFilter:
+      enum:
+      - equal
+      - less_than
+      - less_than_or_equal_to
+      - greater_than
+      - greater_than_or_equal_to
+      example: equal
+      type: string
+    searchListMatchFilter:
+      enum:
+      - all
+      - any
+      - none
+      example: all
+      type: string
+    searchTotalCountRelation:
+      description: 'The relation to use when comparing the total number of available search to the value
+        specified in the results count field.
+
+        A value of `gte` means that the count is a lower bound of the total results that match the query
+        and a value of `eq` indicates that the count is accurate.'
+      enum:
+      - eq
+      - gte
+      example: equal
+      type: string
+    sendInvite:
+      properties:
+        customMessage:
+          $ref: '#/components/schemas/send_invite_customMessage'
+        destinationId:
+          $ref: '#/components/schemas/send_invite_destinationId'
+        internalEndpointId:
+          $ref: '#/components/schemas/send_invite_internalEndpointId'
+      required:
+      - internalEndpointId
+      - destinationId
+      type: object
+    send_invite_customMessage:
+      description: The message to send to the invitee.
+      example: You've been invited to securely message with our clinic.
+      type: string
+    send_invite_destinationId:
+      description: The id of the phone number or email to send the invite to.
+      example: entityContact_0D4QABCC06000
+      type: string
+    send_invite_internalEndpointId:
+      description: Organization's internal secure endpoint that will be used to send the invite.
+      example: organizationCode_2ER39ETHBQ800
+      type: string
+    totalCount:
+      example: 750
+      format: int32
+      type: integer
+    updateContact:
+      description: Any omitted or null field will not be updated. To clear a field, pass an empty value
+        such as "" or []
+      properties:
+        category:
+          $ref: '#/components/schemas/contact_categoryInput'
+        companyName:
+          $ref: '#/components/schemas/contact_companyName'
+        dateOfBirth:
+          $ref: '#/components/schemas/contact_dateOfBirth'
+        emailAddresses:
+          $ref: '#/components/schemas/contact_emailAddressInputs'
+        familyName:
+          $ref: '#/components/schemas/contact_familyName'
+        faxNumbers:
+          $ref: '#/components/schemas/contact_faxNumberInputs'
+        gender:
+          $ref: '#/components/schemas/contact_gender'
+        genderDetail:
+          $ref: '#/components/schemas/contact_genderDetail'
+        givenName:
+          $ref: '#/components/schemas/contact_givenName'
+        internalMemberIds:
+          $ref: '#/components/schemas/contact_internalMemberIds'
+        middleName:
+          $ref: '#/components/schemas/contact_middleName'
+        organizationContactFields:
+          $ref: '#/components/schemas/contact_organizationContactFieldInputs'
+        phoneNumbers:
+          $ref: '#/components/schemas/contact_phoneNumberInputs'
+        pronouns:
+          $ref: '#/components/schemas/contact_pronouns'
+        tagIds:
+          $ref: '#/components/schemas/contact_tagIds'
+      type: object
+  securitySchemes:
+    spruceAPIToken:
+      description: API token provided by Spruce should be passed in an "Authorization" header with the
+        value "Bearer <token>"
+      scheme: bearer
+      type: http

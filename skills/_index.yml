@@ -1,0 +1,123 @@
+generated: '2026-08-15'
+method: generated
+source: >-
+  openapi/_original/spruce-health-openapi.json and the Spruce Health developer
+  documentation (developer.sprucehealth.com/docs/*)
+provider: Spruce Health
+providerId: spruce-health
+description: >-
+  Packaged Agent Skills for the Spruce Health Public API. Each one covers a marquee flow
+  an integrator actually runs, and every step names a real operationId from the OpenAPI
+  Spruce publishes - no invented operations, no invented paths. The cross-cutting rules
+  (Bearer auth, the s-idempotency-key contract, per-organization rate limits, the
+  {statusCode, type, message} error envelope, asynchronous request-id correlation) are
+  repeated in each skill because an agent loads them one at a time.
+
+provider_published_skills: false
+provider_published_skills_note: >-
+  Spruce publishes no AGENTS.md and no skills of its own. It does publish an llms.txt on
+  both the docs and marketing hosts (saved verbatim under llms/), and serves an
+  authenticated MCP endpoint at https://developer.sprucehealth.com/mcp whose tool list
+  could not be enumerated anonymously. These skills are authored by API Evangelist from
+  the provider's public contract and documentation.
+
+access_note: >-
+  Every skill assumes an enabled organization token. Spruce API access is gated twice -
+  the organization must be on the Communicator plan, AND Spruce Support must enable API
+  access before an administrator can generate a token in Settings > API Access. Request
+  at https://sprucehealth.com/spruce-api.
+
+base_url: https://api.sprucehealth.com/v1
+
+skills:
+- name: spruce-health-sync-contacts-from-external-system
+  file: spruce-health-sync-contacts-from-external-system.md
+  api: spruce-health:spruce-health-contacts
+  summary: >-
+    Backfill and continuously sync EHR / practice-management patient records into Spruce
+    contacts, bound in both directions with integration links so neither side needs its
+    own mapping table.
+  operations: 11
+  key_operations: [CreateContact, UpdateContact, SearchContacts, CreateContactIntegrationLink]
+  grounded_in: https://developer.sprucehealth.com/docs/integration-guide
+
+- name: spruce-health-send-a-patient-message
+  file: spruce-health-send-a-patient-message.md
+  api: spruce-health:spruce-health-internal-endpoints
+  summary: >-
+    Send to a patient over the right channel by choosing the right internal endpoint -
+    secure, SMS, email or fax - attach media, page a teammate, or place an outbound proxy
+    call, then confirm the asynchronous send actually posted.
+  operations: 9
+  key_operations: [InternalEndpoints, PostMessageFromEndpoint, PostConversationMessage, UploadMedia]
+  grounded_in: https://developer.sprucehealth.com/reference/postmessagefromendpoint
+
+- name: spruce-health-subscribe-to-webhook-events
+  file: spruce-health-subscribe-to-webhook-events.md
+  api: spruce-health:spruce-health-webhooks
+  summary: >-
+    Register an endpoint, capture the signing secret that is returned exactly once,
+    verify the X-Spruce-Signature HMAC in constant time, handle all 15 event types and
+    out-of-order delivery, and use the 30-day delivery log to debug.
+  operations: 8
+  key_operations: [CreateWebhookEndpoint, ListWebhookEndpointEvents, ModifyWebhookEndpointPaused]
+  grounded_in: https://developer.sprucehealth.com/docs/webhooks-overview
+
+- name: spruce-health-poll-for-new-conversation-activity
+  file: spruce-health-poll-for-new-conversation-activity.md
+  api: spruce-health:spruce-health-conversations
+  summary: >-
+    Detect new activity without webhooks using the documented orderBy=last_message +
+    startFrom cursor, distinguish inbound patient replies from outbound staff messages,
+    and retrieve call recordings and AI transcriptions.
+  operations: 7
+  key_operations: [ListConversations, ConversationItems, Transcription]
+  grounded_in: https://developer.sprucehealth.com/reference/listconversations
+
+- name: spruce-health-schedule-and-manage-messages
+  file: spruce-health-schedule-and-manage-messages.md
+  api: spruce-health:spruce-health-scheduled-messages
+  summary: >-
+    Queue reminders, follow-ups and recalls into a conversation, review and cancel the
+    queue before it sends, and confirm delivery through the scheduledMessage.* webhook
+    events added 2026-07-31.
+  operations: 8
+  key_operations: [ScheduleConversationMessage, ListScheduledMessages, DeleteScheduledMessage]
+  grounded_in: openapi/_original/spruce-health-openapi.json
+
+skill_count: 5
+operations_covered: 33
+operations_total: 47
+
+shared_rules:
+  auth: 'Authorization: Bearer <organization-token>; 403 on a missing, incorrect or disabled token (never 401).'
+  idempotency: >-
+    s-idempotency-key on every POST and PATCH, max 255 chars, retained 24 hours. A
+    duplicate is REJECTED with 422, not replayed - so a 422 on retry means the first
+    attempt landed. This is the single most important deviation from the Stripe-style
+    convention agents are usually trained on.
+  rate_limits: >-
+    Per organization, not per credential. Four response headers across a 60-second and a
+    24-hour window; an absent header means unlimited on that dimension. No documented
+    exhaustion status - drive backoff from the remaining counters, not from a 429.
+  pagination: pageSize (max 500) + paginationToken; hasMore and totalCount in the response. paginationToken cannot be combined with startFrom.
+  errors: '{statusCode, type, message} as application/json. Not RFC 9457.'
+  tracing: s-request-id on every response; quote it to Spruce Support.
+  async: >-
+    Message posts, conversation creation and item deletion complete asynchronously and
+    return a correlation id (requestID / RequestID / postMessageRequestId / requestId) to
+    match against the conversationItem.created or conversationItem.deleted webhook event.
+
+related_artifacts:
+  conventions: conventions/spruce-health-conventions.yml
+  errors: errors/spruce-health-problem-types.yml
+  rate_limits: rate-limits/spruce-health-rate-limits.yml
+  authentication: authentication/spruce-health-authentication.yml
+  data_model: data-model/spruce-health-data-model.yml
+  webhooks: asyncapi/spruce-health-webhooks.yml
+  lifecycle: lifecycle/spruce-health-lifecycle.yml
+  mcp: mcp/spruce-health-mcp.yml
+
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

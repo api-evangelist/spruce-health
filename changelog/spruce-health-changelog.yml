@@ -1,0 +1,172 @@
+generated: '2026-08-15'
+method: searched
+source: https://sprucehealth.com/whats-new/rss.xml
+docs: https://sprucehealth.com/whats-new
+provider: Spruce Health
+providerId: spruce-health
+description: >-
+  Spruce Health publishes a dated product changelog at sprucehealth.com/whats-new with a
+  machine-readable RSS feed. It is a product changelog rather than an API changelog -
+  API entries are tagged in the title with the "Spruce Public API" or "Spruce API"
+  prefix and are interleaved with app, telephony and billing releases. There is no
+  changelog on the developer host; developer.sprucehealth.com/changelog returns 404.
+
+scheme:
+  type: dated-entries
+  versioned: false
+  breaking_changes_flagged: false
+  categories:
+  - New Feature
+  - Improvement
+  - Announcement
+  plan_labels:
+  - Communicator Plan
+  note: >-
+    Entries carry a category and sometimes a plan label, but nothing marks an entry as
+    breaking. Prior to 2026-06-23 entries were monthly digests (titled "March 2026",
+    "February 2026", ...); Spruce moved to individually dated entries when it launched
+    the new What's New home on 2026-06-23.
+
+feed:
+  url: https://sprucehealth.com/whats-new/rss.xml
+  format: RSS 2.0
+  probed:
+    http_status: 200
+    content_type: application/rss+xml
+    fetched: '2026-08-15'
+    items_in_feed: 50
+
+current_version: v1
+current_version_note: >-
+  The API has carried the same v1 base path throughout the window covered by this feed.
+  Every API entry below is additive - new webhook events, new response fields, new
+  operations - and none announces a version bump or a removal.
+
+entries:
+- date: '2026-08-11'
+  title: 'Spruce Dashboards: See your practice''s activity at a glance'
+  category: New Feature
+  api_affecting: false
+  breaking: false
+  highlights: In-app reporting for calls, messages, faxes and other communication activity.
+  url: https://sprucehealth.com/whats-new/2026-08-11-spruce-dashboards-see-your-practice-s-activity-at-a-glance
+- date: '2026-08-05'
+  title: See, resend, or delete pending teammate invitations
+  category: New Feature
+  api_affecting: false
+  breaking: false
+  highlights: Admins can view, resend and delete pending teammate invitations without support.
+  url: https://sprucehealth.com/whats-new/2026-08-05-see-resend-or-delete-pending-teammate-invitations
+- date: '2026-07-31'
+  title: 'Spruce Public API: New webhook events for scheduled messages'
+  category: Improvement
+  plan: Communicator
+  api_affecting: true
+  breaking: false
+  additions:
+  - scheduledMessage.created
+  - scheduledMessage.updated
+  - scheduledMessage.deleted
+  - scheduledMessage.sent
+  highlights: >-
+    Four new webhook event types for scheduled messages. This is the most recent API
+    change and it matches the Webhooks Overview, which was last updated 2026-07-31.
+  url: https://sprucehealth.com/whats-new/2026-07-31-scheduled-message-webhooks
+- date: '2026-07-09'
+  title: Spruce now supports 42 CFR Part 2 communications
+  category: Improvement
+  api_affecting: false
+  breaking: false
+  highlights: >-
+    An updated BAA brings formal Qualified Service Organization support, extending the
+    compliance posture beyond HIPAA to 42 CFR Part 2 substance-use-disorder records.
+  url: https://sprucehealth.com/whats-new/2026-07-09-spruce-now-supports-42-cfr-part-2-communications
+- date: '2026-06-23'
+  title: See what's new in Spruce - and never miss an update
+  category: Announcement
+  api_affecting: false
+  breaking: false
+  highlights: >-
+    Launch of the What's New changelog home and its RSS feed; the point where entries
+    changed from monthly digests to individually dated releases.
+  url: https://sprucehealth.com/whats-new/2026-06-23-see-what-s-new-in-spruce-and-never-miss-an-update
+- date: '2026-06-01'
+  title: Spruce now integrates with DrChrono
+  category: New Feature
+  plan: Communicator
+  api_affecting: false
+  breaking: false
+  highlights: Patients added in DrChrono are automatically created as Spruce contacts.
+  url: https://sprucehealth.com/whats-new/2026-06-23-spruce-now-integrates-with-drchrono
+- date: '2026-05-01'
+  title: 'Spruce Public API: Author ID now included for conversation items'
+  category: Improvement
+  api_affecting: true
+  breaking: false
+  additions:
+  - author id on conversation items
+  highlights: >-
+    An additive response field on conversation items, letting an integrator attribute an
+    item to a specific organization member without a second lookup.
+  url: https://sprucehealth.com/whats-new/2026-05-01-spruce-public-api-author-id-now-included-for-conversation-items
+- date: '2026-04-30'
+  title: Automatic Spam Prevention for SMS, Fax, and Email
+  category: Improvement
+  api_affecting: false
+  breaking: false
+  highlights: Threshold-based spam detection extended from calls to inbound fax, email and SMS.
+  url: https://sprucehealth.com/whats-new/2026-04-30-automatic-spam-prevention-for-sms-fax-and-email
+- date: '2026-04-15'
+  title: Spruce API improvements
+  category: Improvement
+  api_affecting: true
+  breaking: false
+  additions:
+  - contact.merged
+  highlights: New webhook event type contact.merged.
+  url: https://sprucehealth.com/whats-new/2026-04-15-spruce-api-improvements
+- date: '2026-04-01'
+  title: Oversized inbound emails are no longer dropped
+  category: Improvement
+  api_affecting: false
+  breaking: false
+  highlights: Emails over the size limit are now processed and delivered rather than discarded.
+  url: https://sprucehealth.com/whats-new/2026-04-01-oversized-inbound-emails-are-no-longer-dropped
+- date: '2026-03-15'
+  title: March 2026
+  category: Announcement
+  api_affecting: true
+  breaking: false
+  highlights: >-
+    Monthly digest - new spam-call controls, downloadable invoices, and added Spruce API
+    capabilities (the digest does not itemise which).
+  url: https://sprucehealth.com/whats-new/2026-03
+- date: '2026-02-15'
+  title: February 2026
+  category: Announcement
+  api_affecting: false
+  breaking: false
+  highlights: AI transcription and summarization for audio, plus customizable hold music.
+  url: https://sprucehealth.com/whats-new/2026-02
+- date: '2025-11-15'
+  title: November 2025
+  category: Announcement
+  api_affecting: true
+  breaking: false
+  highlights: >-
+    Monthly digest - several new Spruce API capabilities, plus group secure conversations
+    that participants can be added to or removed from.
+  url: https://sprucehealth.com/whats-new/2025-11
+
+summary:
+  window: 2025-11-15 to 2026-08-11
+  entries_recorded: 13
+  api_affecting: 6
+  breaking: 0
+  cadence: >-
+    Roughly two entries a month since the June 2026 relaunch; API-affecting entries land
+    every one to two months and have all been additive.
+
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

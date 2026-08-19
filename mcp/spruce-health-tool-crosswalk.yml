@@ -1,0 +1,345 @@
+generated: '2026-08-15'
+method: derived
+source: openapi/_original/spruce-health-openapi.json + probe of https://developer.sprucehealth.com/mcp
+provider: Spruce Health
+providerId: spruce-health
+description: Crosswalk between Spruce Health's MCP surface and its REST operations. It is deliberately
+  one-sided. Spruce serves a real remote MCP endpoint at https://developer.sprucehealth.com/mcp,
+  but tools/list answers 401 without an organization token, so not a single tool name is known. Every
+  one of the 47 REST operations is therefore recorded as rest_only, and crosswalk[] is empty rather
+  than populated by guesswork - binding invented tool names to real operationIds would manufacture
+  exactly the agent surface this file exists to measure.
+surfaces:
+  openapi:
+    path: openapi/_original/spruce-health-openapi.json
+    source: https://dash.readme.com/api/v1/api-registry/13needamst2v4m6
+    gated: false
+    operations: 47
+  rest:
+    base: https://api.sprucehealth.com/v1
+    gated: true
+    gate: Bearer organization token; Communicator plan plus API access enabled by Spruce Support
+  mcp:
+    url: https://developer.sprucehealth.com/mcp
+    gated: true
+    gate: JSON-RPC error -32001 Authorization required
+    tools_enumerated: false
+  graphql:
+    present: false
+    note: No GraphQL surface. https://api.sprucehealth.com/graphql returns 404.
+crosswalk: []
+mcp_only: []
+rest_only:
+- operationId: ListContacts
+  method: GET
+  path: /contacts
+  category: Contacts
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: CreateContact
+  method: POST
+  path: /contacts
+  category: Contacts
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: ContactFields
+  method: GET
+  path: /contacts/fields
+  category: Contact Fields
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: CreateContactField
+  method: POST
+  path: /contacts/fields
+  category: Contact Fields
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: SearchContacts
+  method: POST
+  path: /contacts/search
+  category: Contacts
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: ContactTags
+  method: GET
+  path: /contacts/tags
+  category: Contact Tags
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: CreateContactTag
+  method: POST
+  path: /contacts/tags
+  category: Contact Tags
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: DeleteContact
+  method: DELETE
+  path: /contacts/{contactId}
+  category: Contacts
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: Contact
+  method: GET
+  path: /contacts/{contactId}
+  category: Contacts
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: UpdateContact
+  method: PATCH
+  path: /contacts/{contactId}
+  category: Contacts
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: ContactConversations
+  method: GET
+  path: /contacts/{contactId}/conversations
+  category: Contacts
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: DeleteContactIntegrationLink
+  method: DELETE
+  path: /contacts/{contactId}/integrationlinks
+  category: Contacts
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: ContactIntegrationLinks
+  method: GET
+  path: /contacts/{contactId}/integrationlinks
+  category: Contacts
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: CreateContactIntegrationLink
+  method: POST
+  path: /contacts/{contactId}/integrationlinks
+  category: Contacts
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: SendInvite
+  method: POST
+  path: /contacts/{contactId}/invite
+  category: Contacts
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: DeleteConversationItem
+  method: DELETE
+  path: /conversationItems/{conversationItemId}
+  category: Conversation Item
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: ConversationItem
+  method: GET
+  path: /conversationItems/{conversationItemId}
+  category: Conversation Item
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: ListConversations
+  method: GET
+  path: /conversations
+  category: Conversations
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: CreateConversation
+  method: POST
+  path: /conversations
+  category: Conversations
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: ConversationTags
+  method: GET
+  path: /conversations/tags
+  category: Conversation Tags
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: CreateConversationTag
+  method: POST
+  path: /conversations/tags
+  category: Conversation Tags
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: Conversation
+  method: GET
+  path: /conversations/{conversationId}
+  category: Conversations
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: UpdateConversation
+  method: PATCH
+  path: /conversations/{conversationId}
+  category: Conversations
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: ConversationItems
+  method: GET
+  path: /conversations/{conversationId}/items
+  category: Conversations
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: PostConversationMessage
+  method: POST
+  path: /conversations/{conversationId}/messages
+  category: Conversations
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: ListConversationScheduledMessages
+  method: GET
+  path: /conversations/{conversationId}/scheduledmessages
+  category: Scheduled Messages
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: ScheduleConversationMessage
+  method: POST
+  path: /conversations/{conversationId}/scheduledmessages
+  category: Scheduled Messages
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: InternalEndpoints
+  method: GET
+  path: /internalendpoints
+  category: Internal Endpoints
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: PostCreateProxyCall
+  method: POST
+  path: /internalendpoints/{internalEndpointId}/calls
+  category: Internal Endpoints
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: PostMessageFromEndpoint
+  method: POST
+  path: /internalendpoints/{internalEndpointId}/conversations
+  category: Internal Endpoints
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: UploadMedia
+  method: POST
+  path: /media
+  category: Media
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: Organization
+  method: GET
+  path: /organization
+  category: Organization
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: OrganizationMembers
+  method: GET
+  path: /organization/members
+  category: Organization
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: OrganizationMember
+  method: GET
+  path: /organization/members/{memberId}
+  category: Organization
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: PhoneLines
+  method: GET
+  path: /phonelines
+  category: Phone Lines
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: PhoneLine
+  method: GET
+  path: /phonelines/{phonelineId}
+  category: Phone Lines
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: ListSavedMessages
+  method: GET
+  path: /savedmessages
+  category: Saved Messages
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: ListScheduledMessages
+  method: GET
+  path: /scheduledmessages
+  category: Scheduled Messages
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: DeleteScheduledMessage
+  method: DELETE
+  path: /scheduledmessages/{scheduledMessageId}
+  category: Scheduled Messages
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: TeamMembers
+  method: GET
+  path: /teams/{teamId}/members
+  category: Teams
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: Transcription
+  method: GET
+  path: /transcriptions/{transcriptionId}
+  category: Transcription
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: ListWebhookEndpoints
+  method: GET
+  path: /webhooks/endpoints
+  category: Webhooks
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: CreateWebhookEndpoint
+  method: POST
+  path: /webhooks/endpoints
+  category: Webhooks
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: DeleteWebhookEndpoint
+  method: DELETE
+  path: /webhooks/endpoints/{endpointId}
+  category: Webhooks
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: WebhookEndpoint
+  method: GET
+  path: /webhooks/endpoints/{endpointId}
+  category: Webhooks
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: ListWebhookEndpointEvents
+  method: GET
+  path: /webhooks/endpoints/{endpointId}/events
+  category: Webhooks
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+- operationId: ModifyWebhookEndpointPaused
+  method: POST
+  path: /webhooks/endpoints/{endpointId}/paused
+  category: Webhooks
+  reason: 'No MCP tool could be bound: the Spruce MCP endpoint returns 401 to tools/list, so no tool
+    names exist to map against.'
+coverage:
+  rest_operations: 47
+  mcp_tools: null
+  bound: 0
+  rest_only: 47
+  mcp_only: 0
+  bound_pct: 0
+  note: mcp_tools is null, not zero. The server exists and almost certainly exposes tools; they could
+    not be counted anonymously.
+by_category:
+  Contact Fields: 2
+  Contact Tags: 2
+  Contacts: 11
+  Conversation Item: 2
+  Conversation Tags: 2
+  Conversations: 6
+  Internal Endpoints: 3
+  Media: 1
+  Organization: 3
+  Phone Lines: 2
+  Saved Messages: 1
+  Scheduled Messages: 4
+  Teams: 1
+  Transcription: 1
+  Webhooks: 6
+next_step: Re-run tools/list against https://developer.sprucehealth.com/mcp with a Spruce organization
+  API token to enumerate the real tools and their inputSchemas, then bind each to its backing operationId
+  and set confidence per row.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

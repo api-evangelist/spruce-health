@@ -1,0 +1,76 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Spruce Health API \u2014 Contact Fields",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Contact Fields",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all organization contact fields available to the organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/contacts/fields",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "paginationToken",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ContactFields",
+          "docs": "This operation lists all organization contact fields. These fields appear on all contacts in the interface."
+        },
+        {
+          "info": {
+            "name": "Create an organization contact field",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/contacts/fields",
+            "params": [
+              {
+                "name": "s-idempotency-key",
+                "value": "",
+                "type": "header"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "CreateContactField",
+          "docs": "This operation creates an organization contact field for the given organization. This field will appear on all contacts in the interface. Requesting creation of an already existing field will result in a `201` response and the response will contain the existing field."
+        }
+      ]
+    }
+  ]
+}

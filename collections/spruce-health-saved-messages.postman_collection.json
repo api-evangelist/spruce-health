@@ -1,0 +1,73 @@
+{
+  "info": {
+    "_postman_id": "0a242763-bcc3-453a-bae2-ebaf22d30bcb",
+    "name": "Spruce Health API \u2014 Saved Messages",
+    "description": "Saved Messages operations of the Spruce Health API. Generated from the OpenAPI Spruce Health publishes for developer.sprucehealth.com.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "id": "b36def14-6d1d-4cf9-b97e-9e47c0409321",
+      "name": "Saved Messages",
+      "item": [
+        {
+          "id": "061e461e-2972-4630-b2c6-2865b47e7de5",
+          "name": "List saved messages",
+          "request": {
+            "name": "List saved messages",
+            "description": {
+              "content": "Lists all saved messages accessible to the organization. Returns both private and organization-wide saved messages with pagination support.",
+              "type": "text/plain"
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/savedmessages",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "savedmessages"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "paginationToken",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ]
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.sprucehealth.com/v1"
+    }
+  ]
+}

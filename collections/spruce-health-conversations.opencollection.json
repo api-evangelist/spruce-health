@@ -1,0 +1,212 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Spruce Health API \u2014 Conversations",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Conversations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List and filter all conversations available to the organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/conversations",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "paginationToken",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "orderBy",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "startFrom",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ListConversations",
+          "docs": "This operation lists all conversations available to the organization. This is an eventually consistent view and may take a short time before new conversations appear in results.\n\n\nTo iterate through all conversations in the organization, list the first page of conversations (without specifying `paginationToken` or `startFrom`). If `hasMore=true`, the provide the `paginationToken` to the API to list subsequent pages of conversations until `hasMore=false`.\n\n\n## Detecting conversations with new messages\n\nNote that the conversations are ordered by created date by default. You can also order them by the time of last activity in the conversation by specifying `orderBy=last_message`. This is particularly helpful when trying to determine conversations with new activity in them. In this particular case, you can query the list of conversations with `orderBy=last_message` and capture the `lastMessageAt` time for the last conversation in the list. On the next query, you can then `startFrom=<lastMessageAt time you saved>` and `orderBy=last_message` to return any conversations with new activity since your last query.\n\n\nWhile you can determine the conversations with new activity, it is also important to know if the latest messages in each conversation were from your teammates or from an external contact (like a patient). To determine this, you can use the [listing of conversation items API](/reference/conversationitems) to query for the latest items since a particular time with the `startFrom` field. If any message in the list returned has `direction=inbound` then it indicates a message received since the last query for message items."
+        },
+        {
+          "info": {
+            "name": "Create a new conversation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/conversations",
+            "params": [
+              {
+                "name": "s-idempotency-key",
+                "value": "",
+                "type": "header"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "CreateConversation",
+          "docs": "This operation creates a new conversation within an organization. The following conversation types are supported:\n\n### Secure Conversations (`type: \"secure\"`)\n\nA secure conversation can be started with a single contact or a group of contacts. All contacts must be patients and either have a Spruce account or a pending secure invite.\n\n### Note Conversations (`type: \"note\"`)\n\nA note conversation is an internal-only conversation for documenting information. Notes can optionally include organization members/groups and can be associated with contacts for organizational purposes (via `associatedContactIds`). Associated contacts will not have access to the note.\n\n### Asynchronous Message Processing\n\nIf a message is included in the conversation creation request, the message will be posted asynchronously after the conversation is created. The API will immediately return the conversation details along with a `postMessageRequestId` that can be used to track when the message is actually sent.\n\nThe `postMessageRequestId` returned in the response can be matched against the `requestID` field of the `conversationItem.created` webhook event to identify when the message has been successfully posted to the conversation."
+        },
+        {
+          "info": {
+            "name": "Get a conversation for a given id",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/conversations/{conversationId}",
+            "params": [
+              {
+                "name": "conversationId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "Conversation",
+          "docs": "This operation fetches a specific conversation for the provided id."
+        },
+        {
+          "info": {
+            "name": "Update a conversation",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.sprucehealth.com/v1/conversations/{conversationId}",
+            "params": [
+              {
+                "name": "s-idempotency-key",
+                "value": "",
+                "type": "header"
+              },
+              {
+                "name": "conversationId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "UpdateConversation",
+          "docs": "This operation updates a specific conversation by id.\n\nFields provided in the input object will be updated, omitted fields *(null)* will be unchanged."
+        },
+        {
+          "info": {
+            "name": "List and filter all conversation items in a conversation",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/conversations/{conversationId}/items",
+            "params": [
+              {
+                "name": "conversationId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "paginationToken",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "startFrom",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ConversationItems",
+          "docs": "This operation lists all conversations items available in a conversation. This is an eventually consistent view and may take a short time before new conversation items appear in results."
+        },
+        {
+          "info": {
+            "name": "Post a message to a specific conversation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/conversations/{conversationId}/messages",
+            "params": [
+              {
+                "name": "s-idempotency-key",
+                "value": "",
+                "type": "header"
+              },
+              {
+                "name": "conversationId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "PostConversationMessage",
+          "docs": "This operation posts a message in a conversation as specified by the conversationId. You can retrieve the conversationId by [listing the conversations for a contact](/reference/contactconversations) or by [listing all conversations in the organization](/reference/conversations). You can also [send messages to a phone number, an email address, fax number, or securely message a contact](/reference/postmessagefromendpoint) using a [specific internal endpoint](/reference/internalendpoints). The `requestID` returned by this API may be used to match against the `requestID` field of the `conversationItem.created` webhook event to identify when the message is posted.\n## Posting an internal message containing a page for an organization member\nTo post a message with a page for an organization member, you'll first need to know the member's id. You can find the id of the organization member by [listing all organization members](/reference/organizationmembers). Once the member id is known, you can post a message to the conversation with `internal=true` and an element of `type=page` and `value=<member-id>` in the list of `body` elements being posted.\nThe `body` parameter is a list of message elements. Each element can be of type `text` or `page`. The request can contain combinations of `text` and `page` elements to create internal messages with useful content while also notifying a set of members.\n## Posting to a Team or Note conversation\nYou can also use this API to post messages into a Team or Note conversations. For Note conversations, you will have to specify `internal=true` since only internal messages can be posted in Note conversations."
+        }
+      ]
+    }
+  ]
+}

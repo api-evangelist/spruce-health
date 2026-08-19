@@ -1,0 +1,115 @@
+generated: '2026-08-15'
+method: searched
+source: https://status.sprucehealth.com/api/v2/summary.json
+docs:
+- https://sprucehealth.com/whats-new
+- https://developer.sprucehealth.com/docs/overview
+provider: Spruce Health
+providerId: spruce-health
+description: >-
+  Versioning, deprecation, status and support posture for the Spruce Health API. Spruce
+  runs a public Atlassian Statuspage that tracks the API as its own component and a
+  dated public changelog with an RSS feed, but publishes no written versioning policy,
+  no deprecation policy, and no SLA.
+
+versioning:
+  style: uri-path
+  current_version: v1
+  base_url: https://api.sprucehealth.com/v1
+  spec_version: 1.0.0
+  policy_published: false
+  policy_url: null
+  note: >-
+    The major version is pinned in the base path. Spruce has shipped only v1 and gives
+    no published guidance on how a v2 would be introduced or how long v1 would be
+    supported. Changes observed on the What's New feed have been additive (new webhook
+    event types, new fields on existing objects, new operations), which is consistent
+    with a single long-lived version but is not a commitment.
+
+deprecation:
+  policy_published: false
+  policy_url: null
+  sunset_header: not-documented
+  deprecation_header: not-documented
+  rfc8594: false
+  deprecated_operations: []
+  deprecated_operation_count: 0
+  note: >-
+    No operation in the OpenAPI carries deprecated: true, and Spruce publishes no
+    deprecation or sunset policy. The nearest thing to a published retirement notice is
+    a data limitation rather than an API one: voicemail transcriptions created before
+    November 2025 are in a legacy store and GET /transcriptions/{transcriptionId}
+    answers 404 for them.
+
+status_page:
+  published: true
+  url: https://status.sprucehealth.com
+  platform: Atlassian Statuspage
+  page_id: qvq7h8gxchl0
+  machine_readable: true
+  endpoints:
+  - https://status.sprucehealth.com/api/v2/summary.json
+  - https://status.sprucehealth.com/api/v2/status.json
+  - https://status.sprucehealth.com/api/v2/components.json
+  - https://status.sprucehealth.com/api/v2/incidents.json
+  probed:
+    url: https://status.sprucehealth.com/api/v2/summary.json
+    http_status: 200
+    fetched: '2026-08-15'
+    indicator_at_fetch: none
+    description_at_fetch: All Systems Operational
+  components:
+  - Web App
+  - Mobile Apps
+  - Phone Call Routing
+  - Marketing Website
+  - Fax
+  - SMS Routing
+  - Video Calling
+  - Spruce app notifications
+  - Integrations
+  - API
+  note: >-
+    The API is tracked as a first-class component alongside Integrations, so an
+    integrator can watch the platform surface they actually depend on rather than
+    inferring it from an app-wide indicator.
+
+sla:
+  published: false
+  uptime_commitment: null
+  credits: null
+  note: >-
+    No uptime SLA, availability target, or service-credit schedule is published on the
+    plans page, the API landing page, or the developer documentation.
+
+support:
+  channels:
+  - in-app secure messaging
+  - email
+  hours: Monday-Friday 8am-8pm Eastern; urgent support also Saturday-Sunday 8am-8pm Eastern
+  tiering: none
+  tiering_note: All plans receive the same support; there is no paid support tier.
+  api_access_request: https://sprucehealth.com/spruce-api
+  url: https://help.sprucehealth.com/hc/en-us/articles/23003282513435-Spruce-Support
+  source: https://sprucehealth.com/llms.txt
+
+changelog:
+  published: true
+  url: https://sprucehealth.com/whats-new
+  feed: https://sprucehealth.com/whats-new/rss.xml
+  see: changelog/spruce-health-changelog.yml
+
+access_lifecycle:
+  self_serve: false
+  gate: >-
+    API access is part of the Communicator plan and must additionally be enabled by
+    Spruce Support before an administrator can generate a token from the API Access
+    section of Settings.
+  request_form: https://sprucehealth.com/spruce-api
+  revocation: >-
+    Tokens can be disabled by an administrator; a disabled or incorrect token returns
+    403 on every request.
+
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

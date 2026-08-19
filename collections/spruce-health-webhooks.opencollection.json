@@ -1,0 +1,187 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Spruce Health API \u2014 Webhooks",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Webhooks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List webhook destination endpoints",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/webhooks/endpoints",
+            "params": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ListWebhookEndpoints",
+          "docs": "This operation lists the endpoints that an organization has registered for webhooks."
+        },
+        {
+          "info": {
+            "name": "Create a webhook destination endpoint",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/webhooks/endpoints",
+            "params": [
+              {
+                "name": "s-idempotency-key",
+                "value": "",
+                "type": "header"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "CreateWebhookEndpoint",
+          "docs": "This operation creates a destination endpoint for webhooks events."
+        },
+        {
+          "info": {
+            "name": "Delete a webhook destination endpoint by id",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.sprucehealth.com/v1/webhooks/endpoints/{endpointId}",
+            "params": [
+              {
+                "name": "endpointId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "DeleteWebhookEndpoint",
+          "docs": "This operation deleted a destination endpoint for webhook events by id."
+        },
+        {
+          "info": {
+            "name": "Get a webhook destination endpoint by id",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/webhooks/endpoints/{endpointId}",
+            "params": [
+              {
+                "name": "endpointId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "WebhookEndpoint",
+          "docs": "This operation retrieves a specific destination endpoint for webhooks events by id."
+        },
+        {
+          "info": {
+            "name": "List events for an endpoint",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/webhooks/endpoints/{endpointId}/events",
+            "params": [
+              {
+                "name": "endpointId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "startTime",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "endTime",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "paginationToken",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ListWebhookEndpointEvents",
+          "docs": "This operation retrieves information about events that have been attempted to be published to a webhook destination endpoint. Events are queryable for a period of 30 days after creation and are returned in sets of 20 at a time. Use the pagination token to retrieve more events."
+        },
+        {
+          "info": {
+            "name": "Pause or resume a webhook destination endpoint",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/webhooks/endpoints/{endpointId}/paused",
+            "params": [
+              {
+                "name": "s-idempotency-key",
+                "value": "",
+                "type": "header"
+              },
+              {
+                "name": "endpointId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "paused",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ModifyWebhookEndpointPaused",
+          "docs": "This operation sets the 'paused' state of a webhook destination endpoint."
+        }
+      ]
+    }
+  ]
+}

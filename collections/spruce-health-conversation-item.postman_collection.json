@@ -1,0 +1,104 @@
+{
+  "info": {
+    "_postman_id": "1c07e9df-6110-426c-abd4-1f4378d0e6f9",
+    "name": "Spruce Health API \u2014 Conversation Item",
+    "description": "Conversation Item operations of the Spruce Health API. Generated from the OpenAPI Spruce Health publishes for developer.sprucehealth.com.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "id": "0b6d8a0b-a8f4-4540-8720-68bd719106fb",
+      "name": "Conversation Item",
+      "item": [
+        {
+          "id": "0ceb308e-689a-4ccd-8981-2ef257f57980",
+          "name": "Delete a conversation item",
+          "request": {
+            "name": "Delete a conversation item",
+            "description": {
+              "content": "Deletes a specific conversation item by ID. This operation follows the same business rules as the in-app delete mechanism, including permission checks and content restrictions.\n\n**Soft Delete Behavior**: The API performs a soft delete, creating a placeholder that can be restored by users with appropriate access. The conversation item will be marked as deleted but not permanently removed from the system.\n\n**Permission Requirements**: You can only delete conversation items in conversations owned by your organization. The deletion must comply with the same restrictions as the Spruce app (e.g., certain system messages cannot be deleted).\n\n**Asynchronous Processing**: The deletion is processed asynchronously. The API immediately returns a `requestId` that can be used to correlate this deletion request with webhook events when the deletion is actually completed.",
+              "type": "text/plain"
+            },
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/conversationItems/{conversationItemId}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "conversationItems",
+                "{conversationItemId}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "key": "conversationItemId",
+                  "value": "<conversationItemId>"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "id": "1c0657f0-beeb-4f7e-a3eb-1d1eb9926f1c",
+          "name": "Get a conversation item for a given id",
+          "request": {
+            "name": "Get a conversation item for a given id",
+            "description": {
+              "content": "This operation fetches a specific conversation item for the provided id.",
+              "type": "text/plain"
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/conversationItems/{conversationItemId}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "conversationItems",
+                "{conversationItemId}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "key": "conversationItemId",
+                  "value": "<conversationItemId>"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ]
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.sprucehealth.com/v1"
+    }
+  ]
+}

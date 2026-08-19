@@ -1,0 +1,124 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Spruce Health API \u2014 Scheduled Messages",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Scheduled Messages",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List any messages scheduled in a conversation",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/conversations/{conversationId}/scheduledmessages",
+            "params": [
+              {
+                "name": "conversationId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ListConversationScheduledMessages",
+          "docs": "This operation lists the messages that are scheduled in a conversation."
+        },
+        {
+          "info": {
+            "name": "Schedule a message to be sent in a conversation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/conversations/{conversationId}/scheduledmessages",
+            "params": [
+              {
+                "name": "s-idempotency-key",
+                "value": "",
+                "type": "header"
+              },
+              {
+                "name": "conversationId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ScheduleConversationMessage",
+          "docs": "This operation creates a scheduled message to be sent in a conversation at the designated time. If no author is specified, the message will be sent as the organization."
+        },
+        {
+          "info": {
+            "name": "List any messages scheduled for the organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/scheduledmessages",
+            "params": [
+              {
+                "name": "paginationToken",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ListScheduledMessages",
+          "docs": "This operation lists the messages that are scheduled to be sent from the organization."
+        },
+        {
+          "info": {
+            "name": "Delete a scheduled message",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.sprucehealth.com/v1/scheduledmessages/{scheduledMessageId}",
+            "params": [
+              {
+                "name": "scheduledMessageId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "DeleteScheduledMessage",
+          "docs": "This operation deletes a scheduled message specified by id."
+        }
+      ]
+    }
+  ]
+}

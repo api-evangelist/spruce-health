@@ -1,0 +1,141 @@
+{
+  "info": {
+    "_postman_id": "64597306-ebe1-4fc6-802f-866605d0744e",
+    "name": "Spruce Health API \u2014 Organization",
+    "description": "Organization operations of the Spruce Health API. Generated from the OpenAPI Spruce Health publishes for developer.sprucehealth.com.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "id": "98dc7157-09e0-4773-89eb-3b40335ed09a",
+      "name": "Organization",
+      "item": [
+        {
+          "id": "2f8a4d70-5f4c-4899-9238-edcf75bc8a82",
+          "name": "List information about the organization",
+          "request": {
+            "name": "List information about the organization",
+            "description": {
+              "content": "This returns your organization's information. Most importantly, it returns your organization's `id` which will often be used as the owner or a member of other objects.",
+              "type": "text/plain"
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/organization",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "organization"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "id": "7212c225-4bce-4a49-ad6e-fad0e5166652",
+          "name": "List all members of the organization",
+          "request": {
+            "name": "List all members of the organization",
+            "description": {
+              "content": "This returns a list of all members of the organization. This includes all teammates and all teams, as well as a reference to the organization itself.",
+              "type": "text/plain"
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/organization/members",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "organization",
+                "members"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "paginationToken",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "id": "431845d9-e4c1-46d9-87f4-de3651a393e4",
+          "name": "Get a member of the organization by id",
+          "request": {
+            "name": "Get a member of the organization by id",
+            "description": {
+              "content": "This operation retrieves a specific organization member (organization, team, or teammate), by id.",
+              "type": "text/plain"
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/organization/members/{memberId}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "organization",
+                "members",
+                "{memberId}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "key": "memberId",
+                  "value": "<memberId>"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ]
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.sprucehealth.com/v1"
+    }
+  ]
+}

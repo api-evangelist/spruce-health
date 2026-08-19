@@ -1,0 +1,342 @@
+generated: '2026-08-15'
+method: derived
+source: openapi/_original/spruce-health-openapi.json
+docs:
+- https://developer.sprucehealth.com/docs/integration-guide
+- https://developer.sprucehealth.com/docs/webhooks-overview
+provider: Spruce Health
+providerId: spruce-health
+description: >-
+  The entity-relationship graph of the Spruce Health API, derived from the 169 schemas
+  and their $ref links in the OpenAPI Spruce publishes, with id prefixes read from the
+  worked example payloads in the Webhooks Overview. Spruce models a healthcare practice
+  as one organization owning two intersecting graphs - a contact graph (who the practice
+  talks to) and a conversation graph (what was said, on which channel) - joined by the
+  conversation, which is the hinge of the whole model.
+
+root: organization
+root_note: >-
+  Every object is scoped to one organization. There is no cross-organization read, and
+  webhook events are explicitly scoped to their owning organization. GET /organization
+  returns the organization id that appears as the owner or a member of most other
+  objects.
+
+id_convention:
+  style: prefixed-opaque
+  prefixes:
+  - prefix: entity_
+    entities: [organization, teammate, team, contact]
+    note: >-
+      The single most important shape in the model. Organizations, teams, teammates and
+      contacts are all "entities" sharing one id space and one prefix, which is why an
+      organization id can appear wherever a member id is expected.
+  - prefix: entityContact_
+    entities: [phoneNumber, emailAddress, faxNumber]
+  - prefix: entityCustomField_
+    entities: [customContactField]
+  - prefix: t_
+    entities: [conversation]
+  - prefix: ti_
+    entities: [conversationItem]
+
+entities:
+
+- name: organization
+  schema: organization
+  id_prefix: entity_
+  operations: [Organization]
+  fields: [id, name, object, type]
+  description: The practice itself. The tenant boundary for every other object.
+  relationships:
+  - has_many: member
+    via: GET /organization/members
+  - has_many: phoneLine
+    via: GET /phonelines
+  - has_many: contact
+  - has_many: conversation
+  - has_many: webhookDestinationEndpoint
+
+- name: member
+  schema: organizationMember
+  id_prefix: entity_
+  operations: [OrganizationMembers, OrganizationMember]
+  description: >-
+    A polymorphic union - a member is an organization, a team, or a teammate. Callers
+    discriminate on the `type` field, and the organization appears in its own member
+    list.
+  variants: [organization, team, teammate]
+  relationships:
+  - belongs_to: organization
+
+- name: teammate
+  schema: teammate
+  id_prefix: entity_
+  fields: [id, object, type, displayName, email, isAdmin, isSuspended]
+  relationships:
+  - belongs_to: organization
+  - has_many: team
+    via: membership
+  - referenced_by: conversationItem.author
+  - referenced_by: conversation.assignedToMemberId
+  - referenced_by: savedMessage.creatorMemberId
+  - referenced_by: scheduledMessage.sendAsInternalMemberId
+
+- name: team
+  schema: team
+  id_prefix: entity_
+  fields: [id, object, type, name]
+  operations: [TeamMembers]
+  relationships:
+  - belongs_to: organization
+  - has_many: teammate
+    via: GET /teams/{teamId}/members
+
+- name: contact
+  schema: contact
+  id_prefix: entity_
+  operations: [ListContacts, SearchContacts, CreateContact, Contact, UpdateContact, DeleteContact, SendInvite, ContactConversations]
+  fields: [id, object, apiURL, appURL, category, displayName, givenName, middleName, familyName, companyName, dateOfBirth, gender, genderDetail, pronouns, phoneNumbers, emailAddresses, faxNumbers, tags, customContactFields, organizationContactFields, integrationLinks, internalMemberIds, hasAccount, hasPendingInvite, canEdit, canDelete, created]
+  description: >-
+    A patient or other party the practice communicates with. Carries both apiURL and
+    appURL, so an integration can deep-link a human into the Spruce app from the same
+    payload a machine reads.
+  relationships:
+  - has_many: phoneNumber
+    via: phoneNumbers
+  - has_many: emailAddress
+    via: emailAddresses
+  - has_many: faxNumber
+    via: faxNumbers
+  - has_many: contactTag
+    via: tags
+  - has_many: customContactField
+    via: customContactFields
+  - has_many: contact_integrationLink
+    via: integrationLinks
+  - has_many: conversation
+    via: GET /contacts/{contactId}/conversations
+  - has_many: member
+    via: internalMemberIds
+    note: The teammates or teams with access to this contact.
+
+- name: contact_integrationLink
+  schema: contact_integrationLink
+  operations: [ContactIntegrationLinks, CreateContactIntegrationLink, DeleteContactIntegrationLink]
+  fields: [contactId, externalId, type, url]
+  description: >-
+    The join to the outside world - binds a Spruce contact to its record in an external
+    EHR or practice management system. This is the table an EHR integration keys on, and
+    the reason a bidirectional sync does not need to store its own mapping.
+  relationships:
+  - belongs_to: contact
+    via: contactId
+
+- name: contactField
+  schema: organizationContactField
+  id_prefix: entityCustomField_
+  operations: [ContactFields, CreateContactField]
+  description: >-
+    Organization-level custom field definitions. Defined once on the organization, they
+    appear on every contact. Creating a field that already exists returns 201 with the
+    existing field rather than an error.
+  relationships:
+  - belongs_to: organization
+  - applied_to: contact
+
+- name: contactTag
+  operations: [ContactTags, CreateContactTag]
+  relationships:
+  - belongs_to: organization
+  - applied_to: contact
+
+- name: conversation
+  schema: conversation
+  id_prefix: t_
+  operations: [ListConversations, CreateConversation, Conversation, UpdateConversation, ConversationItems, PostConversationMessage]
+  fields: [id, object, apiURL, appURL, title, subtitle, createdAt, lastMessageAt, archived, isReadOnly, assignedToMemberId, associatedContactIds, internalMemberIds, externalParticipants, internalEndpoint, tags]
+  description: >-
+    A message thread, and the hinge of the model. A conversation is bound to the
+    internal endpoint (phone line, fax number, email address or Spruce Link) it runs
+    over, so channel is a property of the thread rather than of each message.
+  variants:
+  - type: secure
+    note: In-app encrypted thread with one or more patient contacts who have a Spruce account or a pending invite.
+  - type: note
+    note: Internal-only documentation thread; associated contacts have no access to it.
+  relationships:
+  - has_many: conversationItem
+    via: GET /conversations/{conversationId}/items
+  - has_many: scheduledMessage
+    via: GET /conversations/{conversationId}/scheduledmessages
+  - belongs_to: internalEndpoint
+    via: internalEndpoint
+  - has_many: contact
+    via: associatedContactIds
+  - has_many: member
+    via: internalMemberIds
+  - has_one: member
+    via: assignedToMemberId
+  - has_many: conversationTag
+    via: tags
+
+- name: conversationItem
+  schema: conversationItem
+  id_prefix: ti_
+  operations: [ConversationItem, DeleteConversationItem, ConversationItems, PostConversationMessage, PostMessageFromEndpoint]
+  fields: [id, object, apiURL, appURL, conversationId, conversation, author, createdAt, modifiedAt, direction, isInternalNote, attachments, buttons, event, canDelete]
+  description: >-
+    One entry in a thread - a message, a phone call, a fax, a page, or a system event.
+    The `direction` field (inbound/outbound) is what lets an integrator tell a patient
+    reply from a staff reply without inspecting the author.
+  polymorphic_payloads:
+  - conversationItem_PhoneCallEvent
+  - conversationItem_Page
+  relationships:
+  - belongs_to: conversation
+    via: conversationId
+  - has_one: member
+    via: author
+  - has_many: attachment
+    via: attachments
+  - has_one: transcription
+    via: transcriptionId
+
+- name: conversationTag
+  operations: [ConversationTags, CreateConversationTag]
+  relationships:
+  - belongs_to: organization
+  - applied_to: conversation
+
+- name: internalEndpoint
+  schema: internalEndpoint
+  operations: [InternalEndpoints, PostMessageFromEndpoint, PostCreateProxyCall]
+  fields: [object, endpoint, owner, additionalMembers]
+  description: >-
+    An address the organization sends FROM - a Spruce phone number, fax number, email
+    address or Spruce Link. Its `channel` selects the transport, and every outbound
+    message names the internal endpoint it originates from.
+  channels: [secure, phone, email, fax]
+  relationships:
+  - has_one: endpoint
+    via: endpoint
+  - has_one: member
+    via: owner
+  - has_many: member
+    via: additionalMembers
+  - has_many: conversation
+
+- name: endpoint
+  schema: endpoint
+  fields: [id, object, channel, label, displayValue, rawValue, isInternal]
+  description: >-
+    A concrete address, internal or external. rawValue is the E.164 number or raw email
+    used for contact lookup; displayValue is the formatted human form.
+
+- name: phoneLine
+  operations: [PhoneLines, PhoneLine]
+  relationships:
+  - belongs_to: organization
+  - relates_to: internalEndpoint
+
+- name: scheduledMessage
+  schema: scheduledMessage
+  operations: [ListScheduledMessages, ListConversationScheduledMessages, ScheduleConversationMessage, DeleteScheduledMessage]
+  fields: [id, object, conversationId, message, scheduledToSendAt, sendAsInternalMemberId, isInternalNote, sentConversationItemId, createdAt, modifiedAt]
+  description: >-
+    A message queued for future delivery. sentConversationItemId is the forward pointer
+    that resolves to the conversationItem once it actually sends.
+  relationships:
+  - belongs_to: conversation
+    via: conversationId
+  - has_one: member
+    via: sendAsInternalMemberId
+  - has_one: conversationItem
+    via: sentConversationItemId
+
+- name: savedMessage
+  schema: savedMessage
+  operations: [ListSavedMessages]
+  fields: [id, object, title, text, attachments, shared, internal, creatorMemberId, createdAt, modifiedAt]
+  description: Reusable message template, private to a teammate or shared organization-wide.
+  relationships:
+  - has_one: member
+    via: creatorMemberId
+  - has_many: attachment
+    via: attachments
+
+- name: media
+  operations: [UploadMedia]
+  description: >-
+    An uploaded file. Returns a reusable media id for the attachmentID field of message
+    operations; one media id can be attached to many messages.
+  relationships:
+  - referenced_by: conversationItem.attachments
+  - referenced_by: savedMessage.attachments
+
+- name: transcription
+  schema: transcription
+  operations: [Transcription]
+  fields: [id, status, text, summarization]
+  description: >-
+    AI transcript and summary of a voicemail, call recording or audio message. Reached
+    by the transcriptionId on a conversation item, never listed.
+  relationships:
+  - belongs_to: conversationItem
+    via: transcriptionId
+
+- name: webhookDestinationEndpoint
+  schema: webhookDestinationEndpoint
+  operations: [ListWebhookEndpoints, CreateWebhookEndpoint, WebhookEndpoint, DeleteWebhookEndpoint, ModifyWebhookEndpointPaused]
+  fields: [id, object, name, url, status, signingSecrets, createdAt]
+  description: >-
+    A registered HTTPS destination for events. signingSecrets is returned only on the
+    create response and never on a subsequent read.
+  relationships:
+  - belongs_to: organization
+  - has_many: webhookDestinationEndpointEvent
+    via: GET /webhooks/endpoints/{endpointId}/events
+
+- name: webhookDestinationEndpointEvent
+  schema: webhookDestinationEndpointEvent
+  operations: [ListWebhookEndpointEvents]
+  fields: [id, object, eventTime, data, delivery]
+  description: A delivery record. Queryable for 30 days, returned 20 at a time.
+  relationships:
+  - belongs_to: webhookDestinationEndpoint
+  - has_one: webhookDestinationEndpointEventDelivery
+    via: delivery
+
+- name: webhookDestinationEndpointEventDelivery
+  schema: webhookDestinationEndpointEventDelivery
+  fields: [status, attempts, attemptLimit, deliveryTime, nextAttemptTime]
+  description: >-
+    The retry state machine, exposed as data - attempts against attemptLimit (10) and
+    the nextAttemptTime, so an integrator can see exactly where a failing delivery sits
+    without instrumenting their own receiver.
+
+summary:
+  entities: 22
+  schemas_in_spec: 169
+  operations: 47
+  central_entity: conversation
+  join_to_external_systems: contact_integrationLink
+  polymorphism:
+  - 'member is a union of organization | team | teammate, discriminated on type'
+  - 'conversationItem carries variant payloads (phone call event, page) alongside message content'
+  - 'conversation is secure | note'
+
+notable:
+- >-
+  Contacts, teammates, teams and the organization share one entity_ id space. A single
+  id field can therefore legitimately hold any of them, and the `type` field - not the
+  id shape - is the discriminator.
+- >-
+  Nearly every read object carries both apiURL and appURL, so one payload serves a
+  machine and a human without a second lookup.
+- >-
+  Delivery state for webhooks is a first-class readable resource rather than an internal
+  detail, which is unusual at this size of API.
+
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

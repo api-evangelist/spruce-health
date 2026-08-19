@@ -1,0 +1,47 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Spruce Health API \u2014 Transcription",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Transcription",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a transcription by id",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/transcriptions/{transcriptionId}",
+            "params": [
+              {
+                "name": "transcriptionId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "Transcription",
+          "docs": "This operation fetches the full transcription text and its summarization (if available) for the provided transcription id.\n\nThe transcription id is available on the `transcriptionId` field of relevant objects.\n\n**Limitation:** Voicemail transcriptions created before November 2025 were stored in a legacy format that cannot be retrieved by this endpoint. Their ids may still appear on conversation items, but requests for them respond with a `404` and an explanatory message."
+        }
+      ]
+    }
+  ]
+}

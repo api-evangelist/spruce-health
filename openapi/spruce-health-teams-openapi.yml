@@ -1,0 +1,228 @@
+openapi: 3.0.0
+info:
+  title: Spruce Health API — Teams
+  version: 1.0.0
+  description: The Teams operations of the Spruce Health API, split by tag from the OpenAPI Spruce Health
+    publishes for developer.sprucehealth.com (ReadMe registry @spruce/v1.0#13needamst2v4m6). Base https://api.sprucehealth.com/v1,
+    Bearer organization token.
+  contact:
+    name: Spruce Health
+    url: https://developer.sprucehealth.com
+servers:
+- url: https://api.sprucehealth.com/v1
+  variables:
+    domain:
+      default: api.sprucehealth.com
+security:
+- spruceAPIToken: []
+tags:
+- name: Teams
+paths:
+  /teams/{teamId}/members:
+    get:
+      description: This operation lists the members of a team identified by id.
+      operationId: TeamMembers
+      parameters:
+      - description: The unique identifier of the team
+        in: path
+        name: teamId
+        required: true
+        schema:
+          type: string
+      - description: How many member to return at one time
+        in: query
+        name: pageSize
+        required: false
+        schema:
+          format: int32
+          maximum: 500
+          minimum: 1
+          type: integer
+      - in: query
+        name: paginationToken
+        required: false
+        schema:
+          $ref: '#/components/schemas/paginationToken'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  hasMore:
+                    $ref: '#/components/schemas/hasMore'
+                  members:
+                    items:
+                      $ref: '#/components/schemas/organizationMember'
+                    type: array
+                  paginationToken:
+                    $ref: '#/components/schemas/paginationToken'
+                  totalCount:
+                    $ref: '#/components/schemas/totalCount'
+                required:
+                - members
+                - totalCount
+                - hasMore
+                type: object
+          description: Expected response to a valid request
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: List the members of a team
+      tags:
+      - Teams
+components:
+  headers:
+    s-ratelimit-limit:
+      description: Request limit per minute
+      example: 100
+      schema:
+        type: integer
+    s-ratelimit-remaining:
+      description: Requests remaining this minute
+      example: 94
+      schema:
+        type: integer
+    s-request-id:
+      description: The ID of the request
+      example: 0E5QDGJC030000E5QDGJC03000
+      schema:
+        type: string
+  schemas:
+    error:
+      properties:
+        message:
+          example: Invalid Contact ID
+          type: string
+        statusCode:
+          example: 400
+          type: integer
+        type:
+          example: BAD_PARAMETER
+          type: string
+      required:
+      - message
+      - statusCode
+      - type
+      type: object
+    hasMore:
+      type: boolean
+    objectType:
+      description: String representing the object's type
+      type: string
+    organization:
+      properties:
+        id:
+          description: The id of the organization
+          example: entity_0D4QABCC06000
+          type: string
+        name:
+          description: The name of the organization
+          example: Spruce Health
+          type: string
+        object:
+          $ref: '#/components/schemas/objectType'
+        type:
+          description: This will always be 'organization'. This is provided for cases where a organization
+            may be in a mixed list with teammtes and/or teams.
+          example: organization
+          type: string
+      required:
+      - id
+      - name
+      - type
+      - object
+      type: object
+    organizationMember:
+      anyOf:
+      - $ref: '#/components/schemas/teammate'
+      - $ref: '#/components/schemas/team'
+      - $ref: '#/components/schemas/organization'
+    paginationToken:
+      description: Token given in a previous response to allow requesting the next page
+      example: abcdefghijklmnop
+      type: string
+    team:
+      properties:
+        id:
+          description: The id of the team
+          example: entity_0D4QABCC06000
+          type: string
+        name:
+          description: The name of the team
+          example: Billing Team
+          type: string
+        object:
+          $ref: '#/components/schemas/objectType'
+        type:
+          description: This will always be 'team'. This is provided for cases where a team may be in a
+            mixed list with teammtes and/or your organization.
+          example: team
+          type: string
+      required:
+      - id
+      - name
+      - type
+      - object
+      type: object
+    teammate:
+      properties:
+        displayName:
+          description: The full name of the teammate, including any title provided
+          example: John Doe, MD
+          type: string
+        email:
+          description: The email address of the teammate
+          example: provider@example.com
+          format: email
+          type: string
+        id:
+          $ref: '#/components/schemas/teammate_id'
+        isAdmin:
+          description: Whether or not the teammate is an admin on Spruce
+          example: false
+          type: boolean
+        isSuspended:
+          description: Whether or not the teammate is currently suspended. A suspended teammate is retained
+            as a member of the organization but cannot sign in and does not receive new calls or messages.
+          example: false
+          type: boolean
+        object:
+          $ref: '#/components/schemas/objectType'
+        type:
+          description: This will always be 'teammate'. This is provided for cases where a teammate may
+            be in a mixed list with teams and/or your organization.
+          example: teammate
+          type: string
+      required:
+      - id
+      - displayName
+      - isAdmin
+      - isSuspended
+      - type
+      - object
+      type: object
+    teammate_id:
+      description: The id of the teammate
+      example: entity_0E5QDGJC03000
+      type: string
+    totalCount:
+      example: 750
+      format: int32
+      type: integer
+  securitySchemes:
+    spruceAPIToken:
+      description: API token provided by Spruce should be passed in an "Authorization" header with the
+        value "Bearer <token>"
+      scheme: bearer
+      type: http

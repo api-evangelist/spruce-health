@@ -1,0 +1,137 @@
+openapi: 3.0.0
+info:
+  title: Spruce Health API — Media
+  version: 1.0.0
+  description: The Media operations of the Spruce Health API, split by tag from the OpenAPI Spruce Health
+    publishes for developer.sprucehealth.com (ReadMe registry @spruce/v1.0#13needamst2v4m6). Base https://api.sprucehealth.com/v1,
+    Bearer organization token.
+  contact:
+    name: Spruce Health
+    url: https://developer.sprucehealth.com
+servers:
+- url: https://api.sprucehealth.com/v1
+  variables:
+    domain:
+      default: api.sprucehealth.com
+security:
+- spruceAPIToken: []
+tags:
+- name: Media
+paths:
+  /media:
+    post:
+      description: 'This operation uploads media such a images, videos, and files to Spruce for use in
+        messaging. Uploading a file will return a media ID that can be used to reference the file in other
+        operations. Callers of this API should record the resulting media ID for future use. A media ID
+        can be used in the `attachmentID` field of the [conversation message post attachment](/reference/postmessagefromendpoint).
+        Media IDs can be used multiple times.
+
+        The `Content-Type` and `Content-Disposition` headers on the multipart `media` field can use used
+        to provide additional metadata about the media. This metadata can impact how the media is displayed
+        and downloaded from the application.
+
+
+        **Example Headers**
+
+        * `Content-Disposition: form-data; name="media"; filename="image.png"`
+
+        * `Content-Type: image/png` '
+      operationId: UploadMedia
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                media:
+                  format: binary
+                  type: string
+              required:
+              - media
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/media'
+          description: An array of messages that are scheduled for the organization
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: Upload media
+      tags:
+      - Media
+components:
+  headers:
+    s-ratelimit-limit:
+      description: Request limit per minute
+      example: 100
+      schema:
+        type: integer
+    s-ratelimit-remaining:
+      description: Requests remaining this minute
+      example: 94
+      schema:
+        type: integer
+    s-request-id:
+      description: The ID of the request
+      example: 0E5QDGJC030000E5QDGJC03000
+      schema:
+        type: string
+  schemas:
+    error:
+      properties:
+        message:
+          example: Invalid Contact ID
+          type: string
+        statusCode:
+          example: 400
+          type: integer
+        type:
+          example: BAD_PARAMETER
+          type: string
+      required:
+      - message
+      - statusCode
+      - type
+      type: object
+    media:
+      properties:
+        id:
+          $ref: '#/components/schemas/media_id'
+        object:
+          $ref: '#/components/schemas/objectType'
+      required:
+      - id
+      - object
+      type: object
+    media_id:
+      description: Spruce's media message ID
+      example: d7b25969-86ec-7e37-3776-3577-c0637a0c
+      type: string
+    objectType:
+      description: String representing the object's type
+      type: string
+  securitySchemes:
+    spruceAPIToken:
+      description: API token provided by Spruce should be passed in an "Authorization" header with the
+        value "Bearer <token>"
+      scheme: bearer
+      type: http

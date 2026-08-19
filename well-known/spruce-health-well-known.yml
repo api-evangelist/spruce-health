@@ -1,0 +1,136 @@
+generated: '2026-08-15'
+method: probed
+source: live HTTP probes of every Spruce Health host named in apis.yml and the OpenAPI servers[]
+provider: Spruce Health
+providerId: spruce-health
+description: >-
+  A recorded ABSENCE. Every /.well-known/ path was probed on all four Spruce Health
+  hosts and every one returned 404. Spruce serves no security.txt, no OpenID or OAuth
+  authorization-server metadata, no api-catalog, no ai-plugin manifest and no A2A agent
+  card. No WellKnown, SecurityTxt or AgentCard pointer is wired into apis.yml as a
+  result - this file documents that the surface is not served, and must not be read as
+  evidence that it is.
+
+result: none
+hits: 0
+paths_probed: 36
+hosts_probed: 4
+checked: '2026-08-15'
+
+hosts:
+- host: sprucehealth.com
+  role: marketing website
+  server: Astro / Webflow
+  paths:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /security.txt
+    status: 404
+  note: >-
+    The 404s return the site's HTML not-found page, not a document. Treated as a miss.
+
+- host: developer.sprucehealth.com
+  role: developer documentation (ReadMe)
+  paths:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/oauth-protected-resource/mcp
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /security.txt
+    status: 404
+  note: >-
+    This host serves an authenticated MCP endpoint at /mcp, so the RFC 9728
+    oauth-protected-resource path was probed at both the host root and the MCP-scoped
+    location. Neither is served, and the 401 from /mcp carries no WWW-Authenticate
+    header, so there is no discoverable authorization-server metadata for the MCP
+    surface. See mcp/spruce-health-mcp.yml.
+
+- host: api.sprucehealth.com
+  role: API host
+  paths:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /security.txt
+    status: 404
+  note: >-
+    Answers a plain-text "404 page not found" for every unmatched path, so these are
+    unambiguous misses rather than an SPA catch-all.
+
+- host: help.sprucehealth.com
+  role: help centre (Zendesk)
+  paths:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /security.txt
+    status: 404
+
+files_saved: []
+
+related_findings:
+  note: >-
+    Two machine-readable documents ARE served by Spruce, just not from /.well-known/ -
+    an llms.txt on each of the docs and marketing hosts. Both are saved verbatim under
+    llms/. A CAA record on sprucehealth.com publishes a security contact
+    (iodef mailto:security@sprucehealth.com), which is the only machine-readable
+    security contact Spruce exposes; it is recorded in
+    security/spruce-health-domain-security.yml and is NOT a security.txt.
+
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

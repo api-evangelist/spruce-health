@@ -1,0 +1,164 @@
+openapi: 3.0.0
+info:
+  title: Spruce Health API — Transcription
+  version: 1.0.0
+  description: The Transcription operations of the Spruce Health API, split by tag from the OpenAPI Spruce
+    Health publishes for developer.sprucehealth.com (ReadMe registry @spruce/v1.0#13needamst2v4m6). Base
+    https://api.sprucehealth.com/v1, Bearer organization token.
+  contact:
+    name: Spruce Health
+    url: https://developer.sprucehealth.com
+servers:
+- url: https://api.sprucehealth.com/v1
+  variables:
+    domain:
+      default: api.sprucehealth.com
+security:
+- spruceAPIToken: []
+tags:
+- name: Transcription
+paths:
+  /transcriptions/{transcriptionId}:
+    get:
+      description: 'This operation fetches the full transcription text and its summarization (if available)
+        for the provided transcription id.
+
+
+        The transcription id is available on the `transcriptionId` field of relevant objects.
+
+
+        **Limitation:** Voicemail transcriptions created before November 2025 were stored in a legacy
+        format that cannot be retrieved by this endpoint. Their ids may still appear on conversation items,
+        but requests for them respond with a `404` and an explanatory message.
+
+        '
+      operationId: Transcription
+      parameters:
+      - description: The id of the transcription to retrieve.
+        in: path
+        name: transcriptionId
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  transcription:
+                    $ref: '#/components/schemas/transcription'
+                required:
+                - transcription
+                type: object
+          description: Expected response to a valid request
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: Get a transcription by id
+      tags:
+      - Transcription
+components:
+  headers:
+    s-ratelimit-limit:
+      description: Request limit per minute
+      example: 100
+      schema:
+        type: integer
+    s-ratelimit-remaining:
+      description: Requests remaining this minute
+      example: 94
+      schema:
+        type: integer
+    s-request-id:
+      description: The ID of the request
+      example: 0E5QDGJC030000E5QDGJC03000
+      schema:
+        type: string
+  schemas:
+    error:
+      properties:
+        message:
+          example: Invalid Contact ID
+          type: string
+        statusCode:
+          example: 400
+          type: integer
+        type:
+          example: BAD_PARAMETER
+          type: string
+      required:
+      - message
+      - statusCode
+      - type
+      type: object
+    summarization:
+      properties:
+        status:
+          description: The status of the summarization job. When `pending`, the summarization is still
+            being processed.
+          enum:
+          - completed
+          - pending
+          - failed
+          type: string
+        text:
+          description: The full plain text of the summarization. Empty until the summarization completes.
+          type: string
+      required:
+      - text
+      - status
+      type: object
+    transcription:
+      properties:
+        id:
+          description: The id of the transcription job.
+          type: string
+        status:
+          description: The status of the transcription job. When `pending`, the transcription is still
+            being processed.
+          enum:
+          - completed
+          - pending
+          - failed
+          - noSpeech
+          type: string
+        summarization:
+          $ref: '#/components/schemas/summarization'
+          description: The summarization of the transcription, if available.
+        text:
+          description: The full plain text of the transcription. Empty until the transcription completes.
+          type: string
+      required:
+      - id
+      - text
+      - status
+      type: object
+  securitySchemes:
+    spruceAPIToken:
+      description: API token provided by Spruce should be passed in an "Authorization" header with the
+        value "Bearer <token>"
+      scheme: bearer
+      type: http

@@ -1,0 +1,68 @@
+{
+  "info": {
+    "_postman_id": "c3ac83cc-ac05-4ea7-99a2-ef2a04345523",
+    "name": "Spruce Health API \u2014 Transcription",
+    "description": "Transcription operations of the Spruce Health API. Generated from the OpenAPI Spruce Health publishes for developer.sprucehealth.com.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "id": "23ceb7d8-8b6d-4d37-860f-dcb2dca21a33",
+      "name": "Transcription",
+      "item": [
+        {
+          "id": "4a3f4f06-9493-4229-8077-2a142b720026",
+          "name": "Get a transcription by id",
+          "request": {
+            "name": "Get a transcription by id",
+            "description": {
+              "content": "This operation fetches the full transcription text and its summarization (if available) for the provided transcription id.\n\nThe transcription id is available on the `transcriptionId` field of relevant objects.\n\n**Limitation:** Voicemail transcriptions created before November 2025 were stored in a legacy format that cannot be retrieved by this endpoint. Their ids may still appear on conversation items, but requests for them respond with a `404` and an explanatory message.",
+              "type": "text/plain"
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/transcriptions/{transcriptionId}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "transcriptions",
+                "{transcriptionId}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "key": "transcriptionId",
+                  "value": "<transcriptionId>"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ]
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.sprucehealth.com/v1"
+    }
+  ]
+}

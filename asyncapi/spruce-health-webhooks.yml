@@ -1,0 +1,195 @@
+generated: '2026-08-15'
+method: searched
+source: https://developer.sprucehealth.com/docs/webhooks-overview.md
+docs: https://developer.sprucehealth.com/docs/webhooks-overview
+provider: Spruce Health
+providerId: spruce-health
+type: Webhooks
+description: >-
+  Spruce Health's event surface is outbound HTTPS webhooks. Spruce POSTs a signed event
+  envelope to endpoints an organization registers through the Public API. This is the
+  full published event catalog, its delivery contract and its signature scheme, read
+  from the Spruce Webhooks Overview (last updated by Spruce 2026-07-31).
+
+asyncapi_published: false
+asyncapi_note: >-
+  Spruce publishes no AsyncAPI document. /asyncapi.yaml on the docs host returns 404 and
+  no event schema file appears in the ReadMe registry alongside the OpenAPI. The events
+  below are transcribed from the provider's own documentation and worked example
+  payloads; no AsyncAPI has been authored on Spruce's behalf, because a generated one
+  would assert a machine-readable contract the provider does not actually serve.
+probe:
+  url: https://developer.sprucehealth.com/asyncapi.yaml
+  http_status: 404
+  fetched: '2026-08-15'
+
+model:
+  direction: outbound
+  transport: HTTPS POST
+  websocket: false
+  websocket_note: >-
+    No ws:// or wss:// surface is documented anywhere in Spruce's developer materials.
+    Real-time delivery is server-to-endpoint HTTP, not a bidirectional socket.
+  scope: >-
+    All events published to an endpoint are scoped to the context of their owning
+    organization.
+  registration:
+    operation: CreateWebhookEndpoint
+    path: POST /webhooks/endpoints
+    reference: https://developer.sprucehealth.com/reference/createwebhookendpoint
+    note: >-
+      The create response returns a signing secret. It is returned ONCE, at creation -
+      subsequent listings never return it.
+  management:
+    list: GET /webhooks/endpoints
+    get: GET /webhooks/endpoints/{endpointId}
+    delete: DELETE /webhooks/endpoints/{endpointId}
+    pause_resume: POST /webhooks/endpoints/{endpointId}/paused
+    delivery_log: GET /webhooks/endpoints/{endpointId}/events
+    delivery_log_retention: 30 days, returned 20 at a time with a pagination token
+
+envelope:
+  fields:
+  - name: object
+    value: event
+    description: Constant discriminator identifying the payload as an event envelope.
+  - name: type
+    description: The event type, e.g. contact.created.
+  - name: eventTime
+    format: RFC 3339 UTC
+    description: When the event occurred.
+  - name: data.object
+    description: >-
+      The full current state of the affected resource, itself carrying an `object` field
+      naming its type (contact, conversation, conversationItem, scheduledMessage).
+  example_shape: |
+    {
+        "object": "event",
+        "type": "contact.created",
+        "eventTime": "2024-05-15T00:00:00Z",
+        "data": { "object": { "object": "contact", "id": "entity_...", ... } }
+    }
+  note: >-
+    The envelope carries the whole resource, not a delta, so a consumer does not need a
+    follow-up GET to apply the change.
+
+events:
+- type: contact.created
+  resource: contact
+  description: Occurs when a new contact is created.
+- type: contact.updated
+  resource: contact
+  description: Occurs when a contact is modified.
+- type: contact.deleted
+  resource: contact
+  description: Occurs when a contact is deleted.
+- type: contact.merged
+  resource: contact
+  description: Occurs when contacts are merged.
+  added: '2026-04-15'
+  note: >-
+    Spruce's own event table describes this as "Occurs when contacts are deleted",
+    which reads as a copy error against the event name and the worked merge example.
+    Announced on the changelog 2026-04-15 as "New webhook event: contact.merged".
+- type: conversation.created
+  resource: conversation
+  description: Occurs when a new conversation is created.
+- type: conversation.updated
+  resource: conversation
+  description: Occurs when a conversation is modified.
+- type: conversation.deleted
+  resource: conversation
+  description: Occurs when a conversation is deleted.
+- type: conversationItem.created
+  resource: conversationItem
+  description: Occurs when a new conversation item is created.
+  correlates_with:
+  - PostConversationMessage (requestID)
+  - PostMessageFromEndpoint (RequestID)
+  - CreateConversation (postMessageRequestId)
+- type: conversationItem.updated
+  resource: conversationItem
+  description: Occurs when a conversation item is modified.
+- type: conversationItem.deleted
+  resource: conversationItem
+  description: Occurs when a conversation item is deleted.
+  correlates_with:
+  - DeleteConversationItem (requestId)
+- type: conversationItem.restored
+  resource: conversationItem
+  description: Occurs when a conversation item is restored.
+  note: >-
+    Deletion is a soft delete that leaves a restorable placeholder, which is why a
+    restore is an event in its own right.
+- type: scheduledMessage.created
+  resource: scheduledMessage
+  description: Occurs when a message is scheduled.
+  added: '2026-07-31'
+- type: scheduledMessage.updated
+  resource: scheduledMessage
+  description: Occurs when a scheduled message is modified.
+  added: '2026-07-31'
+- type: scheduledMessage.deleted
+  resource: scheduledMessage
+  description: Occurs when a scheduled message is deleted before it was sent.
+  added: '2026-07-31'
+- type: scheduledMessage.sent
+  resource: scheduledMessage
+  description: Occurs when a scheduled message reaches its send time and is posted.
+  added: '2026-07-31'
+
+event_count: 15
+
+delivery:
+  scheme_required: https
+  scheme_note: Spruce will only send events to endpoints that support HTTPS.
+  ack_status: 2XX
+  ack_window_seconds: 5
+  ordering:
+    sent_in_order: true
+    delivered_in_order: false
+    note: >-
+      Events are sent in the order they occur, but may not arrive in that order.
+      Consumers must be able to handle out-of-order events - eventTime is the field to
+      order on.
+  retry:
+    interval_minutes: 2
+    max_attempts: 10
+    trigger: any non-2XX response, or no response within the 5-second window
+  rate_limit:
+    events_per_minute: 1000
+    scope: per endpoint
+    behavior: >-
+      If the limit is exceeded, events resume sending after the rate limit window has
+      passed.
+
+signature:
+  header: X-Spruce-Signature
+  algorithm: HMAC-SHA256
+  encoding: base64
+  secret_issued: at endpoint creation, returned once and never again
+  verification: >-
+    Base64-decode the X-Spruce-Signature header, HMAC-SHA256 the raw request body with
+    the endpoint secret, and compare the two in constant time. Spruce publishes a Go
+    reference implementation using hmac.Equal in the Webhooks Overview.
+
+consumer_guidance:
+  mapping_items_to_contacts: >-
+    A conversationItem event carries the conversation id; pass it to GET
+    /conversations/{conversationId} to resolve the containing thread. For conversations
+    with unsaved or multiple matching contacts, the rawValue of the externalParticipant
+    endpoint can be passed to POST /contacts/search to resolve candidate contacts.
+  polling_alternative: >-
+    Where webhooks are not an option, ListConversations with orderBy=last_message plus
+    startFrom is the documented polling pattern for detecting new activity.
+
+access:
+  gated: true
+  note: >-
+    Webhooks are only reachable through the Public API, so they inherit its gate - the
+    Communicator plan plus API access enabled by Spruce Support.
+  request_form: https://sprucehealth.com/spruce-api
+
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

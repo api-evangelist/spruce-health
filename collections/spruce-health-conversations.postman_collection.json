@@ -1,0 +1,334 @@
+{
+  "info": {
+    "_postman_id": "2e67642a-111c-47b7-aa44-ffd347652807",
+    "name": "Spruce Health API \u2014 Conversations",
+    "description": "Conversations operations of the Spruce Health API. Generated from the OpenAPI Spruce Health publishes for developer.sprucehealth.com.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "id": "192824b8-ff52-4e6f-8a78-09494e0fc28a",
+      "name": "Conversations",
+      "item": [
+        {
+          "id": "313267a6-7415-41b4-bb1e-6aaa77865583",
+          "name": "List and filter all conversations available to the organization",
+          "request": {
+            "name": "List and filter all conversations available to the organization",
+            "description": {
+              "content": "This operation lists all conversations available to the organization. This is an eventually consistent view and may take a short time before new conversations appear in results.\n\n\nTo iterate through all conversations in the organization, list the first page of conversations (without specifying `paginationToken` or `startFrom`). If `hasMore=true`, the provide the `paginationToken` to the API to list subsequent pages of conversations until `hasMore=false`.\n\n\n## Detecting conversations with new messages\n\nNote that the conversations are ordered by created date by default. You can also order them by the time of last activity in the conversation by specifying `orderBy=last_message`. This is particularly helpful when trying to determine conversations with new activity in them. In this particular case, you can query the list of conversations with `orderBy=last_message` and capture the `lastMessageAt` time for the last conversation in the list. On the next query, you can then `startFrom=<lastMessageAt time you saved>` and `orderBy=last_message` to return any conversations with new activity since your last query.\n\n\nWhile you can determine the conversations with new activity, it is also important to know if the latest messages in each conversation were from your teammates or from an external contact (like a patient). To determine this, you can use the [listing of conversation items API](/reference/conversationitems) to query for the latest items since a particular time with the `startFrom` field. If any message in the list returned has `direction=inbound` then it indicates a message received since the last query for message items.",
+              "type": "text/plain"
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/conversations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "conversations"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "paginationToken",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "orderBy",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "startFrom",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "id": "7c82e769-8930-47c8-823c-2b13287cca5d",
+          "name": "Create a new conversation",
+          "request": {
+            "name": "Create a new conversation",
+            "description": {
+              "content": "This operation creates a new conversation within an organization. The following conversation types are supported:\n\n### Secure Conversations (`type: \"secure\"`)\n\nA secure conversation can be started with a single contact or a group of contacts. All contacts must be patients and either have a Spruce account or a pending secure invite.\n\n### Note Conversations (`type: \"note\"`)\n\nA note conversation is an internal-only conversation for documenting information. Notes can optionally include organization members/groups and can be associated with contacts for organizational purposes (via `associatedContactIds`). Associated contacts will not have access to the note.\n\n### Asynchronous Message Processing\n\nIf a message is included in the conversation creation request, the message will be posted asynchronously after the conversation is created. The API will immediately return the conversation details along with a `postMessageRequestId` that can be used to track when the message is actually sent.\n\nThe `postMessageRequestId` returned in the response can be matched against the `requestID` field of the `conversationItem.created` webhook event to identify when the message has been successfully posted to the conversation.",
+              "type": "text/plain"
+            },
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/conversations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "conversations"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "s-idempotency-key",
+                "value": "<string>",
+                "description": "A unique value generated by the client used to recognize subsequent retries of the same request. Idempotency keys can be up to 255 characters long."
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "id": "09981c47-4ee6-46bb-846f-9e420ac06964",
+          "name": "Get a conversation for a given id",
+          "request": {
+            "name": "Get a conversation for a given id",
+            "description": {
+              "content": "This operation fetches a specific conversation for the provided id.",
+              "type": "text/plain"
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/conversations/{conversationId}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "conversations",
+                "{conversationId}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "key": "conversationId",
+                  "value": "<conversationId>"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "id": "cc87cb55-75a1-4ca1-959b-709c0fa4a533",
+          "name": "Update a conversation",
+          "request": {
+            "name": "Update a conversation",
+            "description": {
+              "content": "This operation updates a specific conversation by id.\n\nFields provided in the input object will be updated, omitted fields *(null)* will be unchanged.",
+              "type": "text/plain"
+            },
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/conversations/{conversationId}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "conversations",
+                "{conversationId}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "key": "conversationId",
+                  "value": "<conversationId>"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "s-idempotency-key",
+                "value": "<string>",
+                "description": "A unique value generated by the client used to recognize subsequent retries of the same request. Idempotency keys can be up to 255 characters long."
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "id": "1b3a55ed-4bf1-44b7-b8cb-954c677277a9",
+          "name": "List and filter all conversation items in a conversation",
+          "request": {
+            "name": "List and filter all conversation items in a conversation",
+            "description": {
+              "content": "This operation lists all conversations items available in a conversation. This is an eventually consistent view and may take a short time before new conversation items appear in results.",
+              "type": "text/plain"
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/conversations/{conversationId}/items",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "conversations",
+                "{conversationId}",
+                "items"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "paginationToken",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "startFrom",
+                  "value": "<string>"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "conversationId",
+                  "value": "<conversationId>"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "id": "f9348791-ce2f-44f2-a6b5-0ef076b9e41b",
+          "name": "Post a message to a specific conversation",
+          "request": {
+            "name": "Post a message to a specific conversation",
+            "description": {
+              "content": "This operation posts a message in a conversation as specified by the conversationId. You can retrieve the conversationId by [listing the conversations for a contact](/reference/contactconversations) or by [listing all conversations in the organization](/reference/conversations). You can also [send messages to a phone number, an email address, fax number, or securely message a contact](/reference/postmessagefromendpoint) using a [specific internal endpoint](/reference/internalendpoints). The `requestID` returned by this API may be used to match against the `requestID` field of the `conversationItem.created` webhook event to identify when the message is posted.\n## Posting an internal message containing a page for an organization member\nTo post a message with a page for an organization member, you'll first need to know the member's id. You can find the id of the organization member by [listing all organization members](/reference/organizationmembers). Once the member id is known, you can post a message to the conversation with `internal=true` and an element of `type=page` and `value=<member-id>` in the list of `body` elements being posted.\nThe `body` parameter is a list of message elements. Each element can be of type `text` or `page`. The request can contain combinations of `text` and `page` elements to create internal messages with useful content while also notifying a set of members.\n## Posting to a Team or Note conversation\nYou can also use this API to post messages into a Team or Note conversations. For Note conversations, you will have to specify `internal=true` since only internal messages can be posted in Note conversations.",
+              "type": "text/plain"
+            },
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/conversations/{conversationId}/messages",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "conversations",
+                "{conversationId}",
+                "messages"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "key": "conversationId",
+                  "value": "<conversationId>"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "s-idempotency-key",
+                "value": "<string>",
+                "description": "A unique value generated by the client used to recognize subsequent retries of the same request. Idempotency keys can be up to 255 characters long."
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.sprucehealth.com/v1"
+    }
+  ]
+}

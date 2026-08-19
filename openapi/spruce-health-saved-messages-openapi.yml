@@ -1,0 +1,323 @@
+openapi: 3.0.0
+info:
+  title: Spruce Health API — Saved Messages
+  version: 1.0.0
+  description: The Saved Messages operations of the Spruce Health API, split by tag from the OpenAPI Spruce
+    Health publishes for developer.sprucehealth.com (ReadMe registry @spruce/v1.0#13needamst2v4m6). Base
+    https://api.sprucehealth.com/v1, Bearer organization token.
+  contact:
+    name: Spruce Health
+    url: https://developer.sprucehealth.com
+servers:
+- url: https://api.sprucehealth.com/v1
+  variables:
+    domain:
+      default: api.sprucehealth.com
+security:
+- spruceAPIToken: []
+tags:
+- name: Saved Messages
+paths:
+  /savedmessages:
+    get:
+      description: 'Lists all saved messages accessible to the organization. Returns both private and
+        organization-wide saved messages with pagination support.
+
+        '
+      operationId: ListSavedMessages
+      parameters:
+      - in: query
+        name: pageSize
+        required: false
+        schema:
+          format: int32
+          maximum: 500
+          minimum: 1
+          type: integer
+      - in: query
+        name: paginationToken
+        required: false
+        schema:
+          $ref: '#/components/schemas/paginationToken'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  hasMore:
+                    $ref: '#/components/schemas/hasMore'
+                  paginationToken:
+                    $ref: '#/components/schemas/paginationToken'
+                  savedMessages:
+                    items:
+                      $ref: '#/components/schemas/savedMessage'
+                    type: array
+                required:
+                - savedMessages
+                - hasMore
+                type: object
+          description: A paged array of saved messages
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: List saved messages
+      tags:
+      - Saved Messages
+components:
+  headers:
+    s-ratelimit-limit:
+      description: Request limit per minute
+      example: 100
+      schema:
+        type: integer
+    s-ratelimit-remaining:
+      description: Requests remaining this minute
+      example: 94
+      schema:
+        type: integer
+    s-request-id:
+      description: The ID of the request
+      example: 0E5QDGJC030000E5QDGJC03000
+      schema:
+        type: string
+  schemas:
+    conversationItem_Attachment:
+      properties:
+        data:
+          anyOf:
+          - $ref: '#/components/schemas/conversationItem_AudioAttachment'
+          - $ref: '#/components/schemas/conversationItem_DocumentAttachment'
+          - $ref: '#/components/schemas/conversationItem_EntityProfileAttachment'
+          - $ref: '#/components/schemas/conversationItem_ImageAttachment'
+          - $ref: '#/components/schemas/conversationItem_VideoAttachment'
+        title:
+          description: The title of the attachment.
+          example: example.pdf
+          type: string
+        type:
+          description: The type of the attachment.
+          enum:
+          - audio
+          - carePlan
+          - document
+          - entityProfile
+          - genericUrl
+          - image
+          - paymentRequest
+          - video
+          - visit
+          type: string
+      required:
+      - title
+      - type
+      type: object
+    conversationItem_AudioAttachment:
+      properties:
+        mimetype:
+          description: The mimetype of the audio attachment.
+          example: audio/mpeg
+          type: string
+        signedUrl:
+          $ref: '#/components/schemas/signedUrl'
+          description: The URL used to fetch the audio attachment.
+        transcription:
+          $ref: '#/components/schemas/conversationItem_Transcription'
+          description: The transcription for this audio attachment, if available. Use the [Transcription
+            endpoint](/reference/transcription) to fetch the full transcription text.
+      required:
+      - mimetype
+      - signedUrl
+      type: object
+    conversationItem_DocumentAttachment:
+      properties:
+        mimetype:
+          description: The mimetype of the document attachment.
+          example: application/pdf
+          type: string
+        name:
+          description: The name associated with the attached document.
+          type: string
+        signedUrl:
+          $ref: '#/components/schemas/signedUrl'
+          description: The URL used to fetch the document attachment.
+      required:
+      - name
+      - mimetype
+      - signedUrl
+      type: object
+    conversationItem_EntityProfileAttachment:
+      properties:
+        title:
+          description: The title associated with the attached entity profile.
+          example: John Smith
+          type: string
+        url:
+          description: The URL of the entity profile.
+          type: string
+      required:
+      - title
+      - url
+      type: object
+    conversationItem_ImageAttachment:
+      properties:
+        mimetype:
+          description: The mimetype of the image attachment.
+          example: image/png
+          type: string
+        signedUrl:
+          $ref: '#/components/schemas/signedUrl'
+          description: The URL used to fetch the image attachment.
+      required:
+      - mimetype
+      - signedUrl
+      type: object
+    conversationItem_Transcription:
+      properties:
+        id:
+          description: The id of the transcription job. Pass this to the [Transcription endpoint](/reference/transcription)
+            to fetch the full transcription text.
+          type: string
+        status:
+          description: The current status of the transcription. When `pending`, the transcription is still
+            being processed.
+          enum:
+          - completed
+          - pending
+          - failed
+          - noSpeech
+          type: string
+        summarizationStatus:
+          description: The current status of the summarization, if the transcription is being summarized.
+            Null when no summarization was requested.
+          enum:
+          - completed
+          - pending
+          - failed
+          type: string
+      required:
+      - id
+      - status
+      type: object
+    conversationItem_VideoAttachment:
+      properties:
+        mimetype:
+          description: The mimetype of the video attachment.
+          example: video/mp4
+          type: string
+        signedUrl:
+          $ref: '#/components/schemas/signedUrl'
+          description: The URL used to fetch the video attachment.
+      required:
+      - mimetype
+      - signedUrl
+      type: object
+    error:
+      properties:
+        message:
+          example: Invalid Contact ID
+          type: string
+        statusCode:
+          example: 400
+          type: integer
+        type:
+          example: BAD_PARAMETER
+          type: string
+      required:
+      - message
+      - statusCode
+      - type
+      type: object
+    hasMore:
+      type: boolean
+    objectType:
+      description: String representing the object's type
+      type: string
+    paginationToken:
+      description: Token given in a previous response to allow requesting the next page
+      example: abcdefghijklmnop
+      type: string
+    savedMessage:
+      properties:
+        attachments:
+          items:
+            $ref: '#/components/schemas/conversationItem_Attachment'
+          type: array
+        createdAt:
+          format: date-time
+          type: string
+        creatorMemberId:
+          description: The ID of the organization member who created this saved message
+          type: string
+        id:
+          $ref: '#/components/schemas/savedMessage_id'
+        internal:
+          description: Whether this message is an internal note when used
+          type: boolean
+        modifiedAt:
+          format: date-time
+          type: string
+        object:
+          $ref: '#/components/schemas/objectType'
+        shared:
+          description: Whether this saved message is accessible to all members of the organization. If
+            false, the saved message is private to the creator.
+          type: boolean
+        text:
+          description: Plain text content of the saved message
+          type: string
+        title:
+          description: User-defined title for the saved message
+          type: string
+      required:
+      - id
+      - title
+      - shared
+      - internal
+      - text
+      - attachments
+      - creatorMemberId
+      - createdAt
+      - modifiedAt
+      - object
+      type: object
+    savedMessage_id:
+      description: Spruce's saved message ID
+      example: sm_26RRC7PQ6JG00
+      type: string
+    signedUrl:
+      properties:
+        expiresAt:
+          description: The date the signed URL expires.
+          format: date-time
+          type: string
+        url:
+          description: The signed URL.
+          format: url
+          type: string
+      required:
+      - url
+      - expiresAt
+      type: object
+  securitySchemes:
+    spruceAPIToken:
+      description: API token provided by Spruce should be passed in an "Authorization" header with the
+        value "Bearer <token>"
+      scheme: bearer
+      type: http

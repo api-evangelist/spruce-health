@@ -1,0 +1,267 @@
+generated: '2026-08-15'
+method: derived
+source: openapi/_original/spruce-health-openapi.json
+docs:
+- https://developer.sprucehealth.com/docs/overview
+- https://sprucehealth.com/llms.txt
+provider: Spruce Health
+providerId: spruce-health
+description: >-
+  Assertions about which industry and cross-cutting standards the Spruce Health API
+  actually conforms to, each with the evidence it rests on. Spruce is a healthcare
+  communication platform, not a clinical data platform, so the healthcare interop
+  standards a reader might expect (FHIR, HL7v2, SMART on FHIR) are genuinely absent -
+  Spruce integrates with EHRs through its own contact/integration-link model rather than
+  by speaking their standards. The regulatory conformance is real and is the strongest
+  claim on this page.
+
+standards:
+
+- id: openapi
+  name: OpenAPI Specification
+  conforms: true
+  version: 3.0.0
+  evidence: >-
+    Spruce publishes a 47-operation OpenAPI 3.0.0 document backing its ReadMe developer
+    reference, served at https://dash.readme.com/api/v1/api-registry/13needamst2v4m6 and
+    referenced from developer.sprucehealth.com as oasPublicUrl @spruce/v1.0#13needamst2v4m6.
+    info.title "Spruce Health API", servers[0] https://api.sprucehealth.com/v1.
+  probed: '2026-08-15'
+
+- id: rest
+  name: REST over HTTPS
+  conforms: true
+  evidence: >-
+    Resource-oriented paths, correct verb usage including PATCH for partial update, and
+    a versioned base path. HTTPS only; no HTTP surface is offered.
+
+- id: oauth2
+  name: OAuth 2.0
+  conforms: false
+  evidence: >-
+    No oauth2 securityScheme in the OpenAPI and no OAuth flow in the docs. The only
+    credential is a long-lived organization Bearer token generated in Settings. No
+    authorization-server metadata is served on any host.
+
+- id: oidc
+  name: OpenID Connect
+  conforms: false
+  evidence: /.well-known/openid-configuration returns 404 on all four Spruce hosts.
+
+- id: fhir
+  name: HL7 FHIR
+  conforms: false
+  evidence: >-
+    No FHIR resource, endpoint, capability statement or MIME type appears anywhere in
+    the spec or docs. Spruce's EHR integrations (athenahealth, DrChrono, Elation Health,
+    Hint Health, CCIQ, Guava Health, Dock Health) are built product-side; the Public API
+    exposes Spruce's own contact and conversation model, joined to external systems
+    through contact_integrationLink rather than through a FHIR resource graph.
+  note: >-
+    This is a scope fact, not a gap. Spruce carries communication, not clinical records.
+
+- id: smart-on-fhir
+  name: SMART on FHIR
+  conforms: false
+  evidence: Follows from the absence of both FHIR and OAuth 2.0.
+
+- id: hl7v2
+  name: HL7 v2
+  conforms: false
+  evidence: No HL7 v2 messaging surface is documented.
+
+- id: hipaa
+  name: HIPAA (45 CFR Parts 160, 162, 164)
+  conforms: true
+  evidence: >-
+    Spruce states that every eligible organization automatically receives a HIPAA
+    Business Associate Agreement as part of the terms of service - no separate
+    agreement, no opt-in, no extra fee - and that secure messaging is encrypted at rest
+    and in transit in a way that complies with the HIPAA Security Rule, with
+    administrator-controlled access and audit logs.
+  source: https://sprucehealth.com/llms.txt
+  scope: platform
+  note: >-
+    A BAA is a contractual control over the platform the API belongs to, not a property
+    of the API contract itself. Recorded here because for this API's buyer it is the
+    single most consequential conformance fact.
+
+- id: 42-cfr-part-2
+  name: 42 CFR Part 2 (substance use disorder records)
+  conforms: true
+  evidence: >-
+    Announced 2026-07-09 - an updated BAA brings formal Qualified Service Organization
+    support to Spruce.
+  source: https://sprucehealth.com/whats-new/2026-07-09-spruce-now-supports-42-cfr-part-2-communications
+  scope: platform
+
+- id: soc2
+  name: SOC 2 Type II
+  conforms: true
+  evidence: 'Spruce states: "SOC 2 Type II audited annually."'
+  source: https://sprucehealth.com/llms.txt
+  scope: platform
+  report_available: unknown
+  note: >-
+    Spruce publishes the claim but not a trust centre, an audit period, an auditor name,
+    or a request path for the report. sprucehealth.com/trust and /security both 404, and
+    probe-security-programs found no trust centre. The claim is recorded as published;
+    the artifact behind it is not public.
+
+- id: iso27001
+  name: ISO/IEC 27001
+  conforms: false
+  evidence: No ISO 27001 certification is claimed on any Spruce page probed.
+
+- id: pci-dss
+  name: PCI DSS
+  conforms: false
+  evidence: >-
+    Spruce collects patient payments through a Stripe integration rather than handling
+    card data on its own API. No card data flows through the Public API and no PCI
+    attestation is published.
+
+- id: rfc9457
+  name: RFC 9457 Problem Details for HTTP APIs
+  conforms: false
+  evidence: >-
+    Errors are application/json with a custom {statusCode, type, message} envelope, not
+    application/problem+json. See errors/spruce-health-problem-types.yml.
+
+- id: idempotency
+  name: Idempotent request handling
+  conforms: true
+  evidence: >-
+    A first-class s-idempotency-key header parameter is declared in
+    components.parameters and applied to 14 mutating operations; documented as accepted
+    on all POST and PATCH requests, max 255 characters, keys retained 24 hours,
+    duplicates rejected with 422.
+  deviation: >-
+    Deviates from the prevailing convention (Stripe, Square, PayPal), which REPLAYS the
+    original response for a duplicate key. Spruce rejects it. A client written against
+    the common pattern will misread a successful retry as a failure.
+  source: https://developer.sprucehealth.com/docs/overview.md
+
+- id: idempotency-key-header-draft
+  name: IETF draft-ietf-httpapi-idempotency-key-header
+  conforms: false
+  evidence: >-
+    Uses a vendor-prefixed s-idempotency-key rather than the draft's Idempotency-Key
+    header name, and rejects rather than replays duplicates.
+
+- id: pagination
+  name: Cursor pagination
+  conforms: true
+  evidence: >-
+    Consistent pageSize + paginationToken request parameters and hasMore +
+    paginationToken + totalCount response fields across every list operation.
+
+- id: ratelimit-headers
+  name: RFC 9239 / draft-ietf-httpapi-ratelimit-headers
+  conforms: false
+  partial: true
+  evidence: >-
+    Spruce returns four rate-limit response headers across a 60-second and a 24-hour
+    window, and documents that an absent header means the request is not limited on that
+    dimension - a genuinely well-specified signal. But the header names are
+    vendor-prefixed (s-ratelimit-limit, s-ratelimit-remaining, s-ratelimit-daily-limit,
+    s-ratelimit-daily-remaining) rather than the standard RateLimit / RateLimit-Policy
+    fields, and no reset or retry-after value is published.
+
+- id: rfc8594
+  name: RFC 8594 Sunset header
+  conforms: false
+  evidence: No Sunset or Deprecation header is documented, and no operation is marked deprecated.
+
+- id: webhook-signatures
+  name: HMAC webhook signing
+  conforms: true
+  evidence: >-
+    Payloads are signed HMAC-SHA256 with a per-endpoint secret issued at registration
+    and delivered base64-encoded in X-Spruce-Signature; Spruce publishes a constant-time
+    Go verification reference.
+  source: https://developer.sprucehealth.com/docs/webhooks-overview.md
+
+- id: standard-webhooks
+  name: Standard Webhooks specification
+  conforms: false
+  evidence: >-
+    Uses a vendor header name and carries no timestamp or key-id in the signature, so it
+    does not meet the Standard Webhooks profile, which requires a signed timestamp for
+    replay protection. Spruce's scheme signs the body alone.
+
+- id: asyncapi
+  name: AsyncAPI
+  conforms: false
+  evidence: >-
+    No AsyncAPI document is published; /asyncapi.yaml on the docs host returns 404.
+    Fifteen webhook event types are documented in prose with worked example payloads
+    only. See asyncapi/spruce-health-webhooks.yml.
+
+- id: mcp
+  name: Model Context Protocol
+  conforms: partial
+  evidence: >-
+    A remote MCP endpoint is deployed at https://developer.sprucehealth.com/mcp and
+    responds to JSON-RPC, but every method returns -32001 "Authorization required" and
+    the 401 carries no WWW-Authenticate header, so it does not implement the MCP
+    authorization-discovery flow. Conformance beyond reachability could not be
+    established anonymously.
+  probed: '2026-08-15'
+
+- id: rfc9728
+  name: RFC 9728 OAuth 2.0 Protected Resource Metadata
+  conforms: false
+  evidence: >-
+    /.well-known/oauth-protected-resource and its MCP-scoped variant both 404 on the
+    host serving the MCP endpoint.
+
+- id: a2a
+  name: A2A Agent Card
+  conforms: false
+  evidence: >-
+    /.well-known/agent-card.json and the legacy /.well-known/agent.json return 404 on
+    all four hosts.
+
+- id: json-api
+  name: JSON:API
+  conforms: false
+  evidence: Custom response envelopes keyed by resource name; no JSON:API document structure.
+
+- id: odata
+  name: OData
+  conforms: false
+  evidence: No OData metadata or query surface.
+
+- id: scim
+  name: SCIM
+  conforms: false
+  evidence: >-
+    Organization members are readable but not writable through the API, and no SCIM
+    endpoint is published, so there is no provisioning surface.
+
+- id: security-txt
+  name: RFC 9116 security.txt
+  conforms: false
+  evidence: /.well-known/security.txt returns 404 on all four hosts.
+  note: >-
+    A security contact IS published, but through DNS rather than HTTP - the CAA record
+    on sprucehealth.com carries iodef mailto:security@sprucehealth.com.
+
+summary:
+  asserted: 27
+  conforming: 8
+  partial: 2
+  non_conforming: 17
+  strongest: >-
+    Regulatory and delivery-contract conformance - HIPAA BAA by default, 42 CFR Part 2,
+    SOC 2 Type II, first-class idempotency, HMAC-signed webhooks, consistent cursor
+    pagination.
+  weakest: >-
+    Discovery and agent-facing standards - nothing at /.well-known/, no OAuth, no
+    AsyncAPI, no agent card, and an MCP endpoint that cannot advertise how to
+    authenticate to it.
+
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,14 +1,121 @@
-generated: '2026-07-11'
-method: derived
-source: openapi/spruce-health-openapi.yml
+generated: '2026-08-15'
+method: searched
+source: https://developer.sprucehealth.com/docs/overview.md
+docs: https://developer.sprucehealth.com/docs/overview
+provider: Spruce Health
+providerId: spruce-health
+description: >-
+  The Spruce Health API has exactly one credential: a long-lived organization Bearer
+  token. There is no OAuth, no OIDC, no mTLS, no per-user credential and no scope
+  system - a token carries the full permissions of the organization it belongs to. The
+  interesting part of Spruce's auth posture is not the scheme but the gate in front of
+  it: a token cannot be created at all until Spruce Support has enabled API access for
+  the organization.
+
 summary:
   types:
   - http
+  schemes_count: 1
+  oauth2: false
+  scopes: false
+  mtls: false
+  self_serve: false
+
 schemes:
-- name: bearerAuth
+- name: spruceAPIToken
   type: http
   scheme: bearer
-  description: Organization API token generated in Settings after Spruce Support enables API
-    access.
+  in: header
+  header: Authorization
+  format: 'Bearer <your-token>'
+  description: >-
+    API token provided by Spruce, passed in an Authorization header with the value
+    "Bearer <token>".
+  declared_in_spec: true
+  applied: globally
+  applied_note: >-
+    Declared at the document root as security[0], so it applies to all 47 operations;
+    no operation opts out and there is no anonymous surface.
   sources:
-  - openapi/spruce-health-openapi.yml
+  - openapi/_original/spruce-health-openapi.json
+  - https://developer.sprucehealth.com/docs/overview.md
+
+credential:
+  subject: organization
+  subject_note: >-
+    The token identifies an organization, not a user. Every call is made as the practice.
+    There is no delegated or per-teammate authorization, so an integration cannot be
+    constrained to one clinician's contacts or act on a specific member's behalf; the
+    author of a posted message is chosen in the request body, not by the credential.
+  lifetime: long-lived
+  rotation: manual
+  rotation_note: >-
+    Administrators generate and manage credentials from the API Access section of
+    Settings. No expiry, refresh, or automatic rotation is documented.
+  scopes: none
+  scopes_note: >-
+    No scope, permission or role system exists for API tokens. A token is all-or-nothing
+    across contacts, conversations, messages, media, phone lines, organization members
+    and webhook registration - including the ability to read patient PHI and send
+    outbound messages from the practice's phone and fax numbers.
+
+provisioning:
+  self_serve: false
+  steps:
+  - step: 1
+    action: Be on the Communicator plan
+    note: API access is a Communicator ($49/user/month) feature; Basic ($24) does not include it.
+  - step: 2
+    action: Request API access from Spruce Support
+    url: https://sprucehealth.com/spruce-api
+    note: >-
+      Access must be enabled for the organization before any token can be generated.
+      This is a human gate, not a form that returns a key.
+  - step: 3
+    action: An administrator generates a token in Settings > API Access
+    note: Only administrators can create or manage credentials.
+  fee: none
+  fee_note: There is no separate API access fee beyond the Communicator plan.
+
+failure_modes:
+- condition: missing, incorrect, or disabled token
+  status: 403
+  documented_in_spec: false
+  note: >-
+    Documented in the API Overview but NOT declared on any operation in the OpenAPI - 403
+    appears on exactly one operation (DeleteConversationItem) and there means a
+    permission failure, not an auth failure. A client generated from the spec alone will
+    have no handler for an authentication failure.
+- condition: 401
+  status: not-used
+  note: Spruce does not return 401. Authentication failure is signalled with 403.
+
+related_surfaces:
+- surface: MCP
+  url: https://developer.sprucehealth.com/mcp
+  auth: gated
+  note: >-
+    Returns JSON-RPC error -32001 "Authorization required" with no WWW-Authenticate
+    header and no RFC 9728 metadata, so an MCP client cannot discover how to
+    authenticate. The credential is expected to be the same organization token.
+  see: mcp/spruce-health-mcp.yml
+- surface: Webhooks
+  auth: hmac-signature
+  note: >-
+    Inbound verification runs the other way - Spruce signs each event with a per-endpoint
+    secret issued once at registration, base64 in X-Spruce-Signature, HMAC-SHA256.
+  see: asyncapi/spruce-health-webhooks.yml
+
+standards:
+  oauth2: false
+  oidc: false
+  rfc9728: false
+  well_known_metadata: false
+  well_known_note: >-
+    No openid-configuration, oauth-authorization-server or oauth-protected-resource
+    document is served on any Spruce host; all return 404.
+  see: well-known/spruce-health-well-known.yml
+
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

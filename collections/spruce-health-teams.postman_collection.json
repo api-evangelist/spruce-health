@@ -1,0 +1,80 @@
+{
+  "info": {
+    "_postman_id": "a5bf9e68-ce64-4f9d-9e68-39f89006f535",
+    "name": "Spruce Health API \u2014 Teams",
+    "description": "Teams operations of the Spruce Health API. Generated from the OpenAPI Spruce Health publishes for developer.sprucehealth.com.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "id": "859499fd-3e3a-4265-866a-76b242e92c7c",
+      "name": "Teams",
+      "item": [
+        {
+          "id": "f0ba9758-ba66-4b17-8f67-164686de11fa",
+          "name": "List the members of a team",
+          "request": {
+            "name": "List the members of a team",
+            "description": {
+              "content": "This operation lists the members of a team identified by id.",
+              "type": "text/plain"
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/teams/{teamId}/members",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "teams",
+                "{teamId}",
+                "members"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "paginationToken",
+                  "value": "<string>"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "teamId",
+                  "value": "<teamId>"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ]
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.sprucehealth.com/v1"
+    }
+  ]
+}

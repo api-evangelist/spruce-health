@@ -1,0 +1,98 @@
+{
+  "info": {
+    "_postman_id": "71fd0e3d-7224-4124-aaba-af3c3495072f",
+    "name": "Spruce Health API \u2014 Phone Lines",
+    "description": "Phone Lines operations of the Spruce Health API. Generated from the OpenAPI Spruce Health publishes for developer.sprucehealth.com.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "id": "59604ef3-cb1b-4608-86b3-5b099fdf4d46",
+      "name": "Phone Lines",
+      "item": [
+        {
+          "id": "688f161c-02e6-43d1-a3e7-64b7f32126d6",
+          "name": "List all phone lines of the organization",
+          "request": {
+            "name": "List all phone lines of the organization",
+            "description": {
+              "content": "This returns a list of all phone lines of the organization.",
+              "type": "text/plain"
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/phonelines",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "phonelines"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "id": "ae0b0c1a-46fa-4e21-9b19-3033137e7c31",
+          "name": "Get a phone line of the organization by id",
+          "request": {
+            "name": "Get a phone line of the organization by id",
+            "description": {
+              "content": "This operation retrieves a specific phone line by id.",
+              "type": "text/plain"
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/phonelines/{phonelineId}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "phonelines",
+                "{phonelineId}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "key": "phonelineId",
+                  "value": "<phonelineId>"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ]
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.sprucehealth.com/v1"
+    }
+  ]
+}

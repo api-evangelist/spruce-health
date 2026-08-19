@@ -1,0 +1,42 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Spruce Health API \u2014 Media",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Media",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Upload media",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/media",
+            "params": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "UploadMedia",
+          "docs": "This operation uploads media such a images, videos, and files to Spruce for use in messaging. Uploading a file will return a media ID that can be used to reference the file in other operations. Callers of this API should record the resulting media ID for future use. A media ID can be used in the `attachmentID` field of the [conversation message post attachment](/reference/postmessagefromendpoint). Media IDs can be used multiple times.\nThe `Content-Type` and `Content-Disposition` headers on the multipart `media` field can use used to provide additional metadata about the media. This metadata can impact how the media is displayed and downloaded from the application.\n\n**Example Headers**\n* `Content-Disposition: form-data; name=\"media\"; filename=\"image.png\"`\n* `Content-Type: image/png`"
+        }
+      ]
+    }
+  ]
+}

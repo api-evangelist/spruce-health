@@ -1,0 +1,75 @@
+{
+  "info": {
+    "_postman_id": "91b78fc6-ae47-49f7-b2e8-9f82145f9dcc",
+    "name": "Spruce Health API \u2014 Media",
+    "description": "Media operations of the Spruce Health API. Generated from the OpenAPI Spruce Health publishes for developer.sprucehealth.com.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "id": "22f02df0-1d01-46e5-bec1-1317e30e3cea",
+      "name": "Media",
+      "item": [
+        {
+          "id": "ff2636f4-a228-4d51-ae08-ae81778e48bb",
+          "name": "Upload media",
+          "request": {
+            "name": "Upload media",
+            "description": {
+              "content": "This operation uploads media such a images, videos, and files to Spruce for use in messaging. Uploading a file will return a media ID that can be used to reference the file in other operations. Callers of this API should record the resulting media ID for future use. A media ID can be used in the `attachmentID` field of the [conversation message post attachment](/reference/postmessagefromendpoint). Media IDs can be used multiple times.\nThe `Content-Type` and `Content-Disposition` headers on the multipart `media` field can use used to provide additional metadata about the media. This metadata can impact how the media is displayed and downloaded from the application.\n\n**Example Headers**\n* `Content-Disposition: form-data; name=\"media\"; filename=\"image.png\"`\n* `Content-Type: image/png`",
+              "type": "text/plain"
+            },
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/media",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "media"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "multipart/form-data"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.sprucehealth.com/v1"
+    }
+  ]
+}

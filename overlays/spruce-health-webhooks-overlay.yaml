@@ -1,0 +1,56 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enrichment overlay — Spruce Health Webhooks
+  version: 1.0.0
+extends: spruce-health-webhooks-openapi.yml
+x-generated: '2026-08-15'
+x-method: generated
+x-source: apis.yml + repo artifacts; base spec harvested from https://dash.readme.com/api/v1/api-registry/13needamst2v4m6
+actions:
+- target: $.info
+  update:
+    contact:
+      name: Spruce Health Support
+      url: https://sprucehealth.com/spruce-api
+    x-apis-io:
+      provider: Spruce Health
+      providerId: spruce-health
+      apisJson: https://raw.githubusercontent.com/api-evangelist/spruce-health/refs/heads/main/apis.yml
+      documentation: https://developer.sprucehealth.com/docs/overview
+      reference: https://developer.sprucehealth.com/reference/listcontacts
+      statusPage: https://status.sprucehealth.com
+      changelog: https://sprucehealth.com/whats-new
+    x-access:
+      gated: true
+      plan: Communicator
+      requirement: API access must be enabled for the organization by Spruce Support before a token can
+        be generated.
+      requestForm: https://sprucehealth.com/spruce-api
+    x-conventions:
+      idempotencyHeader: s-idempotency-key
+      idempotencyRetention: 24 hours
+      idempotencyDuplicateStatus: 422
+      idempotencyDuplicateBehavior: rejected, not replayed
+      rateLimitHeaders:
+      - s-ratelimit-limit
+      - s-ratelimit-remaining
+      - s-ratelimit-daily-limit
+      - s-ratelimit-daily-remaining
+      rateLimitScope: per-organization
+      requestIdHeader: s-request-id
+      paginationStyle: cursor (pageSize + paginationToken; hasMore/totalCount in response)
+      errorEnvelope: '{statusCode, type, message} — application/json, not RFC 9457'
+      authFailureStatus: 403
+      artifacts:
+        conventions: conventions/spruce-health-conventions.yml
+        errors: errors/spruce-health-problem-types.yml
+        rateLimits: rate-limits/spruce-health-rate-limits.yml
+        authentication: authentication/spruce-health-authentication.yml
+        dataModel: data-model/spruce-health-data-model.yml
+        webhooks: asyncapi/spruce-health-webhooks.yml
+        lifecycle: lifecycle/spruce-health-lifecycle.yml
+- target: $.servers
+  update:
+  - url: https://api.sprucehealth.com/v1
+    description: Spruce Public API (production). The only published environment — Spruce offers no sandbox
+      or test mode.

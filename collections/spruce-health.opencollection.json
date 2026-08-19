@@ -1,8 +1,8 @@
 {
   "opencollection": "1.0.0",
   "info": {
-    "name": "Spruce Public API",
-    "version": "1.0"
+    "name": "Spruce Health API",
+    "version": "1.0.0"
   },
   "request": {
     "auth": {
@@ -12,199 +12,1385 @@
   },
   "items": [
     {
-      "info": { "name": "Contacts", "type": "folder" },
+      "info": {
+        "name": "Contact Fields",
+        "type": "folder"
+      },
       "items": [
         {
-          "info": { "name": "List contacts.", "type": "http" },
-          "http": { "method": "GET", "url": "https://api.sprucehealth.com/v1/contacts" },
-          "docs": "Lists all contacts available to a given organization. Confirmed path."
-        },
-        {
-          "info": { "name": "Search contacts.", "type": "http" },
-          "http": { "method": "GET", "url": "https://api.sprucehealth.com/v1/contacts/search" },
-          "docs": "Search contacts by name, phone, or email. Modeled."
-        },
-        {
-          "info": { "name": "Create a contact.", "type": "http" },
-          "http": { "method": "POST", "url": "https://api.sprucehealth.com/v1/contacts", "body": { "type": "json", "data": "{}" } },
-          "docs": "Creates a new contact. Modeled."
-        },
-        {
-          "info": { "name": "Get a contact.", "type": "http" },
+          "info": {
+            "name": "List all organization contact fields available to the organization",
+            "type": "http"
+          },
           "http": {
             "method": "GET",
-            "url": "https://api.sprucehealth.com/v1/contacts/:contactId",
-            "params": [{ "name": "contactId", "value": "", "type": "path", "description": "The contact ID." }]
+            "url": "https://api.sprucehealth.com/v1/contacts/fields",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "paginationToken",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
           },
-          "docs": "Retrieves a single contact by ID. Modeled."
+          "operationId": "ContactFields",
+          "docs": "This operation lists all organization contact fields. These fields appear on all contacts in the interface."
         },
         {
-          "info": { "name": "Update a contact.", "type": "http" },
-          "http": {
-            "method": "PATCH",
-            "url": "https://api.sprucehealth.com/v1/contacts/:contactId",
-            "params": [{ "name": "contactId", "value": "", "type": "path" }],
-            "body": { "type": "json", "data": "{}" }
+          "info": {
+            "name": "Create an organization contact field",
+            "type": "http"
           },
-          "docs": "Updates an existing contact. Modeled."
-        },
-        {
-          "info": { "name": "Delete a contact.", "type": "http" },
           "http": {
-            "method": "DELETE",
-            "url": "https://api.sprucehealth.com/v1/contacts/:contactId",
-            "params": [{ "name": "contactId", "value": "", "type": "path" }]
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/contacts/fields",
+            "params": [
+              {
+                "name": "s-idempotency-key",
+                "value": "",
+                "type": "header"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
           },
-          "docs": "Deletes a contact. Modeled."
-        },
-        {
-          "info": { "name": "List a contact's conversations.", "type": "http" },
-          "http": {
-            "method": "GET",
-            "url": "https://api.sprucehealth.com/v1/contacts/:contactId/conversations",
-            "params": [{ "name": "contactId", "value": "", "type": "path" }]
-          },
-          "docs": "Lists conversations for a contact. Modeled."
+          "operationId": "CreateContactField",
+          "docs": "This operation creates an organization contact field for the given organization. This field will appear on all contacts in the interface. Requesting creation of an already existing field will result in a `201` response and the response will contain the existing field."
         }
       ]
     },
     {
-      "info": { "name": "Conversations", "type": "folder" },
+      "info": {
+        "name": "Contact Tags",
+        "type": "folder"
+      },
       "items": [
         {
-          "info": { "name": "List conversations.", "type": "http" },
+          "info": {
+            "name": "List all contact tags available to the organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/contacts/tags",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "paginationToken",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ContactTags",
+          "docs": "This operation lists all contact tags available to a given organization.\n\nThe `hasMore` field can be used to determine if there are remaining results to list. The `paginationToken` field can be provided on subsequents calls to retrieve the next page of results."
+        },
+        {
+          "info": {
+            "name": "Create a contact tag",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/contacts/tags",
+            "params": [
+              {
+                "name": "s-idempotency-key",
+                "value": "",
+                "type": "header"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "CreateContactTag",
+          "docs": "This operation creates a contact tag for the given organization. This tag can then be applied to contacts in subsequent operations. Requesting creation of an already existing tag will result in a `201` response and the response will contain the existing tag."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Contacts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List contacts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/contacts",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "paginationToken",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ListContacts",
+          "docs": "This operation lists all contacts available to a given organization.\n\nThe `hasMore` field can be used to determine if there are remaining results to list. The `paginationToken` field can be provided on subsequents calls to retrieve the next page of results."
+        },
+        {
+          "info": {
+            "name": "Create a contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/contacts",
+            "params": [
+              {
+                "name": "s-idempotency-key",
+                "value": "",
+                "type": "header"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "CreateContact",
+          "docs": "This operation creates a contact within an organization.\n\nCreating a new contact requires at least of the following fields to be populated (`givenName`, `familyName`, `phoneNumbers`, `faxNumbers`, `emailAddresses`)."
+        },
+        {
+          "info": {
+            "name": "Search contacts",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/contacts/search",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "paginationToken",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "SearchContacts",
+          "docs": "This operation searches all contacts available to a given organization and returns a resulting set of results.\n\n\nThe `hasMore` field can be used to determine if there are remaining results to list. The `paginationToken` field can be provided on subsequents calls to retrieve the next page of results.\n\n\n## Sort Order\n\nResults are sorted by **entity ID in ascending order** when doing a structured search and by **relevance** for free text search.\n\nWhy is this a `POST`? `GET` requests with a body are not supported by all HTTP libraries. To support complex nested search filters and other tooling, the `POST` body is leveraged."
+        },
+        {
+          "info": {
+            "name": "Delete a contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.sprucehealth.com/v1/contacts/{contactId}",
+            "params": [
+              {
+                "name": "contactId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "DeleteContact",
+          "docs": "This operation deletes a specific contact by id.\n\nSee the `canDelete` field on a given contact to determine if deletion is allowed."
+        },
+        {
+          "info": {
+            "name": "Get a contact by Spruce Contact ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/contacts/{contactId}",
+            "params": [
+              {
+                "name": "contactId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "Contact",
+          "docs": "This operation retrieves a specific contact by id."
+        },
+        {
+          "info": {
+            "name": "Update a contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.sprucehealth.com/v1/contacts/{contactId}",
+            "params": [
+              {
+                "name": "s-idempotency-key",
+                "value": "",
+                "type": "header"
+              },
+              {
+                "name": "contactId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "UpdateContact",
+          "docs": "This operation updates a specific contact by id.\n\nFields provided in the input object will be updated, omitted fields *(null)* will be unchanged."
+        },
+        {
+          "info": {
+            "name": "List the conversations associated with a contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/contacts/{contactId}/conversations",
+            "params": [
+              {
+                "name": "contactId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ContactConversations",
+          "docs": "This operation retrieves the conversations associated with a contact"
+        },
+        {
+          "info": {
+            "name": "Delete an integration link",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.sprucehealth.com/v1/contacts/{contactId}/integrationlinks",
+            "params": [
+              {
+                "name": "contactId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "externalId",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "DeleteContactIntegrationLink",
+          "docs": "This operation deletes a specific integration link associated with a contact."
+        },
+        {
+          "info": {
+            "name": "List the integration links associated with a contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/contacts/{contactId}/integrationlinks",
+            "params": [
+              {
+                "name": "contactId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ContactIntegrationLinks",
+          "docs": "This operation retrieves the integration links associated with a contact"
+        },
+        {
+          "info": {
+            "name": "Create an integration link",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/contacts/{contactId}/integrationlinks",
+            "params": [
+              {
+                "name": "s-idempotency-key",
+                "value": "",
+                "type": "header"
+              },
+              {
+                "name": "contactId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "externalId",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "CreateContactIntegrationLink",
+          "docs": "This operation creates a link between a contact and an external system with which the Spruce account is integrated."
+        },
+        {
+          "info": {
+            "name": "Invite patient to Spruce",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/contacts/{contactId}/invite",
+            "params": [
+              {
+                "name": "contactId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "SendInvite",
+          "docs": "This operation sends an invite to a patient contact:\n- If the contact is invited for the first time, a new secure conversation will be created,\n- If the contact is already invited, the invite will be re-sent to the same secure conversation,\n- If the contact is already on Spruce, an error will be returned."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Conversation Item",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Delete a conversation item",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.sprucehealth.com/v1/conversationItems/{conversationItemId}",
+            "params": [
+              {
+                "name": "conversationItemId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "DeleteConversationItem",
+          "docs": "Deletes a specific conversation item by ID. This operation follows the same business rules as the in-app delete mechanism, including permission checks and content restrictions.\n\n**Soft Delete Behavior**: The API performs a soft delete, creating a placeholder that can be restored by users with appropriate access. The conversation item will be marked as deleted but not permanently removed from the system.\n\n**Permission Requirements**: You can only delete conversation items in conversations owned by your organization. The deletion must comply with the same restrictions as the Spruce app (e.g., certain system messages cannot be deleted).\n\n**Asynchronous Processing**: The deletion is processed asynchronously. The API immediately returns a `requestId` that can be used to correlate this deletion request with webhook events when the deletion is actually completed."
+        },
+        {
+          "info": {
+            "name": "Get a conversation item for a given id",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/conversationItems/{conversationItemId}",
+            "params": [
+              {
+                "name": "conversationItemId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ConversationItem",
+          "docs": "This operation fetches a specific conversation item for the provided id."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Conversation Tags",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all conversation tags available to the organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/conversations/tags",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "paginationToken",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ConversationTags",
+          "docs": "This operation lists all conversation tags available to a given organization.\n\nThe `hasMore` field can be used to determine if there are remaining results to list. The `paginationToken` field can be provided on subsequents calls to retrieve the next page of results."
+        },
+        {
+          "info": {
+            "name": "Create a conversation tag",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/conversations/tags",
+            "params": [
+              {
+                "name": "s-idempotency-key",
+                "value": "",
+                "type": "header"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "CreateConversationTag",
+          "docs": "This operation creates a conversation tag for the given organization. This tag can then be applied to conversations in subsequent operations. Requesting creation of an already existing tag will result in a `201` response and the response will contain the existing tag."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Conversations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List and filter all conversations available to the organization",
+            "type": "http"
+          },
           "http": {
             "method": "GET",
             "url": "https://api.sprucehealth.com/v1/conversations",
             "params": [
-              { "name": "orderBy", "value": "created", "type": "query", "description": "Required. created or last_message." },
-              { "name": "pageSize", "value": "50", "type": "query", "description": "Max 200." },
-              { "name": "paginationToken", "value": "", "type": "query" }
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "paginationToken",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "orderBy",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "startFrom",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
             ]
           },
-          "docs": "Lists conversations. orderBy is required. Confirmed path."
+          "operationId": "ListConversations",
+          "docs": "This operation lists all conversations available to the organization. This is an eventually consistent view and may take a short time before new conversations appear in results.\n\n\nTo iterate through all conversations in the organization, list the first page of conversations (without specifying `paginationToken` or `startFrom`). If `hasMore=true`, the provide the `paginationToken` to the API to list subsequent pages of conversations until `hasMore=false`.\n\n\n## Detecting conversations with new messages\n\nNote that the conversations are ordered by created date by default. You can also order them by the time of last activity in the conversation by specifying `orderBy=last_message`. This is particularly helpful when trying to determine conversations with new activity in them. In this particular case, you can query the list of conversations with `orderBy=last_message` and capture the `lastMessageAt` time for the last conversation in the list. On the next query, you can then `startFrom=<lastMessageAt time you saved>` and `orderBy=last_message` to return any conversations with new activity since your last query.\n\n\nWhile you can determine the conversations with new activity, it is also important to know if the latest messages in each conversation were from your teammates or from an external contact (like a patient). To determine this, you can use the [listing of conversation items API](/reference/conversationitems) to query for the latest items since a particular time with the `startFrom` field. If any message in the list returned has `direction=inbound` then it indicates a message received since the last query for message items."
         },
         {
-          "info": { "name": "Create a conversation.", "type": "http" },
-          "http": { "method": "POST", "url": "https://api.sprucehealth.com/v1/conversations", "body": { "type": "json", "data": "{}" } },
-          "docs": "Creates a new conversation. Modeled."
-        },
-        {
-          "info": { "name": "Get a conversation.", "type": "http" },
-          "http": {
-            "method": "GET",
-            "url": "https://api.sprucehealth.com/v1/conversations/:conversationId",
-            "params": [{ "name": "conversationId", "value": "", "type": "path" }]
+          "info": {
+            "name": "Create a new conversation",
+            "type": "http"
           },
-          "docs": "Retrieves a conversation by ID. Modeled."
-        },
-        {
-          "info": { "name": "Update a conversation.", "type": "http" },
-          "http": {
-            "method": "PATCH",
-            "url": "https://api.sprucehealth.com/v1/conversations/:conversationId",
-            "params": [{ "name": "conversationId", "value": "", "type": "path" }],
-            "body": { "type": "json", "data": "{}" }
-          },
-          "docs": "Updates a conversation. Modeled."
-        }
-      ]
-    },
-    {
-      "info": { "name": "Messages", "type": "folder" },
-      "items": [
-        {
-          "info": { "name": "Post a message to a conversation.", "type": "http" },
           "http": {
             "method": "POST",
-            "url": "https://api.sprucehealth.com/v1/conversations/:conversationId/messages",
-            "params": [{ "name": "conversationId", "value": "", "type": "path" }],
-            "body": { "type": "json", "data": "{}" }
-          },
-          "docs": "Posts a message into a conversation. Confirmed path."
-        },
-        {
-          "info": { "name": "List conversation items.", "type": "http" },
-          "http": {
-            "method": "GET",
-            "url": "https://api.sprucehealth.com/v1/conversations/:conversationId/items",
-            "params": [{ "name": "conversationId", "value": "", "type": "path" }]
-          },
-          "docs": "Lists items in a conversation. Modeled."
-        },
-        {
-          "info": { "name": "Get a conversation item.", "type": "http" },
-          "http": {
-            "method": "GET",
-            "url": "https://api.sprucehealth.com/v1/conversations/:conversationId/items/:itemId",
+            "url": "https://api.sprucehealth.com/v1/conversations",
             "params": [
-              { "name": "conversationId", "value": "", "type": "path" },
-              { "name": "itemId", "value": "", "type": "path" }
+              {
+                "name": "s-idempotency-key",
+                "value": "",
+                "type": "header"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
             ]
           },
-          "docs": "Gets a conversation item for a given id. Modeled path."
+          "operationId": "CreateConversation",
+          "docs": "This operation creates a new conversation within an organization. The following conversation types are supported:\n\n### Secure Conversations (`type: \"secure\"`)\n\nA secure conversation can be started with a single contact or a group of contacts. All contacts must be patients and either have a Spruce account or a pending secure invite.\n\n### Note Conversations (`type: \"note\"`)\n\nA note conversation is an internal-only conversation for documenting information. Notes can optionally include organization members/groups and can be associated with contacts for organizational purposes (via `associatedContactIds`). Associated contacts will not have access to the note.\n\n### Asynchronous Message Processing\n\nIf a message is included in the conversation creation request, the message will be posted asynchronously after the conversation is created. The API will immediately return the conversation details along with a `postMessageRequestId` that can be used to track when the message is actually sent.\n\nThe `postMessageRequestId` returned in the response can be matched against the `requestID` field of the `conversationItem.created` webhook event to identify when the message has been successfully posted to the conversation."
         },
         {
-          "info": { "name": "List internal endpoints.", "type": "http" },
-          "http": { "method": "GET", "url": "https://api.sprucehealth.com/v1/internalendpoints" },
-          "docs": "Lists internal endpoints. Confirmed path."
+          "info": {
+            "name": "Get a conversation for a given id",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/conversations/{conversationId}",
+            "params": [
+              {
+                "name": "conversationId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "Conversation",
+          "docs": "This operation fetches a specific conversation for the provided id."
         },
         {
-          "info": { "name": "Upload media.", "type": "http" },
-          "http": { "method": "POST", "url": "https://api.sprucehealth.com/v1/media" },
-          "docs": "Uploads media for a message attachment. Modeled."
+          "info": {
+            "name": "Update a conversation",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.sprucehealth.com/v1/conversations/{conversationId}",
+            "params": [
+              {
+                "name": "s-idempotency-key",
+                "value": "",
+                "type": "header"
+              },
+              {
+                "name": "conversationId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "UpdateConversation",
+          "docs": "This operation updates a specific conversation by id.\n\nFields provided in the input object will be updated, omitted fields *(null)* will be unchanged."
+        },
+        {
+          "info": {
+            "name": "List and filter all conversation items in a conversation",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/conversations/{conversationId}/items",
+            "params": [
+              {
+                "name": "conversationId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "paginationToken",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "startFrom",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ConversationItems",
+          "docs": "This operation lists all conversations items available in a conversation. This is an eventually consistent view and may take a short time before new conversation items appear in results."
+        },
+        {
+          "info": {
+            "name": "Post a message to a specific conversation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/conversations/{conversationId}/messages",
+            "params": [
+              {
+                "name": "s-idempotency-key",
+                "value": "",
+                "type": "header"
+              },
+              {
+                "name": "conversationId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "PostConversationMessage",
+          "docs": "This operation posts a message in a conversation as specified by the conversationId. You can retrieve the conversationId by [listing the conversations for a contact](/reference/contactconversations) or by [listing all conversations in the organization](/reference/conversations). You can also [send messages to a phone number, an email address, fax number, or securely message a contact](/reference/postmessagefromendpoint) using a [specific internal endpoint](/reference/internalendpoints). The `requestID` returned by this API may be used to match against the `requestID` field of the `conversationItem.created` webhook event to identify when the message is posted.\n## Posting an internal message containing a page for an organization member\nTo post a message with a page for an organization member, you'll first need to know the member's id. You can find the id of the organization member by [listing all organization members](/reference/organizationmembers). Once the member id is known, you can post a message to the conversation with `internal=true` and an element of `type=page` and `value=<member-id>` in the list of `body` elements being posted.\nThe `body` parameter is a list of message elements. Each element can be of type `text` or `page`. The request can contain combinations of `text` and `page` elements to create internal messages with useful content while also notifying a set of members.\n## Posting to a Team or Note conversation\nYou can also use this API to post messages into a Team or Note conversations. For Note conversations, you will have to specify `internal=true` since only internal messages can be posted in Note conversations."
         }
       ]
     },
     {
-      "info": { "name": "Webhooks", "type": "folder" },
+      "info": {
+        "name": "Internal Endpoints",
+        "type": "folder"
+      },
       "items": [
         {
-          "info": { "name": "List webhook endpoints.", "type": "http" },
-          "http": { "method": "GET", "url": "https://api.sprucehealth.com/v1/webhooks/endpoints" },
-          "docs": "Lists registered webhook endpoints. Confirmed path."
-        },
-        {
-          "info": { "name": "Create a webhook endpoint.", "type": "http" },
-          "http": { "method": "POST", "url": "https://api.sprucehealth.com/v1/webhooks/endpoints", "body": { "type": "json", "data": "{}" } },
-          "docs": "Registers a webhook endpoint; response includes a signing secret. Confirmed path."
-        },
-        {
-          "info": { "name": "Get a webhook endpoint.", "type": "http" },
+          "info": {
+            "name": "List all internal endpoints",
+            "type": "http"
+          },
           "http": {
             "method": "GET",
-            "url": "https://api.sprucehealth.com/v1/webhooks/endpoints/:endpointId",
-            "params": [{ "name": "endpointId", "value": "", "type": "path" }]
+            "url": "https://api.sprucehealth.com/v1/internalendpoints",
+            "params": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
           },
-          "docs": "Retrieves a webhook endpoint by ID. Modeled."
+          "operationId": "InternalEndpoints",
+          "docs": "This operation lists all internal endpoints which organizations can use to communicate with. This includes all Spruce phone numbers, fax numbers, email addresses and Spruce Links. You can then [use an internal endpoint to send a message](/reference/postmessagefromendpoint)."
         },
         {
-          "info": { "name": "List webhook endpoint events.", "type": "http" },
+          "info": {
+            "name": "Create an outbound proxy call",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/internalendpoints/{internalEndpointId}/calls",
+            "params": [
+              {
+                "name": "s-idempotency-key",
+                "value": "",
+                "type": "header"
+              },
+              {
+                "name": "internalEndpointId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "PostCreateProxyCall",
+          "docs": "This operation creates an outbound proxy call from an internal endpoint to an external phone number and returns the proxy number for use.\nTo learn more about proxy calling on Spruce, [visit this link](https://help.sprucehealth.com/hc/en-us/articles/40126738273435-Web-Desktop-Phone-Calls#h_01K322JXWY7T60ESF4DFTBKZP0)."
+        },
+        {
+          "info": {
+            "name": "Send a message from an internal endpoint",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/internalendpoints/{internalEndpointId}/conversations",
+            "params": [
+              {
+                "name": "s-idempotency-key",
+                "value": "",
+                "type": "header"
+              },
+              {
+                "name": "internalEndpointId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "PostMessageFromEndpoint",
+          "docs": "This operation sends a message to an external endpoint (phone number or email address) or a contact (secure messaging). Only one of secureEndpoint or smsOrEmailEndpoint should be specified. You will need to also specify the appropriate internal endpoint from the [list of available internal endpoints for an organization](/reference/internalendpoints). The RequestID returned by this API may be used to match against the `RequestID` field of the `conversationItem.created` webhook event to identify when the message is posted.\n\n## Send a secure message\n* Get the appropriate Spruce phone number from the [list of internal endpoints for an organization](/reference/internalendpoints) (of channel type `secure`)\n* Specify the internal endpoint's `endpoint.Id` in the `internalEndpointId` path parameter\n* Get the Id of the appropriate contact to send the secure message to. You can [list all contacts in the organization](/reference/listcontacts) or [search for the appropriate contact](/reference/searchcontacts) to determine the contact Id if you do not have it already.\n* Populate the `destination.secureEndpoint` object with the `contactId`, the appropriate `deliveryMethod` and `subject` for the conversation.\n\nThe `deliveryMethod` can be one of the following:\n* (Default) `any_available_secure_conversation`: The system will first try to deliver messages using conversations from the specified internal endpoint. Then it will try to deliver to any existing secure conversation with the recipient. Then, if no conversation exists, a new secure conversation will be created.\n* `only_conversations_matching_internal_endpoint`: The system will deliver messages in conversations from the specified internal endpoint. If such a conversation doesn't yet exist, a new one will be created.\n* `new_conversation`: This option will create a new conversation, separate from any existing conversation.\n## Send an SMS\n* Get the appropriate Spruce phone number from the [list of internal endpoints for an organization](/reference/internalendpoints) (of channel type `phone`)\n* Specify the internal endpoint's `endpoint.Id` in the `internalEndpointId` path parameter\n* Specify the phone number to send the the message to in the `destination.smsOrEmailEndpoint` body parameter\n## Send an email\n* Get the appropriate Spruce phone number from the [list of internal endpoints for an organization](/reference/internalendpoints) (of channel type `email`)\n* Specify the internal endpoint's `endpoint.Id` in the `internalEndpointId` path parameter\n* Specify the email address to send the the message to in the `destination.smsOrEmailEndpoint` body parameter\n## Send a fax\n* Get the appropriate Spruce fax number from the [list of internal endpoints for an organization](/reference/internalendpoints) (of channel type `fax`)\n* Specify the internal endpoint's `endpoint.Id` in the `internalEndpointId` path parameter\n* Specify the fax number to send the the message to in the `destination.faxEndpoint` body parameter\n* Note: Each outbound fax message sent from an internal endpoint will result in a new fax conversation being created"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Media",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Upload media",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/media",
+            "params": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "UploadMedia",
+          "docs": "This operation uploads media such a images, videos, and files to Spruce for use in messaging. Uploading a file will return a media ID that can be used to reference the file in other operations. Callers of this API should record the resulting media ID for future use. A media ID can be used in the `attachmentID` field of the [conversation message post attachment](/reference/postmessagefromendpoint). Media IDs can be used multiple times.\nThe `Content-Type` and `Content-Disposition` headers on the multipart `media` field can use used to provide additional metadata about the media. This metadata can impact how the media is displayed and downloaded from the application.\n\n**Example Headers**\n* `Content-Disposition: form-data; name=\"media\"; filename=\"image.png\"`\n* `Content-Type: image/png`"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Organization",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List information about the organization",
+            "type": "http"
+          },
           "http": {
             "method": "GET",
-            "url": "https://api.sprucehealth.com/v1/webhooks/endpoints/:endpointId/events",
-            "params": [{ "name": "endpointId", "value": "", "type": "path" }]
+            "url": "https://api.sprucehealth.com/v1/organization",
+            "params": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
           },
-          "docs": "Lists events delivered to a webhook endpoint. Modeled."
+          "operationId": "Organization",
+          "docs": "This returns your organization's information. Most importantly, it returns your organization's `id` which will often be used as the owner or a member of other objects."
         },
         {
-          "info": { "name": "Pause or resume a webhook endpoint.", "type": "http" },
+          "info": {
+            "name": "List all members of the organization",
+            "type": "http"
+          },
           "http": {
-            "method": "PUT",
-            "url": "https://api.sprucehealth.com/v1/webhooks/endpoints/:endpointId/paused",
-            "params": [{ "name": "endpointId", "value": "", "type": "path" }],
-            "body": { "type": "json", "data": "{}" }
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/organization/members",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "paginationToken",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
           },
-          "docs": "Pauses or resumes event dispatch. Modeled."
+          "operationId": "OrganizationMembers",
+          "docs": "This returns a list of all members of the organization. This includes all teammates and all teams, as well as a reference to the organization itself."
         },
         {
-          "info": { "name": "Delete a webhook endpoint.", "type": "http" },
+          "info": {
+            "name": "Get a member of the organization by id",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/organization/members/{memberId}",
+            "params": [
+              {
+                "name": "memberId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "OrganizationMember",
+          "docs": "This operation retrieves a specific organization member (organization, team, or teammate), by id."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Phone Lines",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all phone lines of the organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/phonelines",
+            "params": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "PhoneLines",
+          "docs": "This returns a list of all phone lines of the organization."
+        },
+        {
+          "info": {
+            "name": "Get a phone line of the organization by id",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/phonelines/{phonelineId}",
+            "params": [
+              {
+                "name": "phonelineId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "PhoneLine",
+          "docs": "This operation retrieves a specific phone line by id."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Saved Messages",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List saved messages",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/savedmessages",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "paginationToken",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ListSavedMessages",
+          "docs": "Lists all saved messages accessible to the organization. Returns both private and organization-wide saved messages with pagination support."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Scheduled Messages",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List any messages scheduled in a conversation",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/conversations/{conversationId}/scheduledmessages",
+            "params": [
+              {
+                "name": "conversationId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ListConversationScheduledMessages",
+          "docs": "This operation lists the messages that are scheduled in a conversation."
+        },
+        {
+          "info": {
+            "name": "Schedule a message to be sent in a conversation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/conversations/{conversationId}/scheduledmessages",
+            "params": [
+              {
+                "name": "s-idempotency-key",
+                "value": "",
+                "type": "header"
+              },
+              {
+                "name": "conversationId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ScheduleConversationMessage",
+          "docs": "This operation creates a scheduled message to be sent in a conversation at the designated time. If no author is specified, the message will be sent as the organization."
+        },
+        {
+          "info": {
+            "name": "List any messages scheduled for the organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/scheduledmessages",
+            "params": [
+              {
+                "name": "paginationToken",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ListScheduledMessages",
+          "docs": "This operation lists the messages that are scheduled to be sent from the organization."
+        },
+        {
+          "info": {
+            "name": "Delete a scheduled message",
+            "type": "http"
+          },
           "http": {
             "method": "DELETE",
-            "url": "https://api.sprucehealth.com/v1/webhooks/endpoints/:endpointId",
-            "params": [{ "name": "endpointId", "value": "", "type": "path" }]
+            "url": "https://api.sprucehealth.com/v1/scheduledmessages/{scheduledMessageId}",
+            "params": [
+              {
+                "name": "scheduledMessageId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
           },
-          "docs": "Deletes a webhook endpoint. Modeled."
+          "operationId": "DeleteScheduledMessage",
+          "docs": "This operation deletes a scheduled message specified by id."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Teams",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List the members of a team",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/teams/{teamId}/members",
+            "params": [
+              {
+                "name": "teamId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "paginationToken",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "TeamMembers",
+          "docs": "This operation lists the members of a team identified by id."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Transcription",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a transcription by id",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/transcriptions/{transcriptionId}",
+            "params": [
+              {
+                "name": "transcriptionId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "Transcription",
+          "docs": "This operation fetches the full transcription text and its summarization (if available) for the provided transcription id.\n\nThe transcription id is available on the `transcriptionId` field of relevant objects.\n\n**Limitation:** Voicemail transcriptions created before November 2025 were stored in a legacy format that cannot be retrieved by this endpoint. Their ids may still appear on conversation items, but requests for them respond with a `404` and an explanatory message."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Webhooks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List webhook destination endpoints",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/webhooks/endpoints",
+            "params": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ListWebhookEndpoints",
+          "docs": "This operation lists the endpoints that an organization has registered for webhooks."
+        },
+        {
+          "info": {
+            "name": "Create a webhook destination endpoint",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/webhooks/endpoints",
+            "params": [
+              {
+                "name": "s-idempotency-key",
+                "value": "",
+                "type": "header"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "CreateWebhookEndpoint",
+          "docs": "This operation creates a destination endpoint for webhooks events."
+        },
+        {
+          "info": {
+            "name": "Delete a webhook destination endpoint by id",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.sprucehealth.com/v1/webhooks/endpoints/{endpointId}",
+            "params": [
+              {
+                "name": "endpointId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "DeleteWebhookEndpoint",
+          "docs": "This operation deleted a destination endpoint for webhook events by id."
+        },
+        {
+          "info": {
+            "name": "Get a webhook destination endpoint by id",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/webhooks/endpoints/{endpointId}",
+            "params": [
+              {
+                "name": "endpointId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "WebhookEndpoint",
+          "docs": "This operation retrieves a specific destination endpoint for webhooks events by id."
+        },
+        {
+          "info": {
+            "name": "List events for an endpoint",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/webhooks/endpoints/{endpointId}/events",
+            "params": [
+              {
+                "name": "endpointId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "startTime",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "endTime",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "paginationToken",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ListWebhookEndpointEvents",
+          "docs": "This operation retrieves information about events that have been attempted to be published to a webhook destination endpoint. Events are queryable for a period of 30 days after creation and are returned in sets of 20 at a time. Use the pagination token to retrieve more events."
+        },
+        {
+          "info": {
+            "name": "Pause or resume a webhook destination endpoint",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/webhooks/endpoints/{endpointId}/paused",
+            "params": [
+              {
+                "name": "s-idempotency-key",
+                "value": "",
+                "type": "header"
+              },
+              {
+                "name": "endpointId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "paused",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ModifyWebhookEndpointPaused",
+          "docs": "This operation sets the 'paused' state of a webhook destination endpoint."
         }
       ]
     }

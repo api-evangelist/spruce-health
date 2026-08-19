@@ -1,0 +1,66 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Spruce Health API \u2014 Phone Lines",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Phone Lines",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all phone lines of the organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/phonelines",
+            "params": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "PhoneLines",
+          "docs": "This returns a list of all phone lines of the organization."
+        },
+        {
+          "info": {
+            "name": "Get a phone line of the organization by id",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/phonelines/{phonelineId}",
+            "params": [
+              {
+                "name": "phonelineId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "PhoneLine",
+          "docs": "This operation retrieves a specific phone line by id."
+        }
+      ]
+    }
+  ]
+}

@@ -42,19 +42,55 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Spruce Health is a HIPAA-compliant healthcare communication platform that gives modern clinics secure messaging, voice, video, team chat, e-fax, secure payments, and phone lines in one system. The **Spruce Public API** is a RESTful, Bearer-token-authenticated interface (base `https://api.sprucehealth.com/v1`) that lets an organization manage Contacts, Conversations, conversation items and Messages, internal endpoints and phone lines, and register Webhook endpoints for real-time events.
+Spruce Health is a HIPAA-compliant healthcare communication platform that unifies phone, SMS, secure messaging, video, e-fax, team chat, mobile payments and VoIP phone lines into one system for medical practices. The **Spruce Public API** is a RESTful, Bearer-token-authenticated interface (base `https://api.sprucehealth.com/v1`) spanning **47 operations** across contacts, conversations, conversation items, internal endpoints and phone lines, media, organization members and teams, saved and scheduled messages, AI transcriptions, and webhook endpoint management.
 
 **APIs.json:** [https://raw.githubusercontent.com/api-evangelist/spruce-health/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/spruce-health/refs/heads/main/apis.yml)
 
 ## Access Model (Important)
 
-API access to Spruce is **gated**, not self-serve:
+API access to Spruce is **gated twice**, not self-serve:
 
 - The API is part of the **Communicator plan** ($49/user/month). The Basic plan ($24/user/month) does **not** include API access.
-- Beyond having the Communicator plan, an organization must **contact Spruce Support to request that API access be enabled**.
-- Once enabled, an administrator generates a token in the **API Access** section of Settings and sends it as `Authorization: Bearer <your-token>`. An incorrect or disabled token returns `403`.
+- Beyond having the Communicator plan, an organization must **contact Spruce Support to request that API access be enabled** ([request form](https://sprucehealth.com/spruce-api)).
+- Once enabled, an administrator generates a token in the **API Access** section of Settings and sends it as `Authorization: Bearer <your-token>`. An incorrect or disabled token returns `403` — Spruce never returns `401`.
 
-The developer documentation and API reference are **publicly readable** at [developer.sprucehealth.com](https://developer.sprucehealth.com/docs/overview) (including a machine-readable index at [developer.sprucehealth.com/llms.txt](https://developer.sprucehealth.com/llms.txt)), but calling the API requires an enabled, token-bearing organization.
+There is no separate API fee, and no sandbox or test mode: production is the only published environment.
+
+The developer documentation, the API reference and the **machine-readable OpenAPI** are all publicly readable at [developer.sprucehealth.com](https://developer.sprucehealth.com/docs/overview), but calling the API requires an enabled, token-bearing organization.
+
+## Contract Provenance
+
+The OpenAPI in this repository is **the real one Spruce publishes**, harvested verbatim on 2026-08-15. Spruce's developer portal runs on ReadMe and references its definition as `oasPublicUrl: @spruce/v1.0#13needamst2v4m6`; the document is served from the ReadMe registry at `https://dash.readme.com/api/v1/api-registry/13needamst2v4m6` (HTTP 200, OpenAPI 3.0.0, `info.title` *Spruce Health API*, `servers[0]` `https://api.sprucehealth.com/v1`, 47 operations, 169 schemas).
+
+It is saved unmodified at [`openapi/_original/spruce-health-openapi.json`](openapi/_original/spruce-health-openapi.json) and split by tag into 15 per-resource documents under [`openapi/`](openapi/).
+
+> **Correction to an earlier round.** A previous pass could not find a published spec and authored an *honestly modeled* 38-operation OpenAPI from the operation catalog in `llms.txt`. That modeled spec has been **removed and replaced**. It had materially wrong paths — for example `/conversations/{conversationId}/items/{itemId}` (real: `/conversationItems/{conversationItemId}`), `/proxy-calls` (real: `/internalendpoints/{internalEndpointId}/calls`), `/contacts/{contactId}/integration-links` (real: `/integrationlinks`), and `/scheduled-messages` (real: `/scheduledmessages`) — and it omitted the Organization, Phone Lines, Teams, Transcription and contact-invite surfaces entirely. Every artifact derived from it has been regenerated from the real contract.
+
+## What Spruce Actually Ships
+
+| Surface | Status |
+| --- | --- |
+| OpenAPI 3.0.0, 47 operations | Published |
+| Idempotency (`s-idempotency-key`, all POST/PATCH, 24h retention) | Published |
+| Rate-limit response headers (4, across 60s and 24h windows) | Published |
+| Request correlation id (`s-request-id`) | Published |
+| Cursor pagination (`pageSize` + `paginationToken`, `hasMore`/`totalCount`) | Published |
+| Webhooks — 15 event types, HMAC-SHA256 signed | Published |
+| `llms.txt` on both the docs and marketing hosts | Published |
+| Status page (Atlassian Statuspage, API tracked as its own component) | [status.sprucehealth.com](https://status.sprucehealth.com) |
+| Dated changelog with RSS | [sprucehealth.com/whats-new](https://sprucehealth.com/whats-new) |
+| MCP endpoint | Deployed at `developer.sprucehealth.com/mcp`, **authorization-gated** |
+| First-party SDK in any registry | **None** |
+| AsyncAPI | **None** — webhooks documented in prose only |
+| `/.well-known/*` (security.txt, OAuth metadata, agent card) | **None** — 404 on all four hosts |
+| OAuth 2.0 / scopes | **None** — a single all-or-nothing organization token |
+| Sandbox / test mode | **None** |
+
+## Compliance
+
+- **HIPAA** — every eligible organization automatically receives a signed Business Associate Agreement as part of the terms of service; no separate agreement, no opt-in, no extra fee.
+- **42 CFR Part 2** — supported since 2026-07-09 via an updated BAA bringing formal Qualified Service Organization status.
+- **SOC 2 Type II** — Spruce states it is audited annually. No trust centre, audit period or report request path is published.
 
 ## Tags
 
@@ -72,64 +108,44 @@ The developer documentation and API reference are **publicly readable** at [deve
 ## Timestamps
 
 - **Created:** 2026-07-10
-- **Modified:** 2026-07-10
+- **Modified:** 2026-08-15
 
 ## APIs
 
-### Spruce Contacts API
+Fifteen API entries, one per tag in the published OpenAPI:
 
-List, search, create, retrieve, update, and delete the contacts (patients and other parties) in a Spruce organization, plus manage contact custom fields, contact tags, contact-to-conversation relationships, integration links to external systems (EHR/PM), and send Spruce invites.
-
-- **Human URL:** [https://developer.sprucehealth.com/reference/listcontacts](https://developer.sprucehealth.com/reference/listcontacts)
-- **Base URL:** `https://api.sprucehealth.com/v1`
-
-### Spruce Conversations API
-
-List, create, retrieve, and update conversations (message threads) in an organization, and manage conversation tags. Listing supports cursor pagination and ordering by creation time or last message.
-
-- **Human URL:** [https://developer.sprucehealth.com/reference/listconversations](https://developer.sprucehealth.com/reference/listconversations)
-- **Base URL:** `https://api.sprucehealth.com/v1`
-
-### Spruce Messages API
-
-Post messages into a conversation, list and retrieve conversation items (messages, calls, faxes, secure conversation events), delete a conversation item, upload media, send messages from an internal endpoint or phone line, create proxy calls, and manage scheduled and saved messages.
-
-- **Human URL:** [https://developer.sprucehealth.com/reference/postconversationmessage](https://developer.sprucehealth.com/reference/postconversationmessage)
-- **Base URL:** `https://api.sprucehealth.com/v1`
-
-### Spruce Webhooks API
-
-Register and manage webhook endpoints so an organization receives real-time HTTP callbacks for contact, conversation, and conversation-item events (created / updated / deleted / merged / restored). Create endpoints (which returns a signing secret), list them, retrieve one, list an endpoint's events, pause or resume dispatch, and delete an endpoint.
-
-- **Human URL:** [https://developer.sprucehealth.com/docs/webhooks-overview](https://developer.sprucehealth.com/docs/webhooks-overview)
-- **Base URL:** `https://api.sprucehealth.com/v1`
-
-## Grounding & Modeling Note
-
-The **base URL**, **Bearer authentication**, **gated access model**, **pricing**, and the following **six endpoints** are confirmed directly from Spruce's public developer reference:
-
-- `GET /contacts`
-- `GET /conversations`
-- `POST /conversations/{conversationId}/messages`
-- `GET /internalendpoints`
-- `GET /webhooks/endpoints`
-- `POST /webhooks/endpoints`
-
-The remaining paths in [`openapi/spruce-health-openapi.yml`](openapi/spruce-health-openapi.yml) (individual CRUD, fields/tags, integration links, conversation items, media upload, proxy calls, scheduled/saved messages, and webhook get/delete/events/pause) are **honestly modeled** from Spruce's published operation catalog and documented behavior. The OpenAPI is flagged `x-endpointsModeled: true`; reconcile exact paths and schemas against the live reference and the machine-readable OpenAPI Spruce publishes.
+| API | Operations | Reference |
+| --- | ---: | --- |
+| Contacts | 11 | [listcontacts](https://developer.sprucehealth.com/reference/listcontacts) |
+| Conversations | 6 | [listconversations](https://developer.sprucehealth.com/reference/listconversations) |
+| Webhooks | 6 | [listwebhookendpoints](https://developer.sprucehealth.com/reference/listwebhookendpoints) |
+| Scheduled Messages | 4 | [listscheduledmessages](https://developer.sprucehealth.com/reference/listscheduledmessages) |
+| Internal Endpoints | 3 | [internalendpoints](https://developer.sprucehealth.com/reference/internalendpoints) |
+| Organization | 3 | [organization](https://developer.sprucehealth.com/reference/organization-1) |
+| Contact Fields | 2 | [contactfields](https://developer.sprucehealth.com/reference/contactfields) |
+| Contact Tags | 2 | [contacttags](https://developer.sprucehealth.com/reference/contacttags) |
+| Conversation Item | 2 | [conversationitem](https://developer.sprucehealth.com/reference/conversationitem) |
+| Conversation Tags | 2 | [conversationtags](https://developer.sprucehealth.com/reference/conversationtags) |
+| Phone Lines | 2 | [phonelines](https://developer.sprucehealth.com/reference/phonelines) |
+| Media | 1 | [uploadmedia](https://developer.sprucehealth.com/reference/uploadmedia) |
+| Saved Messages | 1 | [listsavedmessages](https://developer.sprucehealth.com/reference/listsavedmessages) |
+| Teams | 1 | [teammembers](https://developer.sprucehealth.com/reference/teammembers) |
+| Transcription | 1 | [transcription](https://developer.sprucehealth.com/reference/transcription) |
 
 ## WebSocket Review
 
-Spruce does **not** expose a documented public WebSocket API. Real-time delivery is done with **outbound webhooks** (HTTPS callbacks) for `contact.*`, `conversation.*`, and `conversationItem.*` events — not a `wss://` transport. See [`review.yml`](review.yml).
+Spruce does **not** expose a documented public WebSocket API. Real-time delivery is done with **outbound webhooks** (HTTPS callbacks) for `contact.*`, `conversation.*`, `conversationItem.*` and `scheduledMessage.*` events — not a `wss://` transport. See [`review.yml`](review.yml) and [`asyncapi/spruce-health-webhooks.yml`](asyncapi/spruce-health-webhooks.yml).
 
 ## Common Properties
 
 - [Website](https://sprucehealth.com)
-- [LinkedIn](https://www.linkedin.com/company/spruce-health)
+- [Developer Portal](https://developer.sprucehealth.com)
 - [Documentation](https://developer.sprucehealth.com/docs/overview)
-- [Sign Up / Plans](https://sprucehealth.com/plans)
-- [Plans](plans/spruce-health-plans-pricing.yml)
-- [Rate Limits](rate-limits/spruce-health-rate-limits.yml)
-- [Fin Ops](finops/spruce-health-finops.yml)
+- [Status Page](https://status.sprucehealth.com)
+- [Changelog](https://sprucehealth.com/whats-new)
+- [Pricing](https://sprucehealth.com/plans)
+- [GitHub](https://github.com/sprucehealth)
+- [LinkedIn](https://www.linkedin.com/company/spruce-health)
 
 ## Maintainers
 

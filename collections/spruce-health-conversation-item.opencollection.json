@@ -1,0 +1,71 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Spruce Health API \u2014 Conversation Item",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Conversation Item",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Delete a conversation item",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.sprucehealth.com/v1/conversationItems/{conversationItemId}",
+            "params": [
+              {
+                "name": "conversationItemId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "DeleteConversationItem",
+          "docs": "Deletes a specific conversation item by ID. This operation follows the same business rules as the in-app delete mechanism, including permission checks and content restrictions.\n\n**Soft Delete Behavior**: The API performs a soft delete, creating a placeholder that can be restored by users with appropriate access. The conversation item will be marked as deleted but not permanently removed from the system.\n\n**Permission Requirements**: You can only delete conversation items in conversations owned by your organization. The deletion must comply with the same restrictions as the Spruce app (e.g., certain system messages cannot be deleted).\n\n**Asynchronous Processing**: The deletion is processed asynchronously. The API immediately returns a `requestId` that can be used to correlate this deletion request with webhook events when the deletion is actually completed."
+        },
+        {
+          "info": {
+            "name": "Get a conversation item for a given id",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/conversationItems/{conversationItemId}",
+            "params": [
+              {
+                "name": "conversationItemId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ConversationItem",
+          "docs": "This operation fetches a specific conversation item for the provided id."
+        }
+      ]
+    }
+  ]
+}

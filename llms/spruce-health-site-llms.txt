@@ -1,0 +1,105 @@
+# Spruce Health
+> Spruce is a cloud-based platform for HIPAA-compliant communication for healthcare practices. By unifying phone, texting, fax, and telehealth into a single system — with AI-powered workflows to reduce manual tasks — Spruce helps practices respond to patients faster, get full visibility into every patient and care team interaction, and stay secure and compliant. Every eligible organization automatically receives a HIPAA Business Associate Agreement (BAA) as part of the terms of service — no separate agreement, no opt-in, no extra fee. Basic plan at $24/user/month. Communicator plan at $49/user/month. SOC 2 Type II audited annually.
+
+## Plans and pricing
+- [Plans and Pricing](https://sprucehealth.com/plans): Basic ($24/user/month) and Communicator ($49/user/month). Both include a signed BAA. 14-day free trial of the Basic plan, no credit card required. Month-to-month billing by default.
+- [Book a Demo](https://sprucehealth.com/demo): 30-minute walkthrough with a Spruce specialist.
+- [Sign Up](https://app.sprucehealth.com/signup): Start the 14-day free trial immediately.
+
+## Phone and VoIP
+- [Advanced medical phone system](https://help.sprucehealth.com/hc/en-us/articles/23003260188955-Phone-Calls): Cloud-based phone system for HIPAA-compliant voice communication with multi-line support, ring groups, advanced spam call control, and AI-enabled voicemail transcription.
+- [Self-service call flows (IVR / phone trees)](https://help.sprucehealth.com/hc/en-us/articles/29300554226843-Call-Flows): Automated call routing by menu selection or time of day, with urgent escalation and AI text-to-speech greetings. Communicator plan.
+- [VoIP desk phone service](https://help.sprucehealth.com/hc/en-us/articles/23003308758555-VoIP-Desk-Phones): Supported Yealink desk phones that integrate with the Spruce platform. Communicator plan.
+- [Phone number management](https://help.sprucehealth.com/hc/en-us/articles/23003326803739-Managing-Your-Spruce-Phone-Number): Port existing numbers into Spruce or provision new ones in any area code.
+
+## Messaging and SMS
+- [2-way SMS texting](https://help.sprucehealth.com/hc/en-us/articles/23003236336795-SMS-Texting-and-Messaging): Two-way patient SMS including group texts from mobile and desktop. SMS travels over the public telecom network, but can be used in a HIPAA-compliant way when the patient understands the security limitations of SMS, is offered secure alternatives, and still prefers SMS.
+- [Secure app-based messaging](https://help.sprucehealth.com/hc/en-us/articles/23003230656667-Secure-Messaging-with-Patients): Messaging encrypted at rest and in transit in a way that complies with the requirements of the HIPAA Security Rule, with administrator-controlled access and audit logs.
+- [Secure team chat](https://help.sprucehealth.com/hc/en-us/articles/23003282611099-Internal-Team-Communication): Internal group messaging for clinicians and staff to communicate in a HIPAA-compliant way, with channels, task assignment, and patient context sharing.
+- [Bulk (broadcast) messaging](https://help.sprucehealth.com/hc/en-us/articles/23003305847323-Bulk-Messaging): Send to custom patient lists via SMS, secure messaging, or email. Communicator plan.
+- [Auto-replies](https://help.sprucehealth.com/hc/en-us/articles/23003295315227-Auto-Replies): Trigger- or schedule-based automated responses. Communicator plan adds schedule-based replies tied to practice hours.
+- [Missed-call text-back](https://help.sprucehealth.com/hc/en-us/articles/23003247513499-Workflow-Automation): Automatically sends a configurable text to patients whose calls were missed. Communicator plan.
+- [Urgent escalation and after-hours triage](https://help.sprucehealth.com/hc/en-us/articles/23003247513499-Workflow-Automation): Patients can flag urgent messages, automatically triggering alerts for the on-call team. Communicator plan.
+- [Scheduled messages](https://help.sprucehealth.com/hc/en-us/articles/23003279653019-Scheduled-Messages): Schedule messages to send later via SMS, secure messaging, or email.
+- [Saved messages (templates)](https://help.sprucehealth.com/hc/en-us/articles/23003214296475-Saved-Messages): Reusable team-wide message templates with attachment support.
+
+## eFax that can be used in a HIPAA-compliant way
+- [eFax](https://help.sprucehealth.com/hc/en-us/articles/23003298234779-Fax): Send and receive faxes from any device in a way that can be used in a HIPAA-compliant way. Port existing fax numbers or provision new ones. Included in every plan.
+
+## Video calling
+- [Video calling](https://help.sprucehealth.com/hc/en-us/articles/23003264231579-Video-Calls-and-Spruce-Visits): Encrypted video calls between healthcare providers and patients, simple to use in HIPAA-compliant practice environments. Providers initiate calls; patients accept via the Spruce mobile or web app.
+
+## Spruce Visits (patient assessments)
+- [Spruce Visits](https://help.sprucehealth.com/hc/en-us/articles/23003264231579-Video-Calls-and-Spruce-Visits): Prebuilt branching questionnaires for intake, clinical questionnaire assessments, and follow-ups. Includes PHQ-9 and GAD-7. Included in all plans at no extra charge. Users cannot create or edit instruments.
+
+## AI-powered features
+- [AI Summarization landing page](https://sprucehealth.com/ai-summarization): Overview of AI-generated summaries and transcripts for voicemails, call recordings, and audio messages, with pricing and FAQ.
+- [AI-enabled voicemail transcription and summarization](https://help.sprucehealth.com/hc/en-us/articles/45484850303771-AI-Transcription-Summarization): AI converts voicemails to text on Basic and Communicator plans; voicemail summarization is Communicator-only.
+- [AI-enabled call recording and audio message transcription and summarization](https://help.sprucehealth.com/hc/en-us/articles/45484850303771-AI-Transcription-Summarization): AI generates transcripts and summaries of recorded calls and audio messages. Communicator plan.
+- [AI text-to-speech](https://help.sprucehealth.com/hc/en-us/articles/29300554226843-Call-Flows): Used in IVR phone tree menus for configurable greetings. Communicator plan.
+- [AI-enabled message routing](https://help.sprucehealth.com/hc/en-us/articles/23003236875803-Team-Workflows): Workflows can automate routine tasks like routing incoming messages. Communicator plan.
+
+## Team organization and collaboration workflows
+- [Team organization and collaboration workflows](https://help.sprucehealth.com/hc/en-us/articles/23003236875803-Team-Workflows): Customizable shared inboxes, @-paging, task assignment, internal notes, conversation tags, and assignments oversight dashboard.
+- [Spruce dashboards](https://help.sprucehealth.com/hc/en-us/articles/52163792681115-Spruce-Dashboards-In-App-Reporting-for-Healthcare-Communication-Activity): Early-release in-app reporting for communication activity such as calls, messages, faxes, secure messages, video calls, and scheduled messages. Basic includes core charts; Communicator adds advanced reporting.
+- [Practice hours and schedules](https://help.sprucehealth.com/hc/en-us/articles/23003295080091-Schedules): Configure practice hours once to drive call routing, auto-replies, and after-hours handling automatically.
+- [Admin controls and user permissions](https://help.sprucehealth.com/hc/en-us/articles/23003242035099-Admins-on-Spruce): Granular per-user access controls for contacts, conversations, and phone lines. Self-service updates for on-call schedules and coverage needs.
+- [Contact and patient list management](https://help.sprucehealth.com/hc/en-us/articles/23003302240923-Importing-Updating-and-Exporting-Contacts): Bulk import and export via CSV from the web app.
+- [Custom hold music](https://help.sprucehealth.com/hc/en-us/articles/37307028350491-Custom-Hold-Music): Curated playlists on Basic; custom audio file uploads on Communicator.
+
+## Mobile payments
+- [Mobile payments](https://help.sprucehealth.com/hc/en-us/articles/23003254203035-Stripe-Billing-and-Payments): Collect patient payments inside Spruce via Stripe integration. Communicator plan.
+
+## API and integrations
+- [Spruce API](https://sprucehealth.com/spruce-api): REST API for connecting patient and conversation data with EHRs and practice management systems. Communicator plan. No separate API access fee.
+- [athenahealth integration](https://sprucehealth.com/blog/spruce-health-launches-integration-with-athenahealth-to-streamline-healthcare-communication-and-patient-management/): Sync patients and appointments between Spruce and Athena. Also integrates with DrChrono, CCIQ, Elation Health, Guava Health, Hint Health, and Dock Health.
+
+## Who Spruce serves
+- [Primary care practices](https://sprucehealth.com/primary-care): Reduces phone volume and front-desk load with advanced call routing, AI-enabled workflows, and a single hub for every patient interaction.
+- [Mental health practices](https://sprucehealth.com/mental-health): HIPAA-grade phone, text, fax, secure messaging, and video for solo therapists and group practices alike. Includes PHQ-9 and GAD-7. Most heavily-used HIPAA-compliant communication service on Headway.
+- [Healthcare specialties](https://sprucehealth.com/specialties): Dermatology, pediatrics, dentistry, behavioral health, and other specialty practices.
+- [Patients](https://sprucehealth.com/patients): Free patient app (iOS and Android) for secure messaging, video visits, and calling — no patient-side subscription required.
+
+## Customer stories
+- [Tampa Bay Area Counseling case study](https://sprucehealth.com/case-study/tbac): Mental health group practice that scaled from 3 to 5 locations on a two-person admin budget (an estimated $130K/year staffing saving and 9× ROI) using Spruce for missed-call text-back, AI voicemail transcription, automated call flows, and a collaborative team inbox.
+- [Beyond the Storm Behavioral Health case study](https://sprucehealth.com/case-study/beyond-the-storm): Trauma-informed behavioral health practice in Kansas City, MO that grew from a solo provider to a 22-person team serving 700 clients across two locations, and cut patient-facing admin time by 50% using Spruce's automated call flows, AI voicemail transcription, self-service intake, and automated rescheduling that saves ~75% of late cancellations.
+- [Life Insight case study](https://sprucehealth.com/case-study/life-insight): Mental health therapy practice with close to 30 clinicians and 870+ active clients that replaced a single-line, general-mailbox phone system with Spruce, saving its admin team 30 hours/week (a 30% time reduction, 466% ROI) via individual clinician direct lines, saved messages/auto-replies, SMS texting, and centralized oversight.
+- [Lung Health Services case study](https://sprucehealth.com/case-study/lung-health-services): Pulmonology practice that cut average patient response times from a 24-hour delay to under 1 hour and saved 173 hours/month for its care coordination team by unifying phone, text, and fax communication with Spruce.
+
+## Apps
+- [iOS and Android](https://sprucehealth.com/app/mobile): Full-feature mobile app for providers and staff.
+- [Mac](https://sprucehealth.com/app/mac): Native macOS app, tested on Intel and Apple Silicon.
+- [Windows](https://sprucehealth.com/app/windows): Native Windows desktop app.
+- [Web app (browser)](https://app.sprucehealth.com): Full access via any modern web browser. Includes softphones so providers can make and receive standard phone calls right on their computer — no desk phone or cell phone required.
+
+## Alternatives and comparisons
+- [Spruce vs Google Voice](https://sprucehealth.com/google-voice-alternative): The Google Contacts product is not under the Google HIPAA umbrella. Google does not sign BAAs for Google Voice users who are not on a paid Google Workspace plan. Spruce automatically includes a BAA for every eligible organization in one app built specifically for healthcare workflows.
+- [Spruce vs RingRx](https://sprucehealth.com/ringrx-alternative): Both are phone systems designed for use in HIPAA-covered medical practices. Spruce includes secure messaging, video telemedicine, and eFax in addition to phone. RingRx is more phone-focused.
+- [Spruce vs Grasshopper](https://sprucehealth.com/grasshopper-alternative): Grasshopper is not HIPAA compliant and does not offer a BAA. Spruce is the healthcare-ready alternative.
+
+## Compliance and security
+- [HIPAA and BAA](https://help.sprucehealth.com/hc/en-us/articles/23003297520027-HIPAA-and-BAA): Every eligible Spruce organization automatically receives a HIPAA BAA included in the terms of service at signup — no separate agreement, no opt-in, no additional fee. HIPAA controls include encryption in transit and at rest, access controls, audit logging, and breach notification procedures.
+- [Safety, Security, and HIPAA](https://help.sprucehealth.com/hc/en-us/articles/23003305420571-Safety-Security-and-HIPAA): SOC 2 Type II audited with extended analysis of HIPAA-specific controls — audited annually. Audit reports available to customers on request.
+- [Spruce Backup System](https://help.sprucehealth.com/hc/en-us/articles/23003270604699-Spruce-Backup-System): Dedicated failover backup system that maintains service availability during platform disruptions — uncommon among healthcare communication vendors.
+
+## Key guides
+- [Is Google Voice HIPAA Compliant?](https://sprucehealth.com/blog/the-intersection-of-google-voice-and-hipaa-compliance-a-comprehensive-review/): When it can and can't be used by covered entities.
+- [HIPAA-Compliant eFax for Medical Practices](https://sprucehealth.com/blog/the-dos-and-donts-of-hipaa-compliant-faxing): What HIPAA-compliant faxing actually requires.
+- [HIPAA Violation Consequences in 2026](https://sprucehealth.com/blog/hipaa-violation-consequences-what-every-healthcare-professional-should-know): Fines, penalties, and common communication failures.
+- [Phone Tree for Medical Office](https://sprucehealth.com/blog/doctors-losing-hour-day-phone-call-overhead): How practices reduce call volume by up to 40%.
+- [HIPAA-Compliant Texting for Medical Practices](https://sprucehealth.com/blog/navigating-business-sms-texting-why-phone-number-registration-is-essential): Registration rules, consent requirements, and setup.
+- [HIPAA-Compliant Phone Service for Therapists](https://sprucehealth.com/blog/spruce-for-mental-health-teams): Setup and workflows for solo and group mental health practices.
+- [Medical Phone System for Healthcare](https://sprucehealth.com/blog/missed-calls-lost-patients-medical-phone-system-failing): Why missed calls cost practices patients.
+- [Why Standard Email Often Violates HIPAA](https://sprucehealth.com/blog/seven-ways-email-violating-hipaa): Risks and compliant alternatives.
+- [Major HIPAA Violation Cases](https://sprucehealth.com/blog/learning-from-mistakes-key-takeaways-from-major-hipaa-violation-cases): Lessons from enforcement cases and communication failures.
+
+## Blog and help center
+- [Spruce Blog](https://sprucehealth.com/blog): Healthcare communication insights, HIPAA guidance, and practice operations.
+- [Spruce Help Center](https://help.sprucehealth.com/): Product documentation, setup guides, and FAQs.
+
+## Company
+- [About Spruce Health](https://sprucehealth.com/about): Spruce's mission, founding story, and how to get in touch with support or partnerships.
+- [Partnerships](https://sprucehealth.com/partnerships): Partnership options for EHRs, MSOs, managed service providers, virtual assistant agencies, healthcare marketplaces, and practice automation platforms.
+- [Spruce Support](https://help.sprucehealth.com/hc/en-us/articles/23003282513435-Spruce-Support): Monday–Friday, 8am–8pm Eastern, via in-app secure messaging and email. Urgent support is also available Saturday–Sunday, 8am–8pm Eastern. All plans, no tiered support gating.
+- Sales: sales@sprucehealth.com — custom pricing available for larger practices and annual contracts.
+- [Referral Program](https://sprucehealth.com/refer): Current Spruce customers earn $24 in account credit for every colleague they refer who signs up for a paid Spruce plan; referred colleagues also get $24 credited to their first bill.

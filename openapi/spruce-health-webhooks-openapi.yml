@@ -1,0 +1,524 @@
+openapi: 3.0.0
+info:
+  title: Spruce Health API — Webhooks
+  version: 1.0.0
+  description: The Webhooks operations of the Spruce Health API, split by tag from the OpenAPI Spruce
+    Health publishes for developer.sprucehealth.com (ReadMe registry @spruce/v1.0#13needamst2v4m6). Base
+    https://api.sprucehealth.com/v1, Bearer organization token.
+  contact:
+    name: Spruce Health
+    url: https://developer.sprucehealth.com
+servers:
+- url: https://api.sprucehealth.com/v1
+  variables:
+    domain:
+      default: api.sprucehealth.com
+security:
+- spruceAPIToken: []
+tags:
+- name: Webhooks
+paths:
+  /webhooks/endpoints:
+    get:
+      description: This operation lists the endpoints that an organization has registered for webhooks.
+      operationId: ListWebhookEndpoints
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  endpoints:
+                    items:
+                      $ref: '#/components/schemas/webhookDestinationEndpoint'
+                    type: array
+                required:
+                - endpoints
+                type: object
+          description: An array of webhook destination endpoints
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: List webhook destination endpoints
+      tags:
+      - Webhooks
+    post:
+      description: This operation creates a destination endpoint for webhooks events.
+      operationId: CreateWebhookEndpoint
+      parameters:
+      - $ref: '#/components/parameters/s-idempotency-key'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/webhookDestinationEndpointInput'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  endpoint:
+                    $ref: '#/components/schemas/webhookDestinationEndpoint'
+                required:
+                - endpoint
+                type: object
+          description: The newly created webhook destination endpoint
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: Create a webhook destination endpoint
+      tags:
+      - Webhooks
+  /webhooks/endpoints/{endpointId}:
+    delete:
+      description: This operation deleted a destination endpoint for webhook events by id.
+      operationId: DeleteWebhookEndpoint
+      parameters:
+      - description: The id of the webhook destination endpoint to delete.
+        in: path
+        name: endpointId
+        required: true
+        schema:
+          $ref: '#/components/schemas/webhookDestinationEndpoint_id'
+      responses:
+        '200':
+          description: ok
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: Delete a webhook destination endpoint by id
+      tags:
+      - Webhooks
+    get:
+      description: This operation retrieves a specific destination endpoint for webhooks events by id.
+      operationId: WebhookEndpoint
+      parameters:
+      - description: The id of the webhook destination endpoint.
+        in: path
+        name: endpointId
+        required: true
+        schema:
+          $ref: '#/components/schemas/webhookDestinationEndpoint_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  endpoint:
+                    $ref: '#/components/schemas/webhookDestinationEndpoint'
+                required:
+                - endpoint
+                type: object
+          description: ok
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: Get a webhook destination endpoint by id
+      tags:
+      - Webhooks
+  /webhooks/endpoints/{endpointId}/events:
+    get:
+      description: This operation retrieves information about events that have been attempted to be published
+        to a webhook destination endpoint. Events are queryable for a period of 30 days after creation
+        and are returned in sets of 20 at a time. Use the pagination token to retrieve more events.
+      operationId: ListWebhookEndpointEvents
+      parameters:
+      - description: The id of the webhook destination endpoint.
+        in: path
+        name: endpointId
+        required: true
+        schema:
+          $ref: '#/components/schemas/webhookDestinationEndpoint_id'
+      - description: The start time of the events to retrieve.
+        in: query
+        name: startTime
+        required: false
+        schema:
+          example: '2020-04-01T00:00:00Z'
+          format: date-time
+          type: string
+      - description: The end time of the events to retrieve.
+        in: query
+        name: endTime
+        required: false
+        schema:
+          example: '2020-04-01T00:00:00Z'
+          format: date-time
+          type: string
+      - in: query
+        name: paginationToken
+        required: false
+        schema:
+          $ref: '#/components/schemas/paginationToken'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  events:
+                    items:
+                      $ref: '#/components/schemas/webhookDestinationEndpointEvent'
+                    type: array
+                  hasMore:
+                    $ref: '#/components/schemas/hasMore'
+                  paginationToken:
+                    $ref: '#/components/schemas/paginationToken'
+                required:
+                - events
+                - hasMore
+                type: object
+          description: ok
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: List events for an endpoint
+      tags:
+      - Webhooks
+  /webhooks/endpoints/{endpointId}/paused:
+    post:
+      description: This operation sets the 'paused' state of a webhook destination endpoint.
+      operationId: ModifyWebhookEndpointPaused
+      parameters:
+      - $ref: '#/components/parameters/s-idempotency-key'
+      - description: The id of the webhook destination endpoint.
+        in: path
+        name: endpointId
+        required: true
+        schema:
+          $ref: '#/components/schemas/webhookDestinationEndpoint_id'
+      - description: Whether to pause or resume the webhook destination endpoint.
+        in: query
+        name: paused
+        required: true
+        schema:
+          type: boolean
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  paused:
+                    description: A value representing if the webhook destination endpoint is paused
+                    example: true
+                    type: boolean
+                required:
+                - paused
+                type: object
+          description: ok
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: duplicate request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: Pause or resume a webhook destination endpoint
+      tags:
+      - Webhooks
+components:
+  headers:
+    s-ratelimit-limit:
+      description: Request limit per minute
+      example: 100
+      schema:
+        type: integer
+    s-ratelimit-remaining:
+      description: Requests remaining this minute
+      example: 94
+      schema:
+        type: integer
+    s-request-id:
+      description: The ID of the request
+      example: 0E5QDGJC030000E5QDGJC03000
+      schema:
+        type: string
+  parameters:
+    s-idempotency-key:
+      description: A unique value generated by the client used to recognize subsequent retries of the
+        same request. Idempotency keys can be up to 255 characters long.
+      example: S7uiKYMMRzAcuG8S
+      in: header
+      name: s-idempotency-key
+      required: false
+      schema:
+        type: string
+  schemas:
+    error:
+      properties:
+        message:
+          example: Invalid Contact ID
+          type: string
+        statusCode:
+          example: 400
+          type: integer
+        type:
+          example: BAD_PARAMETER
+          type: string
+      required:
+      - message
+      - statusCode
+      - type
+      type: object
+    hasMore:
+      type: boolean
+    objectType:
+      description: String representing the object's type
+      type: string
+    paginationToken:
+      description: Token given in a previous response to allow requesting the next page
+      example: abcdefghijklmnop
+      type: string
+    webhookDestinationEndpoint:
+      properties:
+        createdAt:
+          description: The date the destination endpoint was created
+          example: '2020-04-01T00:00:00Z'
+          format: date-time
+          type: string
+        id:
+          $ref: '#/components/schemas/webhookDestinationEndpoint_id'
+        name:
+          $ref: '#/components/schemas/webhookDestinationEndpoint_name'
+        object:
+          $ref: '#/components/schemas/objectType'
+        signingSecrets:
+          items:
+            $ref: '#/components/schemas/webhookSigningSecret'
+          type: array
+        status:
+          description: The status of the webhook destination endpoint
+          type: string
+        url:
+          $ref: '#/components/schemas/webhookDestinationEndpoint_url'
+      required:
+      - createdAt
+      - id
+      - signingSecrets
+      - status
+      - url
+      - object
+      type: object
+    webhookDestinationEndpointEvent:
+      description: An event that has been attempted to be sent to a webhook destination endpoint
+      properties:
+        data:
+          type: string
+        delivery:
+          $ref: '#/components/schemas/webhookDestinationEndpointEventDelivery'
+        eventTime:
+          description: The date the event was created
+          example: '2020-04-01T00:00:00Z'
+          format: date-time
+          type: string
+        id:
+          $ref: '#/components/schemas/webhookDestinationEndpointEvent_id'
+        object:
+          $ref: '#/components/schemas/objectType'
+      required:
+      - id
+      - eventTime
+      - data
+      - object
+      type: object
+    webhookDestinationEndpointEventDelivery:
+      description: Delivery information for an event that has been attempted to be sent to a webhook destination
+        endpoint
+      properties:
+        attemptLimit:
+          description: The maximum number of attempts that will be made to deliver an event
+          type: integer
+        attempts:
+          description: The number of attempts so far to deliver the event
+          type: integer
+        deliveryTime:
+          description: The date the event was successfully delivered.
+          example: '2020-04-01T00:00:00Z'
+          format: date-time
+          type: string
+        nextAttemptTime:
+          description: The date the event will attempt delivery again.
+          example: '2020-04-01T00:00:00Z'
+          format: date-time
+          type: string
+        status:
+          type: string
+      required:
+      - attempts
+      - attemptLimit
+      - status
+      type: object
+    webhookDestinationEndpointEvent_id:
+      description: The id of an event
+      example: wev_01HWDG5ADNBGJ3XXXXXFP8P1GH
+      type: string
+    webhookDestinationEndpointInput:
+      properties:
+        name:
+          $ref: '#/components/schemas/webhookDestinationEndpoint_name'
+        url:
+          $ref: '#/components/schemas/webhookDestinationEndpoint_url'
+      required:
+      - name
+      - url
+      type: object
+    webhookDestinationEndpoint_id:
+      description: The id of a webhook destination endpoint
+      example: wde_01HWDG5ADNBGJ3XXXXXFP8P1GH
+      type: string
+    webhookDestinationEndpoint_name:
+      description: The name of the webhook destination endpoint
+      example: My Webhook Endpoint
+      type: string
+    webhookDestinationEndpoint_url:
+      description: The URL of the webhook destination endpoint
+      example: https://example.com/webhook
+      format: url
+      type: string
+    webhookSigningSecret:
+      description: The signing secret for the webhook endpoint. This is used to verify the authenticity
+        of the webhook payload. This value is only populated when the webhook endpoint is created.
+      properties:
+        id:
+          description: The ID of the signing secret
+          example: wss_01HWDG5ADNBGXXXXXY07DP8
+          type: string
+        value:
+          description: The signing secret
+          type: string
+      required:
+      - id
+      - value
+      type: object
+  securitySchemes:
+    spruceAPIToken:
+      description: API token provided by Spruce should be passed in an "Authorization" header with the
+        value "Bearer <token>"
+      scheme: bearer
+      type: http

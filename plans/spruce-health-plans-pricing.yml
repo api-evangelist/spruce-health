@@ -1,11 +1,16 @@
 specification: API Commons Plans
 specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+generated: '2026-08-15'
+method: searched
+source: https://sprucehealth.com/plans
 provider: Spruce Health
 providerId: spruce-health
 created: '2026-07-10'
-modified: '2026-07-10'
+modified: '2026-08-15'
 reconciled: true
+plan_count: 2
+trial_count: 1
 tags:
 - Healthcare
 - HIPAA
@@ -28,8 +33,43 @@ notes: >-
   and a support-enabled flag on the organization.
 sources:
 - https://sprucehealth.com/plans
+- https://sprucehealth.com/llms.txt
 - https://developer.sprucehealth.com/docs/overview
-- https://help.sprucehealth.com/hc/en-us/articles/23003250146459-Spruce-API
+included_in_every_plan:
+- name: HIPAA Business Associate Agreement
+  detail: >-
+    Every eligible organization automatically receives a signed BAA as part of the terms
+    of service - no separate agreement, no opt-in, no extra fee. Since 2026-07-09 the BAA
+    also brings formal Qualified Service Organization support for 42 CFR Part 2
+    communications.
+  source: https://sprucehealth.com/llms.txt
+- name: eFax
+- name: Spruce Visits (patient assessments, incl. PHQ-9 and GAD-7)
+- name: Support
+  detail: 'Monday-Friday 8am-8pm ET plus urgent weekend cover; no tiered support gating.'
+enterprise:
+  contact_sales: true
+  email: sales@sprucehealth.com
+  detail: Custom pricing is available for larger practices and annual contracts; the terms are not published.
+billing:
+  currency: USD
+  period: month
+  default_term: month-to-month
+  annual_pricing_published: false
+  unit: >-
+    Per user, where a user is any teammate (clinician, staff, employee) added to the
+    organization. Patients are never billed users and the patient app is free.
+referral_program:
+  url: https://sprucehealth.com/refer
+  credit: USD 24 to the referrer and USD 24 to the referred organization's first bill
+api_access:
+  metered: false
+  separate_fee: false
+  plan_required: Communicator
+  additional_gate: >-
+    Beyond holding the Communicator plan, the organization must contact Spruce Support to
+    have API access enabled before an administrator can generate a token.
+  request_form: https://sprucehealth.com/spruce-api
 plans:
 - id: spruce-basic
   name: Basic

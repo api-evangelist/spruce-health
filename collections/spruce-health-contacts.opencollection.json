@@ -1,0 +1,327 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Spruce Health API \u2014 Contacts",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Contacts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List contacts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/contacts",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "paginationToken",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ListContacts",
+          "docs": "This operation lists all contacts available to a given organization.\n\nThe `hasMore` field can be used to determine if there are remaining results to list. The `paginationToken` field can be provided on subsequents calls to retrieve the next page of results."
+        },
+        {
+          "info": {
+            "name": "Create a contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/contacts",
+            "params": [
+              {
+                "name": "s-idempotency-key",
+                "value": "",
+                "type": "header"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "CreateContact",
+          "docs": "This operation creates a contact within an organization.\n\nCreating a new contact requires at least of the following fields to be populated (`givenName`, `familyName`, `phoneNumbers`, `faxNumbers`, `emailAddresses`)."
+        },
+        {
+          "info": {
+            "name": "Search contacts",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/contacts/search",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "paginationToken",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "SearchContacts",
+          "docs": "This operation searches all contacts available to a given organization and returns a resulting set of results.\n\n\nThe `hasMore` field can be used to determine if there are remaining results to list. The `paginationToken` field can be provided on subsequents calls to retrieve the next page of results.\n\n\n## Sort Order\n\nResults are sorted by **entity ID in ascending order** when doing a structured search and by **relevance** for free text search.\n\nWhy is this a `POST`? `GET` requests with a body are not supported by all HTTP libraries. To support complex nested search filters and other tooling, the `POST` body is leveraged."
+        },
+        {
+          "info": {
+            "name": "Delete a contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.sprucehealth.com/v1/contacts/{contactId}",
+            "params": [
+              {
+                "name": "contactId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "DeleteContact",
+          "docs": "This operation deletes a specific contact by id.\n\nSee the `canDelete` field on a given contact to determine if deletion is allowed."
+        },
+        {
+          "info": {
+            "name": "Get a contact by Spruce Contact ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/contacts/{contactId}",
+            "params": [
+              {
+                "name": "contactId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "Contact",
+          "docs": "This operation retrieves a specific contact by id."
+        },
+        {
+          "info": {
+            "name": "Update a contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.sprucehealth.com/v1/contacts/{contactId}",
+            "params": [
+              {
+                "name": "s-idempotency-key",
+                "value": "",
+                "type": "header"
+              },
+              {
+                "name": "contactId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "UpdateContact",
+          "docs": "This operation updates a specific contact by id.\n\nFields provided in the input object will be updated, omitted fields *(null)* will be unchanged."
+        },
+        {
+          "info": {
+            "name": "List the conversations associated with a contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/contacts/{contactId}/conversations",
+            "params": [
+              {
+                "name": "contactId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ContactConversations",
+          "docs": "This operation retrieves the conversations associated with a contact"
+        },
+        {
+          "info": {
+            "name": "Delete an integration link",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.sprucehealth.com/v1/contacts/{contactId}/integrationlinks",
+            "params": [
+              {
+                "name": "contactId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "externalId",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "DeleteContactIntegrationLink",
+          "docs": "This operation deletes a specific integration link associated with a contact."
+        },
+        {
+          "info": {
+            "name": "List the integration links associated with a contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.sprucehealth.com/v1/contacts/{contactId}/integrationlinks",
+            "params": [
+              {
+                "name": "contactId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "ContactIntegrationLinks",
+          "docs": "This operation retrieves the integration links associated with a contact"
+        },
+        {
+          "info": {
+            "name": "Create an integration link",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/contacts/{contactId}/integrationlinks",
+            "params": [
+              {
+                "name": "s-idempotency-key",
+                "value": "",
+                "type": "header"
+              },
+              {
+                "name": "contactId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "externalId",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "CreateContactIntegrationLink",
+          "docs": "This operation creates a link between a contact and an external system with which the Spruce account is integrated."
+        },
+        {
+          "info": {
+            "name": "Invite patient to Spruce",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sprucehealth.com/v1/contacts/{contactId}/invite",
+            "params": [
+              {
+                "name": "contactId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{bearerToken}}",
+                "type": "header"
+              }
+            ]
+          },
+          "operationId": "SendInvite",
+          "docs": "This operation sends an invite to a patient contact:\n- If the contact is invited for the first time, a new secure conversation will be created,\n- If the contact is already invited, the invite will be re-sent to the same secure conversation,\n- If the contact is already on Spruce, an error will be returned."
+        }
+      ]
+    }
+  ]
+}

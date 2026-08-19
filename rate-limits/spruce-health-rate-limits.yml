@@ -1,11 +1,14 @@
 specification: API Commons Rate Limits
 specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+generated: '2026-08-15'
+method: searched
+source: https://developer.sprucehealth.com/docs/overview.md
 provider: Spruce Health
 providerId: spruce-health
 created: '2026-07-10'
-modified: '2026-07-10'
-reconciled: false
+modified: '2026-08-15'
+reconciled: true
 tags:
 - Healthcare
 - HIPAA
@@ -14,53 +17,157 @@ tags:
 - Quotas
 - Webhooks
 description: >-
-  Spruce does not publish a fixed numeric request-rate limit for the Public API
-  itself. One concrete limit is documented on the webhook delivery side: a
-  registered webhook endpoint is rate limited to 1000 events per minute per
-  endpoint, an endpoint must respond with a 2XX status within 5 seconds, and
-  failed deliveries are retried every 2 minutes for up to 10 attempts. An
-  incorrect or disabled API token returns a 403. Per-account request throttling
-  values for the REST surface are not published and should be reconciled against
-  the live documentation.
+  Spruce Health publishes no numeric request-rate limit for the Public API, but it does
+  publish the runtime signal, which is the part an agent actually needs. Every response
+  carries rate-limit headers across two windows - 60 seconds and 24 hours - and Spruce
+  documents that limits are enforced PER ORGANIZATION, not per credential, so issuing
+  additional tokens buys no additional headroom. On the webhook delivery side the limit
+  is concrete and published: 1000 events per minute per endpoint.
 notes: >-
-  The 1000 events/minute per endpoint, 5-second 2XX response requirement, and
-  retry (every 2 minutes, up to 10 attempts) are grounded from the Spruce
-  Webhooks Overview. Numeric REST request-per-minute limits are not documented
-  as of the review date.
+  The four s-ratelimit-* headers, the two windows, the per-organization scope and the
+  absent-header semantics are quoted from the Spruce API Overview. Two of the four
+  headers (s-ratelimit-limit, s-ratelimit-remaining) are additionally declared in
+  components.headers of the published OpenAPI and referenced on every 200 response; the
+  daily pair is documented in prose only. No numeric ceiling is published for any window
+  - the OpenAPI carries example: 100 on s-ratelimit-limit, which is an illustrative
+  example value in a schema and is NOT a published limit, so it is not recorded as one.
 sources:
-- https://developer.sprucehealth.com/docs/webhooks-overview
 - https://developer.sprucehealth.com/docs/overview
+- https://developer.sprucehealth.com/docs/webhooks-overview
+- openapi/_original/spruce-health-openapi.json
+
+limit_count: 3
+scope: per-organization
+scope_note: 'Rate limits are applied on a per-organization basis NOT per-credential.'
+
+responseHeaders:
+- name: s-ratelimit-limit
+  window: 60 seconds
+  meaning: The current maximum number of calls allowed in a given minute window.
+  declared_in_openapi: true
+  on: every 2xx response
+- name: s-ratelimit-remaining
+  window: 60 seconds
+  meaning: The current remaining calls available in the current minute window.
+  declared_in_openapi: true
+  on: every 2xx response
+- name: s-ratelimit-daily-limit
+  window: 24 hours
+  meaning: The current maximum number of calls allowed in a given 24 hour window.
+  declared_in_openapi: false
+  documented_in: https://developer.sprucehealth.com/docs/overview
+- name: s-ratelimit-daily-remaining
+  window: 24 hours
+  meaning: The current remaining calls available in the current 24 hour window.
+  declared_in_openapi: false
+  documented_in: https://developer.sprucehealth.com/docs/overview
+- name: s-request-id
+  window: n/a
+  meaning: Correlation id for the request; not a rate-limit header but returned alongside them.
+  declared_in_openapi: true
+
+absent_header_semantics: >-
+  If a given throttling header is not present, it indicates that the request is not rate
+  limited on that dimension. This is an explicit, documented contract - a client should
+  treat a missing header as "unlimited here", not as "unknown".
+
 responseCodes:
-  throttled: 429
+  throttled: not-documented
+  throttled_note: >-
+    Spruce does not name the status returned on exhaustion, and no operation in the
+    OpenAPI declares a 429. A previous round of this profile asserted 429; that was an
+    assumption and has been withdrawn. Clients should drive backoff from
+    s-ratelimit-remaining and s-ratelimit-daily-remaining rather than from a status code
+    whose existence is not published.
   forbidden: 403
+  forbidden_note: An incorrect or disabled API token returns 403.
+  duplicate: 422
+  duplicate_note: A repeated s-idempotency-key within the 24-hour retention window returns 422.
+retryAfter: not-documented
+
 limits:
-- name: Public API Requests
+- name: Public API Requests (minute window)
   scope: organization
   metric: requests
+  window: 60 seconds
   limit: not published
-  notes: No fixed numeric per-minute request limit is documented for the REST API.
+  signalled_by:
+  - s-ratelimit-limit
+  - s-ratelimit-remaining
+  notes: >-
+    The ceiling is not published, but it is discoverable at runtime from the first
+    response an organization receives.
+- name: Public API Requests (daily window)
+  scope: organization
+  metric: requests
+  window: 24 hours
+  limit: not published
+  signalled_by:
+  - s-ratelimit-daily-limit
+  - s-ratelimit-daily-remaining
+  notes: >-
+    Applied "for others" per the overview - the daily dimension does not apply to every
+    request, and its headers are absent on requests it does not govern.
 - name: Webhook Delivery Rate
   scope: endpoint
   metric: events
-  limit: 1000 per minute
-  notes: Each registered webhook endpoint is limited to 1000 events per minute.
-- name: Webhook Response Window
-  scope: endpoint
+  window: 60 seconds
+  limit: 1000
+  published: true
+  notes: >-
+    Each registered webhook endpoint is limited to 1000 events per minute. If exceeded,
+    events resume sending after the rate limit window has passed - they are throttled,
+    not dropped.
+
+webhook_delivery_constraints:
+- name: Acknowledgement window
   metric: seconds
   limit: 5
-  notes: Endpoints must return a 2XX status within 5 seconds or the delivery is treated as failed.
-- name: Webhook Retries
-  scope: endpoint
+  notes: The endpoint must respond with a 2XX status within 5 seconds or the delivery is treated as failed.
+- name: Retry attempts
   metric: attempts
   limit: 10
-  notes: Failed deliveries are retried every 2 minutes for up to 10 attempts.
+  interval: every 2 minutes
+  notes: Failed deliveries are retried every 2 minutes for a maximum of 10 attempts.
+- name: Delivery log retention
+  metric: days
+  limit: 30
+  page_size: 20
+  notes: >-
+    Events are queryable through GET /webhooks/endpoints/{endpointId}/events for 30 days
+    after creation, returned 20 at a time with a pagination token. The delivery record
+    exposes attempts, attemptLimit and nextAttemptTime, so retry state is readable
+    rather than inferred.
+
+pagination_ceilings:
+- operation: ListContacts
+  parameter: pageSize
+  max: 500
+- operation: ListConversations
+  parameter: pageSize
+  max: 500
+
 policies:
-- name: Bearer Authentication
-  description: Requests require Authorization Bearer with an org token; incorrect or disabled tokens return 403.
-- name: Backoff Strategy
-  description: Clients should implement exponential backoff with jitter and honor Retry-After on 429 responses.
-- name: Webhook Signature Verification
-  description: Endpoints receive a signing secret at creation and should verify event signatures.
+- name: Per-organization enforcement
+  description: >-
+    Limits attach to the organization, not the token. Minting extra credentials does not
+    raise the ceiling, and one noisy integration will throttle every other integration
+    in the same practice.
+- name: Header-driven backoff
+  description: >-
+    Watch s-ratelimit-remaining and s-ratelimit-daily-remaining and slow down before
+    exhaustion; the exhaustion status is undocumented so it cannot be relied on as the
+    trigger.
+- name: Idempotent retry
+  description: >-
+    On a retry of a POST or PATCH, reuse the same s-idempotency-key. Spruce rejects the
+    duplicate with 422 rather than replaying the original response, so a 422 on retry
+    means the first attempt landed.
+- name: Webhook signature verification
+  description: >-
+    Endpoints receive a signing secret at creation and should verify the
+    X-Spruce-Signature HMAC-SHA256 value in constant time before acting on an event.
+
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
