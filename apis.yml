@@ -32,6 +32,26 @@ image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/spruce-hea
 tags:
 - Healthcare
 - HIPAA
+- Communications
+- Secure Messaging
+- Telehealth
+- Patient Engagement
+- Contacts
+- Conversations
+- Messaging
+- SMS
+- Voice
+- VoIP
+- Fax
+- Video
+- Webhook
+- Scheduling
+- Transcription
+- EHR Integration
+- Compliance
+tags_raw:
+- Healthcare
+- HIPAA
 - Health Care
 - Communication
 - Secure Messaging
@@ -347,6 +367,8 @@ apis:
   humanURL: https://developer.sprucehealth.com/reference/teammembers
   baseURL: https://api.sprucehealth.com/v1
   tags:
+  - Team
+  tags_raw:
   - Teams
   properties:
   - type: OpenAPI
@@ -396,6 +418,8 @@ apis:
   humanURL: https://developer.sprucehealth.com/reference/listwebhookendpoints
   baseURL: https://api.sprucehealth.com/v1
   tags:
+  - Webhook
+  tags_raw:
   - Webhooks
   properties:
   - type: OpenAPI
