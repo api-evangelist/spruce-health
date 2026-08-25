@@ -1,0 +1,21 @@
+{
+  "repo": "spruce-health",
+  "feeds": [
+    {
+      "source": "https://help.sprucehealth.com/hc/en-us/articles/23003282513435-Spruce-Support",
+      "feed_url": "https://help.sprucehealth.com/hc/en-us/articles/23003282513435-Spruce-Support",
+      "title": "",
+      "saved": 0,
+      "method": "none"
+    },
+    {
+      "source": "https://sprucehealth.com/whats-new",
+      "feed_url": "https://sprucehealth.com/whats-new/rss.xml",
+      "title": "",
+      "saved": 1,
+      "method": "discovered"
+    }
+  ],
+  "post_count": 1,
+  "fetched": "2026-08-22T20:20:02Z"
+}
