@@ -74,16 +74,16 @@ created: '2026-07-10'
 modified: '2026-08-15'
 specificationVersion: '0.23'
 apis:
-- aid: spruce-health:spruce-health-contact-fields
+- aid: spruce-health:spruce-health-contact-fields-api
   name: Spruce Health Contact Fields API
-  description: Organization contact fields — the custom fields that appear on every contact in the organization.
+  description: The Contact Fields API from Spruce Health — 1 operation(s) for contact fields.
   humanURL: https://developer.sprucehealth.com/reference/contactfields
   baseURL: https://api.sprucehealth.com/v1
   tags:
   - Contact Fields
   properties:
   - type: OpenAPI
-    url: openapi/spruce-health-contact-fields-openapi.yml
+    url: openapi/spruce-health-contact-fields-api-openapi.yml
   - type: PostmanCollection
     url: collections/spruce-health-contact-fields.postman_collection.json
   - type: OpenCollection
@@ -92,352 +92,1579 @@ apis:
     url: https://developer.sprucehealth.com/docs/overview
   - type: APIReference
     url: https://developer.sprucehealth.com/reference/contactfields
-  - type: Overlay
-    url: overlays/spruce-health-contact-fields-overlay.yaml
   - type: AgenticAccess
     url: agentic-access/spruce-health-agentic-access.yml
-  x-operations: 2
-- aid: spruce-health:spruce-health-contact-tags
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contacttags
+  - type: PostmanCollection
+    url: collections/spruce-health-contacts.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contacts.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listcontacts
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-item.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-item.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationitem
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationtags
+  - type: PostmanCollection
+    url: collections/spruce-health-conversations.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversations.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listconversations
+  - type: PostmanCollection
+    url: collections/spruce-health-internal-endpoints.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-internal-endpoints.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/internalendpoints
+  - type: PostmanCollection
+    url: collections/spruce-health-media.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-media.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/uploadmedia
+  - type: PostmanCollection
+    url: collections/spruce-health-organization.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-organization.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/organization-1
+  - type: PostmanCollection
+    url: collections/spruce-health-phone-lines.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-phone-lines.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/phonelines
+  - type: PostmanCollection
+    url: collections/spruce-health-saved-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-saved-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listsavedmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-scheduled-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-scheduled-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listscheduledmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-teams.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-teams.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/teammembers
+  - type: PostmanCollection
+    url: collections/spruce-health-transcription.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-transcription.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/transcription
+  - type: PostmanCollection
+    url: collections/spruce-health-webhooks.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-webhooks.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listwebhookendpoints
+- aid: spruce-health:spruce-health-contact-tags-api
   name: Spruce Health Contact Tags API
-  description: Contact tags — the tags available to an organization that can be applied to contacts.
-  humanURL: https://developer.sprucehealth.com/reference/contacttags
+  description: The Contact Tags API from Spruce Health — 1 operation(s) for contact tags.
+  humanURL: https://developer.sprucehealth.com/reference/contactfields
   baseURL: https://api.sprucehealth.com/v1
   tags:
   - Contact Tags
   properties:
   - type: OpenAPI
-    url: openapi/spruce-health-contact-tags-openapi.yml
+    url: openapi/spruce-health-contact-tags-api-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-fields.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-fields.opencollection.json
+  - type: Documentation
+    url: https://developer.sprucehealth.com/docs/overview
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contactfields
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
   - type: PostmanCollection
     url: collections/spruce-health-contact-tags.postman_collection.json
   - type: OpenCollection
     url: collections/spruce-health-contact-tags.opencollection.json
-  - type: Documentation
-    url: https://developer.sprucehealth.com/docs/overview
   - type: APIReference
     url: https://developer.sprucehealth.com/reference/contacttags
-  - type: Overlay
-    url: overlays/spruce-health-contact-tags-overlay.yaml
-  - type: AgenticAccess
-    url: agentic-access/spruce-health-agentic-access.yml
-  x-operations: 2
-- aid: spruce-health:spruce-health-contacts
+  - type: PostmanCollection
+    url: collections/spruce-health-contacts.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contacts.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listcontacts
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-item.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-item.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationitem
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationtags
+  - type: PostmanCollection
+    url: collections/spruce-health-conversations.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversations.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listconversations
+  - type: PostmanCollection
+    url: collections/spruce-health-internal-endpoints.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-internal-endpoints.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/internalendpoints
+  - type: PostmanCollection
+    url: collections/spruce-health-media.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-media.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/uploadmedia
+  - type: PostmanCollection
+    url: collections/spruce-health-organization.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-organization.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/organization-1
+  - type: PostmanCollection
+    url: collections/spruce-health-phone-lines.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-phone-lines.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/phonelines
+  - type: PostmanCollection
+    url: collections/spruce-health-saved-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-saved-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listsavedmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-scheduled-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-scheduled-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listscheduledmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-teams.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-teams.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/teammembers
+  - type: PostmanCollection
+    url: collections/spruce-health-transcription.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-transcription.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/transcription
+  - type: PostmanCollection
+    url: collections/spruce-health-webhooks.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-webhooks.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listwebhookendpoints
+- aid: spruce-health:spruce-health-contacts-api
   name: Spruce Health Contacts API
-  description: 'Contacts — the patients and other parties in a Spruce organization: list, search, create,
-    retrieve, update and delete contacts, list a contact''s conversations, manage integration links to
-    external EHR/PM systems, and send a patient a Spruce invite.'
-  humanURL: https://developer.sprucehealth.com/reference/listcontacts
+  description: The Contacts API from Spruce Health — 6 operation(s) for contacts.
+  humanURL: https://developer.sprucehealth.com/reference/contactfields
   baseURL: https://api.sprucehealth.com/v1
   tags:
   - Contacts
   properties:
   - type: OpenAPI
-    url: openapi/spruce-health-contacts-openapi.yml
+    url: openapi/spruce-health-contacts-api-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-fields.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-fields.opencollection.json
+  - type: Documentation
+    url: https://developer.sprucehealth.com/docs/overview
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contactfields
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contacttags
   - type: PostmanCollection
     url: collections/spruce-health-contacts.postman_collection.json
   - type: OpenCollection
     url: collections/spruce-health-contacts.opencollection.json
-  - type: Documentation
-    url: https://developer.sprucehealth.com/docs/overview
   - type: APIReference
     url: https://developer.sprucehealth.com/reference/listcontacts
-  - type: Overlay
-    url: overlays/spruce-health-contacts-overlay.yaml
-  - type: AgenticAccess
-    url: agentic-access/spruce-health-agentic-access.yml
-  x-operations: 11
-- aid: spruce-health:spruce-health-conversation-item
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-item.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-item.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationitem
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationtags
+  - type: PostmanCollection
+    url: collections/spruce-health-conversations.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversations.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listconversations
+  - type: PostmanCollection
+    url: collections/spruce-health-internal-endpoints.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-internal-endpoints.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/internalendpoints
+  - type: PostmanCollection
+    url: collections/spruce-health-media.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-media.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/uploadmedia
+  - type: PostmanCollection
+    url: collections/spruce-health-organization.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-organization.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/organization-1
+  - type: PostmanCollection
+    url: collections/spruce-health-phone-lines.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-phone-lines.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/phonelines
+  - type: PostmanCollection
+    url: collections/spruce-health-saved-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-saved-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listsavedmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-scheduled-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-scheduled-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listscheduledmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-teams.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-teams.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/teammembers
+  - type: PostmanCollection
+    url: collections/spruce-health-transcription.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-transcription.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/transcription
+  - type: PostmanCollection
+    url: collections/spruce-health-webhooks.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-webhooks.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listwebhookendpoints
+- aid: spruce-health:spruce-health-conversation-item-api
   name: Spruce Health Conversation Item API
-  description: 'Conversation items — the individual messages, calls, faxes and events inside a conversation:
-    retrieve one by id, or soft-delete it asynchronously.'
-  humanURL: https://developer.sprucehealth.com/reference/conversationitem
+  description: The Conversation Item API from Spruce Health — 1 operation(s) for conversation item.
+  humanURL: https://developer.sprucehealth.com/reference/contactfields
   baseURL: https://api.sprucehealth.com/v1
   tags:
   - Conversation Item
   properties:
   - type: OpenAPI
-    url: openapi/spruce-health-conversation-item-openapi.yml
+    url: openapi/spruce-health-conversation-item-api-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-fields.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-fields.opencollection.json
+  - type: Documentation
+    url: https://developer.sprucehealth.com/docs/overview
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contactfields
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contacttags
+  - type: PostmanCollection
+    url: collections/spruce-health-contacts.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contacts.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listcontacts
   - type: PostmanCollection
     url: collections/spruce-health-conversation-item.postman_collection.json
   - type: OpenCollection
     url: collections/spruce-health-conversation-item.opencollection.json
-  - type: Documentation
-    url: https://developer.sprucehealth.com/docs/overview
   - type: APIReference
     url: https://developer.sprucehealth.com/reference/conversationitem
-  - type: Overlay
-    url: overlays/spruce-health-conversation-item-overlay.yaml
-  - type: AgenticAccess
-    url: agentic-access/spruce-health-agentic-access.yml
-  x-operations: 2
-- aid: spruce-health:spruce-health-conversation-tags
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationtags
+  - type: PostmanCollection
+    url: collections/spruce-health-conversations.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversations.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listconversations
+  - type: PostmanCollection
+    url: collections/spruce-health-internal-endpoints.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-internal-endpoints.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/internalendpoints
+  - type: PostmanCollection
+    url: collections/spruce-health-media.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-media.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/uploadmedia
+  - type: PostmanCollection
+    url: collections/spruce-health-organization.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-organization.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/organization-1
+  - type: PostmanCollection
+    url: collections/spruce-health-phone-lines.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-phone-lines.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/phonelines
+  - type: PostmanCollection
+    url: collections/spruce-health-saved-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-saved-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listsavedmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-scheduled-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-scheduled-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listscheduledmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-teams.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-teams.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/teammembers
+  - type: PostmanCollection
+    url: collections/spruce-health-transcription.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-transcription.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/transcription
+  - type: PostmanCollection
+    url: collections/spruce-health-webhooks.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-webhooks.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listwebhookendpoints
+- aid: spruce-health:spruce-health-conversation-tags-api
   name: Spruce Health Conversation Tags API
-  description: Conversation tags — the tags available to an organization that can be applied to conversations.
-  humanURL: https://developer.sprucehealth.com/reference/conversationtags
+  description: The Conversation Tags API from Spruce Health — 1 operation(s) for conversation tags.
+  humanURL: https://developer.sprucehealth.com/reference/contactfields
   baseURL: https://api.sprucehealth.com/v1
   tags:
   - Conversation Tags
   properties:
   - type: OpenAPI
-    url: openapi/spruce-health-conversation-tags-openapi.yml
+    url: openapi/spruce-health-conversation-tags-api-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-fields.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-fields.opencollection.json
+  - type: Documentation
+    url: https://developer.sprucehealth.com/docs/overview
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contactfields
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contacttags
+  - type: PostmanCollection
+    url: collections/spruce-health-contacts.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contacts.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listcontacts
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-item.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-item.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationitem
   - type: PostmanCollection
     url: collections/spruce-health-conversation-tags.postman_collection.json
   - type: OpenCollection
     url: collections/spruce-health-conversation-tags.opencollection.json
-  - type: Documentation
-    url: https://developer.sprucehealth.com/docs/overview
   - type: APIReference
     url: https://developer.sprucehealth.com/reference/conversationtags
-  - type: Overlay
-    url: overlays/spruce-health-conversation-tags-overlay.yaml
-  - type: AgenticAccess
-    url: agentic-access/spruce-health-agentic-access.yml
-  x-operations: 2
-- aid: spruce-health:spruce-health-conversations
+  - type: PostmanCollection
+    url: collections/spruce-health-conversations.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversations.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listconversations
+  - type: PostmanCollection
+    url: collections/spruce-health-internal-endpoints.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-internal-endpoints.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/internalendpoints
+  - type: PostmanCollection
+    url: collections/spruce-health-media.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-media.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/uploadmedia
+  - type: PostmanCollection
+    url: collections/spruce-health-organization.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-organization.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/organization-1
+  - type: PostmanCollection
+    url: collections/spruce-health-phone-lines.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-phone-lines.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/phonelines
+  - type: PostmanCollection
+    url: collections/spruce-health-saved-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-saved-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listsavedmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-scheduled-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-scheduled-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listscheduledmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-teams.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-teams.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/teammembers
+  - type: PostmanCollection
+    url: collections/spruce-health-transcription.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-transcription.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/transcription
+  - type: PostmanCollection
+    url: collections/spruce-health-webhooks.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-webhooks.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listwebhookendpoints
+- aid: spruce-health:spruce-health-conversations-api
   name: Spruce Health Conversations API
-  description: 'Conversations — the message threads in an organization: list and filter conversations
-    with cursor pagination and ordering by created or last_message, create secure and note conversations,
-    retrieve and update a conversation, list its items, and post a message into it.'
-  humanURL: https://developer.sprucehealth.com/reference/listconversations
+  description: The Conversations API from Spruce Health — 4 operation(s) for conversations.
+  humanURL: https://developer.sprucehealth.com/reference/contactfields
   baseURL: https://api.sprucehealth.com/v1
   tags:
   - Conversations
   properties:
   - type: OpenAPI
-    url: openapi/spruce-health-conversations-openapi.yml
+    url: openapi/spruce-health-conversations-api-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-fields.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-fields.opencollection.json
+  - type: Documentation
+    url: https://developer.sprucehealth.com/docs/overview
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contactfields
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contacttags
+  - type: PostmanCollection
+    url: collections/spruce-health-contacts.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contacts.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listcontacts
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-item.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-item.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationitem
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationtags
   - type: PostmanCollection
     url: collections/spruce-health-conversations.postman_collection.json
   - type: OpenCollection
     url: collections/spruce-health-conversations.opencollection.json
-  - type: Documentation
-    url: https://developer.sprucehealth.com/docs/overview
   - type: APIReference
     url: https://developer.sprucehealth.com/reference/listconversations
-  - type: Overlay
-    url: overlays/spruce-health-conversations-overlay.yaml
-  - type: AgenticAccess
-    url: agentic-access/spruce-health-agentic-access.yml
-  x-operations: 6
-- aid: spruce-health:spruce-health-internal-endpoints
+  - type: PostmanCollection
+    url: collections/spruce-health-internal-endpoints.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-internal-endpoints.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/internalendpoints
+  - type: PostmanCollection
+    url: collections/spruce-health-media.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-media.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/uploadmedia
+  - type: PostmanCollection
+    url: collections/spruce-health-organization.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-organization.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/organization-1
+  - type: PostmanCollection
+    url: collections/spruce-health-phone-lines.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-phone-lines.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/phonelines
+  - type: PostmanCollection
+    url: collections/spruce-health-saved-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-saved-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listsavedmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-scheduled-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-scheduled-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listscheduledmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-teams.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-teams.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/teammembers
+  - type: PostmanCollection
+    url: collections/spruce-health-transcription.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-transcription.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/transcription
+  - type: PostmanCollection
+    url: collections/spruce-health-webhooks.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-webhooks.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listwebhookendpoints
+- aid: spruce-health:spruce-health-internal-endpoints-api
   name: Spruce Health Internal Endpoints API
-  description: 'Internal endpoints — the Spruce phone numbers, fax numbers, email addresses and Spruce
-    Links an organization communicates from: list them, send a secure/SMS/email/fax message from one,
-    and create an outbound proxy call.'
-  humanURL: https://developer.sprucehealth.com/reference/internalendpoints
+  description: The Internal Endpoints API from Spruce Health — 3 operation(s) for internal endpoints.
+  humanURL: https://developer.sprucehealth.com/reference/contactfields
   baseURL: https://api.sprucehealth.com/v1
   tags:
   - Internal Endpoints
   properties:
   - type: OpenAPI
-    url: openapi/spruce-health-internal-endpoints-openapi.yml
+    url: openapi/spruce-health-internal-endpoints-api-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-fields.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-fields.opencollection.json
+  - type: Documentation
+    url: https://developer.sprucehealth.com/docs/overview
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contactfields
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contacttags
+  - type: PostmanCollection
+    url: collections/spruce-health-contacts.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contacts.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listcontacts
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-item.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-item.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationitem
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationtags
+  - type: PostmanCollection
+    url: collections/spruce-health-conversations.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversations.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listconversations
   - type: PostmanCollection
     url: collections/spruce-health-internal-endpoints.postman_collection.json
   - type: OpenCollection
     url: collections/spruce-health-internal-endpoints.opencollection.json
-  - type: Documentation
-    url: https://developer.sprucehealth.com/docs/overview
   - type: APIReference
     url: https://developer.sprucehealth.com/reference/internalendpoints
-  - type: Overlay
-    url: overlays/spruce-health-internal-endpoints-overlay.yaml
-  - type: AgenticAccess
-    url: agentic-access/spruce-health-agentic-access.yml
-  x-operations: 3
-- aid: spruce-health:spruce-health-media
+  - type: PostmanCollection
+    url: collections/spruce-health-media.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-media.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/uploadmedia
+  - type: PostmanCollection
+    url: collections/spruce-health-organization.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-organization.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/organization-1
+  - type: PostmanCollection
+    url: collections/spruce-health-phone-lines.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-phone-lines.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/phonelines
+  - type: PostmanCollection
+    url: collections/spruce-health-saved-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-saved-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listsavedmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-scheduled-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-scheduled-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listscheduledmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-teams.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-teams.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/teammembers
+  - type: PostmanCollection
+    url: collections/spruce-health-transcription.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-transcription.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/transcription
+  - type: PostmanCollection
+    url: collections/spruce-health-webhooks.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-webhooks.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listwebhookendpoints
+- aid: spruce-health:spruce-health-media-api
   name: Spruce Health Media API
-  description: Media — upload images, video and files to Spruce and receive a media ID that can be attached
-    to messages.
-  humanURL: https://developer.sprucehealth.com/reference/uploadmedia
+  description: The Media API from Spruce Health — 1 operation(s) for media.
+  humanURL: https://developer.sprucehealth.com/reference/contactfields
   baseURL: https://api.sprucehealth.com/v1
   tags:
   - Media
   properties:
   - type: OpenAPI
-    url: openapi/spruce-health-media-openapi.yml
+    url: openapi/spruce-health-media-api-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-fields.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-fields.opencollection.json
+  - type: Documentation
+    url: https://developer.sprucehealth.com/docs/overview
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contactfields
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contacttags
+  - type: PostmanCollection
+    url: collections/spruce-health-contacts.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contacts.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listcontacts
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-item.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-item.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationitem
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationtags
+  - type: PostmanCollection
+    url: collections/spruce-health-conversations.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversations.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listconversations
+  - type: PostmanCollection
+    url: collections/spruce-health-internal-endpoints.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-internal-endpoints.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/internalendpoints
   - type: PostmanCollection
     url: collections/spruce-health-media.postman_collection.json
   - type: OpenCollection
     url: collections/spruce-health-media.opencollection.json
-  - type: Documentation
-    url: https://developer.sprucehealth.com/docs/overview
   - type: APIReference
     url: https://developer.sprucehealth.com/reference/uploadmedia
-  - type: Overlay
-    url: overlays/spruce-health-media-overlay.yaml
-  - type: AgenticAccess
-    url: agentic-access/spruce-health-agentic-access.yml
-  x-operations: 1
-- aid: spruce-health:spruce-health-organization
+  - type: PostmanCollection
+    url: collections/spruce-health-organization.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-organization.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/organization-1
+  - type: PostmanCollection
+    url: collections/spruce-health-phone-lines.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-phone-lines.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/phonelines
+  - type: PostmanCollection
+    url: collections/spruce-health-saved-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-saved-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listsavedmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-scheduled-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-scheduled-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listscheduledmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-teams.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-teams.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/teammembers
+  - type: PostmanCollection
+    url: collections/spruce-health-transcription.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-transcription.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/transcription
+  - type: PostmanCollection
+    url: collections/spruce-health-webhooks.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-webhooks.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listwebhookendpoints
+- aid: spruce-health:spruce-health-organization-api
   name: Spruce Health Organization API
-  description: Organization — read the organization record and its members (teammates, teams and the organization
-    entity itself).
-  humanURL: https://developer.sprucehealth.com/reference/organization-1
+  description: The Organization API from Spruce Health — 3 operation(s) for organization.
+  humanURL: https://developer.sprucehealth.com/reference/contactfields
   baseURL: https://api.sprucehealth.com/v1
   tags:
   - Organization
   properties:
   - type: OpenAPI
-    url: openapi/spruce-health-organization-openapi.yml
+    url: openapi/spruce-health-organization-api-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-fields.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-fields.opencollection.json
+  - type: Documentation
+    url: https://developer.sprucehealth.com/docs/overview
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contactfields
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contacttags
+  - type: PostmanCollection
+    url: collections/spruce-health-contacts.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contacts.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listcontacts
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-item.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-item.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationitem
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationtags
+  - type: PostmanCollection
+    url: collections/spruce-health-conversations.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversations.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listconversations
+  - type: PostmanCollection
+    url: collections/spruce-health-internal-endpoints.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-internal-endpoints.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/internalendpoints
+  - type: PostmanCollection
+    url: collections/spruce-health-media.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-media.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/uploadmedia
   - type: PostmanCollection
     url: collections/spruce-health-organization.postman_collection.json
   - type: OpenCollection
     url: collections/spruce-health-organization.opencollection.json
-  - type: Documentation
-    url: https://developer.sprucehealth.com/docs/overview
   - type: APIReference
     url: https://developer.sprucehealth.com/reference/organization-1
-  - type: Overlay
-    url: overlays/spruce-health-organization-overlay.yaml
-  - type: AgenticAccess
-    url: agentic-access/spruce-health-agentic-access.yml
-  x-operations: 3
-- aid: spruce-health:spruce-health-phone-lines
+  - type: PostmanCollection
+    url: collections/spruce-health-phone-lines.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-phone-lines.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/phonelines
+  - type: PostmanCollection
+    url: collections/spruce-health-saved-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-saved-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listsavedmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-scheduled-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-scheduled-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listscheduledmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-teams.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-teams.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/teammembers
+  - type: PostmanCollection
+    url: collections/spruce-health-transcription.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-transcription.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/transcription
+  - type: PostmanCollection
+    url: collections/spruce-health-webhooks.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-webhooks.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listwebhookendpoints
+- aid: spruce-health:spruce-health-phone-lines-api
   name: Spruce Health Phone Lines API
-  description: Phone lines — list the organization's phone lines and retrieve one by id.
-  humanURL: https://developer.sprucehealth.com/reference/phonelines
+  description: The Phone Lines API from Spruce Health — 2 operation(s) for phone lines.
+  humanURL: https://developer.sprucehealth.com/reference/contactfields
   baseURL: https://api.sprucehealth.com/v1
   tags:
   - Phone Lines
   properties:
   - type: OpenAPI
-    url: openapi/spruce-health-phone-lines-openapi.yml
+    url: openapi/spruce-health-phone-lines-api-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-fields.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-fields.opencollection.json
+  - type: Documentation
+    url: https://developer.sprucehealth.com/docs/overview
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contactfields
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contacttags
+  - type: PostmanCollection
+    url: collections/spruce-health-contacts.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contacts.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listcontacts
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-item.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-item.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationitem
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationtags
+  - type: PostmanCollection
+    url: collections/spruce-health-conversations.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversations.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listconversations
+  - type: PostmanCollection
+    url: collections/spruce-health-internal-endpoints.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-internal-endpoints.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/internalendpoints
+  - type: PostmanCollection
+    url: collections/spruce-health-media.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-media.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/uploadmedia
+  - type: PostmanCollection
+    url: collections/spruce-health-organization.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-organization.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/organization-1
   - type: PostmanCollection
     url: collections/spruce-health-phone-lines.postman_collection.json
   - type: OpenCollection
     url: collections/spruce-health-phone-lines.opencollection.json
-  - type: Documentation
-    url: https://developer.sprucehealth.com/docs/overview
   - type: APIReference
     url: https://developer.sprucehealth.com/reference/phonelines
-  - type: Overlay
-    url: overlays/spruce-health-phone-lines-overlay.yaml
-  - type: AgenticAccess
-    url: agentic-access/spruce-health-agentic-access.yml
-  x-operations: 2
-- aid: spruce-health:spruce-health-saved-messages
+  - type: PostmanCollection
+    url: collections/spruce-health-saved-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-saved-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listsavedmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-scheduled-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-scheduled-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listscheduledmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-teams.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-teams.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/teammembers
+  - type: PostmanCollection
+    url: collections/spruce-health-transcription.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-transcription.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/transcription
+  - type: PostmanCollection
+    url: collections/spruce-health-webhooks.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-webhooks.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listwebhookendpoints
+- aid: spruce-health:spruce-health-saved-messages-api
   name: Spruce Health Saved Messages API
-  description: Saved messages — the reusable private and organization-wide message templates available
-    to the organization.
-  humanURL: https://developer.sprucehealth.com/reference/listsavedmessages
+  description: The Saved Messages API from Spruce Health — 1 operation(s) for saved messages.
+  humanURL: https://developer.sprucehealth.com/reference/contactfields
   baseURL: https://api.sprucehealth.com/v1
   tags:
   - Saved Messages
   properties:
   - type: OpenAPI
-    url: openapi/spruce-health-saved-messages-openapi.yml
+    url: openapi/spruce-health-saved-messages-api-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-fields.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-fields.opencollection.json
+  - type: Documentation
+    url: https://developer.sprucehealth.com/docs/overview
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contactfields
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contacttags
+  - type: PostmanCollection
+    url: collections/spruce-health-contacts.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contacts.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listcontacts
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-item.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-item.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationitem
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationtags
+  - type: PostmanCollection
+    url: collections/spruce-health-conversations.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversations.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listconversations
+  - type: PostmanCollection
+    url: collections/spruce-health-internal-endpoints.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-internal-endpoints.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/internalendpoints
+  - type: PostmanCollection
+    url: collections/spruce-health-media.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-media.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/uploadmedia
+  - type: PostmanCollection
+    url: collections/spruce-health-organization.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-organization.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/organization-1
+  - type: PostmanCollection
+    url: collections/spruce-health-phone-lines.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-phone-lines.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/phonelines
   - type: PostmanCollection
     url: collections/spruce-health-saved-messages.postman_collection.json
   - type: OpenCollection
     url: collections/spruce-health-saved-messages.opencollection.json
-  - type: Documentation
-    url: https://developer.sprucehealth.com/docs/overview
   - type: APIReference
     url: https://developer.sprucehealth.com/reference/listsavedmessages
-  - type: Overlay
-    url: overlays/spruce-health-saved-messages-overlay.yaml
-  - type: AgenticAccess
-    url: agentic-access/spruce-health-agentic-access.yml
-  x-operations: 1
-- aid: spruce-health:spruce-health-scheduled-messages
+  - type: PostmanCollection
+    url: collections/spruce-health-scheduled-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-scheduled-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listscheduledmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-teams.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-teams.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/teammembers
+  - type: PostmanCollection
+    url: collections/spruce-health-transcription.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-transcription.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/transcription
+  - type: PostmanCollection
+    url: collections/spruce-health-webhooks.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-webhooks.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listwebhookendpoints
+- aid: spruce-health:spruce-health-scheduled-messages-api
   name: Spruce Health Scheduled Messages API
-  description: 'Scheduled messages — messages queued to send at a future time, organization-wide or within
-    a single conversation: list, schedule and delete.'
-  humanURL: https://developer.sprucehealth.com/reference/listscheduledmessages
+  description: The Scheduled Messages API from Spruce Health — 3 operation(s) for scheduled messages.
+  humanURL: https://developer.sprucehealth.com/reference/contactfields
   baseURL: https://api.sprucehealth.com/v1
   tags:
   - Scheduled Messages
   properties:
   - type: OpenAPI
-    url: openapi/spruce-health-scheduled-messages-openapi.yml
+    url: openapi/spruce-health-scheduled-messages-api-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-fields.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-fields.opencollection.json
+  - type: Documentation
+    url: https://developer.sprucehealth.com/docs/overview
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contactfields
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contacttags
+  - type: PostmanCollection
+    url: collections/spruce-health-contacts.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contacts.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listcontacts
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-item.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-item.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationitem
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationtags
+  - type: PostmanCollection
+    url: collections/spruce-health-conversations.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversations.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listconversations
+  - type: PostmanCollection
+    url: collections/spruce-health-internal-endpoints.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-internal-endpoints.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/internalendpoints
+  - type: PostmanCollection
+    url: collections/spruce-health-media.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-media.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/uploadmedia
+  - type: PostmanCollection
+    url: collections/spruce-health-organization.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-organization.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/organization-1
+  - type: PostmanCollection
+    url: collections/spruce-health-phone-lines.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-phone-lines.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/phonelines
+  - type: PostmanCollection
+    url: collections/spruce-health-saved-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-saved-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listsavedmessages
   - type: PostmanCollection
     url: collections/spruce-health-scheduled-messages.postman_collection.json
   - type: OpenCollection
     url: collections/spruce-health-scheduled-messages.opencollection.json
-  - type: Documentation
-    url: https://developer.sprucehealth.com/docs/overview
   - type: APIReference
     url: https://developer.sprucehealth.com/reference/listscheduledmessages
-  - type: Overlay
-    url: overlays/spruce-health-scheduled-messages-overlay.yaml
-  - type: AgenticAccess
-    url: agentic-access/spruce-health-agentic-access.yml
-  x-operations: 4
-- aid: spruce-health:spruce-health-teams
-  name: Spruce Health Teams API
-  description: Teams — list the members of a team by team id.
-  humanURL: https://developer.sprucehealth.com/reference/teammembers
-  baseURL: https://api.sprucehealth.com/v1
-  tags:
-  - Team
-  tags_raw:
-  - Teams
-  properties:
-  - type: OpenAPI
-    url: openapi/spruce-health-teams-openapi.yml
   - type: PostmanCollection
     url: collections/spruce-health-teams.postman_collection.json
   - type: OpenCollection
     url: collections/spruce-health-teams.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/teammembers
+  - type: PostmanCollection
+    url: collections/spruce-health-transcription.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-transcription.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/transcription
+  - type: PostmanCollection
+    url: collections/spruce-health-webhooks.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-webhooks.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listwebhookendpoints
+- aid: spruce-health:spruce-health-teams-api
+  name: Spruce Health Teams API
+  description: The Teams API from Spruce Health — 1 operation(s) for teams.
+  humanURL: https://developer.sprucehealth.com/reference/contactfields
+  baseURL: https://api.sprucehealth.com/v1
+  tags:
+  - Teams
+  properties:
+  - type: OpenAPI
+    url: openapi/spruce-health-teams-api-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-fields.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-fields.opencollection.json
   - type: Documentation
     url: https://developer.sprucehealth.com/docs/overview
   - type: APIReference
-    url: https://developer.sprucehealth.com/reference/teammembers
-  - type: Overlay
-    url: overlays/spruce-health-teams-overlay.yaml
+    url: https://developer.sprucehealth.com/reference/contactfields
   - type: AgenticAccess
     url: agentic-access/spruce-health-agentic-access.yml
-  x-operations: 1
-- aid: spruce-health:spruce-health-transcription
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contacttags
+  - type: PostmanCollection
+    url: collections/spruce-health-contacts.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contacts.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listcontacts
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-item.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-item.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationitem
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationtags
+  - type: PostmanCollection
+    url: collections/spruce-health-conversations.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversations.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listconversations
+  - type: PostmanCollection
+    url: collections/spruce-health-internal-endpoints.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-internal-endpoints.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/internalendpoints
+  - type: PostmanCollection
+    url: collections/spruce-health-media.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-media.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/uploadmedia
+  - type: PostmanCollection
+    url: collections/spruce-health-organization.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-organization.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/organization-1
+  - type: PostmanCollection
+    url: collections/spruce-health-phone-lines.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-phone-lines.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/phonelines
+  - type: PostmanCollection
+    url: collections/spruce-health-saved-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-saved-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listsavedmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-scheduled-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-scheduled-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listscheduledmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-teams.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-teams.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/teammembers
+  - type: PostmanCollection
+    url: collections/spruce-health-transcription.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-transcription.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/transcription
+  - type: PostmanCollection
+    url: collections/spruce-health-webhooks.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-webhooks.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listwebhookendpoints
+- aid: spruce-health:spruce-health-transcription-api
   name: Spruce Health Transcription API
-  description: Transcriptions — retrieve the full transcription text and AI summarization for a transcription
-    id found on voicemails, call recordings and audio messages.
-  humanURL: https://developer.sprucehealth.com/reference/transcription
+  description: The Transcription API from Spruce Health — 1 operation(s) for transcription.
+  humanURL: https://developer.sprucehealth.com/reference/contactfields
   baseURL: https://api.sprucehealth.com/v1
   tags:
   - Transcription
   properties:
   - type: OpenAPI
-    url: openapi/spruce-health-transcription-openapi.yml
+    url: openapi/spruce-health-transcription-api-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-fields.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-fields.opencollection.json
+  - type: Documentation
+    url: https://developer.sprucehealth.com/docs/overview
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contactfields
+  - type: AgenticAccess
+    url: agentic-access/spruce-health-agentic-access.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contacttags
+  - type: PostmanCollection
+    url: collections/spruce-health-contacts.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contacts.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listcontacts
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-item.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-item.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationitem
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationtags
+  - type: PostmanCollection
+    url: collections/spruce-health-conversations.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversations.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listconversations
+  - type: PostmanCollection
+    url: collections/spruce-health-internal-endpoints.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-internal-endpoints.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/internalendpoints
+  - type: PostmanCollection
+    url: collections/spruce-health-media.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-media.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/uploadmedia
+  - type: PostmanCollection
+    url: collections/spruce-health-organization.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-organization.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/organization-1
+  - type: PostmanCollection
+    url: collections/spruce-health-phone-lines.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-phone-lines.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/phonelines
+  - type: PostmanCollection
+    url: collections/spruce-health-saved-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-saved-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listsavedmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-scheduled-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-scheduled-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listscheduledmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-teams.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-teams.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/teammembers
   - type: PostmanCollection
     url: collections/spruce-health-transcription.postman_collection.json
   - type: OpenCollection
     url: collections/spruce-health-transcription.opencollection.json
-  - type: Documentation
-    url: https://developer.sprucehealth.com/docs/overview
   - type: APIReference
     url: https://developer.sprucehealth.com/reference/transcription
-  - type: Overlay
-    url: overlays/spruce-health-transcription-overlay.yaml
-  - type: AgenticAccess
-    url: agentic-access/spruce-health-agentic-access.yml
-  x-operations: 1
-- aid: spruce-health:spruce-health-webhooks
-  name: Spruce Health Webhooks API
-  description: Webhooks — register and manage the HTTPS destination endpoints that receive real-time contact,
-    conversation, conversationItem and scheduledMessage events; create (returns the signing secret), list,
-    retrieve, list delivered events, pause/resume and delete.
-  humanURL: https://developer.sprucehealth.com/reference/listwebhookendpoints
-  baseURL: https://api.sprucehealth.com/v1
-  tags:
-  - Webhook
-  tags_raw:
-  - Webhooks
-  properties:
-  - type: OpenAPI
-    url: openapi/spruce-health-webhooks-openapi.yml
   - type: PostmanCollection
     url: collections/spruce-health-webhooks.postman_collection.json
   - type: OpenCollection
     url: collections/spruce-health-webhooks.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listwebhookendpoints
+- aid: spruce-health:spruce-health-webhooks-api
+  name: Spruce Health Webhooks API
+  description: The Webhooks API from Spruce Health — 4 operation(s) for webhooks.
+  humanURL: https://developer.sprucehealth.com/reference/contactfields
+  baseURL: https://api.sprucehealth.com/v1
+  tags:
+  - Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/spruce-health-webhooks-api-openapi.yml
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-fields.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-fields.opencollection.json
   - type: Documentation
     url: https://developer.sprucehealth.com/docs/overview
   - type: APIReference
-    url: https://developer.sprucehealth.com/reference/listwebhookendpoints
-  - type: Overlay
-    url: overlays/spruce-health-webhooks-overlay.yaml
+    url: https://developer.sprucehealth.com/reference/contactfields
   - type: AgenticAccess
     url: agentic-access/spruce-health-agentic-access.yml
-  x-operations: 6
+  - type: PostmanCollection
+    url: collections/spruce-health-contact-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contact-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/contacttags
+  - type: PostmanCollection
+    url: collections/spruce-health-contacts.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-contacts.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listcontacts
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-item.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-item.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationitem
+  - type: PostmanCollection
+    url: collections/spruce-health-conversation-tags.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversation-tags.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/conversationtags
+  - type: PostmanCollection
+    url: collections/spruce-health-conversations.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-conversations.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listconversations
+  - type: PostmanCollection
+    url: collections/spruce-health-internal-endpoints.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-internal-endpoints.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/internalendpoints
+  - type: PostmanCollection
+    url: collections/spruce-health-media.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-media.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/uploadmedia
+  - type: PostmanCollection
+    url: collections/spruce-health-organization.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-organization.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/organization-1
+  - type: PostmanCollection
+    url: collections/spruce-health-phone-lines.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-phone-lines.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/phonelines
+  - type: PostmanCollection
+    url: collections/spruce-health-saved-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-saved-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listsavedmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-scheduled-messages.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-scheduled-messages.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listscheduledmessages
+  - type: PostmanCollection
+    url: collections/spruce-health-teams.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-teams.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/teammembers
+  - type: PostmanCollection
+    url: collections/spruce-health-transcription.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-transcription.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/transcription
+  - type: PostmanCollection
+    url: collections/spruce-health-webhooks.postman_collection.json
+  - type: OpenCollection
+    url: collections/spruce-health-webhooks.opencollection.json
+  - type: APIReference
+    url: https://developer.sprucehealth.com/reference/listwebhookendpoints
 common:
+- type: Overlay
+  url: overlays/spruce-health-contact-fields-overlay.yaml
+- type: Overlay
+  url: overlays/spruce-health-contact-tags-overlay.yaml
+- type: Overlay
+  url: overlays/spruce-health-contacts-overlay.yaml
+- type: Overlay
+  url: overlays/spruce-health-conversation-item-overlay.yaml
+- type: Overlay
+  url: overlays/spruce-health-conversation-tags-overlay.yaml
+- type: Overlay
+  url: overlays/spruce-health-conversations-overlay.yaml
+- type: Overlay
+  url: overlays/spruce-health-internal-endpoints-overlay.yaml
+- type: Overlay
+  url: overlays/spruce-health-media-overlay.yaml
+- type: Overlay
+  url: overlays/spruce-health-organization-overlay.yaml
+- type: Overlay
+  url: overlays/spruce-health-phone-lines-overlay.yaml
+- type: Overlay
+  url: overlays/spruce-health-saved-messages-overlay.yaml
+- type: Overlay
+  url: overlays/spruce-health-scheduled-messages-overlay.yaml
+- type: Overlay
+  url: overlays/spruce-health-teams-overlay.yaml
+- type: Overlay
+  url: overlays/spruce-health-transcription-overlay.yaml
+- type: Overlay
+  url: overlays/spruce-health-webhooks-overlay.yaml
 - type: AgenticAccess
   url: agentic-access/spruce-health-agentic-access.yml
 - type: DomainSecurity
