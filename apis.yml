@@ -15,6 +15,18 @@ description: 'Spruce Health is a HIPAA-compliant healthcare communication platfo
   60-second and a 24-hour window, and 15 HMAC-signed webhook event types. API access is gated twice: it
   is part of the Communicator plan, and an organization must additionally contact Spruce Support to have
   API access enabled before an administrator can generate a token.'
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: freemium
   onboarding: open
