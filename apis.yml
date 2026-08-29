@@ -1647,6 +1647,9 @@ apis:
   - type: APIReference
     url: https://developer.sprucehealth.com/reference/listwebhookendpoints
 common:
+- type: CapabilityMap
+  url: capabilities/spruce-health-capability-edges.yml
+  name: Spruce Health Business Capability Map
 - type: Overlay
   url: overlays/spruce-health-contact-fields-overlay.yaml
 - type: Overlay

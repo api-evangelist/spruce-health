@@ -1,0 +1,26 @@
+slug: spruce-health
+provider: Spruce Health
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Healthcare Providers
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 1
+edges:
+- tag: Conversations
+  spec_file: spruce-health-conversations-api-openapi.yml
+  capability_id: BC-2910.10
+  capability_id_l1: BC-2910
+  capability_name: Patient Engagement & Communication
+  confidence: 0.75
+  evidence: '''Post a message to a specific conversation'', ''Create a new conversation''; vendor ''unifies
+    phone, SMS, secure messaging, video, e-fax ... for medical practices'''
+  reason: Core surface for creating and messaging within secure conversations between a medical practice
+    and its patients/contacts — multi-channel communication with patients and families. Slight ambiguity
+    because conversations can also be internal team chat.
