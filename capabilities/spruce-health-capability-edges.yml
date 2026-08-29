@@ -3,7 +3,7 @@ provider: Spruce Health
 generated_by: planning/capability-mapping/scripts/classify_capabilities.py
 model: claude-opus-5
 frame:
-- Healthcare Providers
+- Telecommunications
 min_confidence: 0.7
 capability_model:
   source: https://github.com/vincentmakes/turbo-ea-capabilities
@@ -11,16 +11,37 @@ capability_model:
   attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
     CC BY 4.0
   notice: NOTICE
-edge_count: 1
+edge_count: 3
 edges:
+- tag: Contacts
+  spec_file: spruce-health-contacts-api-openapi.yml
+  capability_id: BC-420.10
+  capability_id_l1: BC-420
+  capability_name: Customer Data Management
+  confidence: 0.8
+  evidence: POST /contacts  CreateContact  Create a contact ... PATCH /contacts/{contactId}  UpdateContact
+    ... POST /contacts/{contactId}/invite  SendInvite  Invite patient to Spruce
+  reason: Full CRUD, search and integration-linking over contact (patient) master records, including external
+    system links — this is customer/contact data mastering.
 - tag: Conversations
   spec_file: spruce-health-conversations-api-openapi.yml
-  capability_id: BC-2910.10
-  capability_id_l1: BC-2910
-  capability_name: Patient Engagement & Communication
-  confidence: 0.75
-  evidence: '''Post a message to a specific conversation'', ''Create a new conversation''; vendor ''unifies
-    phone, SMS, secure messaging, video, e-fax ... for medical practices'''
-  reason: Core surface for creating and messaging within secure conversations between a medical practice
-    and its patients/contacts — multi-channel communication with patients and families. Slight ambiguity
-    because conversations can also be internal team chat.
+  capability_id: BC-430.10
+  capability_id_l1: BC-430
+  capability_name: Customer Inquiry Management
+  confidence: 0.7
+  evidence: POST /conversations/{conversationId}/messages  PostConversationMessage  Post a message to
+    a specific conversation
+  reason: Creation, listing and messaging within patient conversation threads on a unified phone/SMS/secure-messaging
+    platform — handling of inbound and outbound customer contacts.
+- tag: Webhooks
+  spec_file: spruce-health-webhooks-api-openapi.yml
+  capability_id: BC-4270.80
+  capability_id_l1: BC-4270
+  capability_name: Webhook & Event Subscription Management
+  confidence: 0.7
+  evidence: POST /webhooks/endpoints — 'Create a webhook destination endpoint'; 'ModifyWebhookEndpointPaused  Pause
+    or resume a webhook destination endpoint'; schema webhookDestinationEndpointEventDelivery
+  reason: The surface is the full lifecycle of outbound webhook destination endpoints plus event delivery
+    inspection, which is precisely the Webhook & Event Subscription Management sub-capability of a developer
+    platform. Confidence held below 0.8 because webhook management is often treated as pure integration
+    plumbing rather than a managed business capability.
