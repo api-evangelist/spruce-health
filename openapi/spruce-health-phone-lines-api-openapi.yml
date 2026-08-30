@@ -1,0 +1,150 @@
+openapi: 3.2.0
+info:
+  title: Spruce Health Phone Lines API
+  version: 1.0.0
+  description: The Phone Lines operations of the Spruce Health API, split by tag from the OpenAPI Spruce Health publishes for developer.sprucehealth.com (ReadMe registry @spruce/v1.0#13needamst2v4m6). Base https://api.sprucehealth.com/v1, Bearer organization token.
+  contact:
+    name: Spruce Health
+    url: https://developer.sprucehealth.com
+servers:
+- url: https://api.sprucehealth.com/v1
+  variables:
+    domain:
+      default: api.sprucehealth.com
+security:
+- spruceAPIToken: []
+tags:
+- name: Phone Lines
+paths:
+  /phonelines:
+    get:
+      description: This returns a list of all phone lines of the organization.
+      operationId: PhoneLines
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  phonelines:
+                    items:
+                      $ref: '#/components/schemas/phoneline'
+                    type: array
+                  totalCount:
+                    $ref: '#/components/schemas/totalCount'
+                required:
+                - phonelines
+                - totalCount
+                type: object
+          description: Expected response to a valid request
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: List all phone lines of the organization
+      tags:
+      - Phone Lines
+  /phonelines/{phonelineId}:
+    get:
+      description: This operation retrieves a specific phone line by id.
+      operationId: PhoneLine
+      parameters:
+      - description: The unique identifier of the phone line
+        in: path
+        name: phonelineId
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/phoneline'
+          description: Expected response to a valid request
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: Get a phone line of the organization by id
+      tags:
+      - Phone Lines
+components:
+  schemas:
+    error:
+      properties:
+        message:
+          example: Invalid Contact ID
+          type: string
+        statusCode:
+          example: 400
+          type: integer
+        type:
+          example: BAD_PARAMETER
+          type: string
+      required:
+      - message
+      - statusCode
+      - type
+      type: object
+    phoneline:
+      description: phone line
+      properties:
+        id:
+          $ref: '#/components/schemas/phoneline_id'
+        name:
+          description: The name of the phone line
+          example: Desk 101
+          type: string
+      required:
+      - createdAt
+      - id
+      - name
+      type: object
+    totalCount:
+      example: 750
+      format: int32
+      type: integer
+    phoneline_id:
+      description: Spruce's phone line ID
+      example: pd_26RRC7PQ6JG00
+      type: string
+  headers:
+    s-ratelimit-limit:
+      description: Request limit per minute
+      example: 100
+      schema:
+        type: integer
+    s-request-id:
+      description: The ID of the request
+      example: 0E5QDGJC030000E5QDGJC03000
+      schema:
+        type: string
+    s-ratelimit-remaining:
+      description: Requests remaining this minute
+      example: 94
+      schema:
+        type: integer
+  securitySchemes:
+    spruceAPIToken:
+      description: API token provided by Spruce should be passed in an "Authorization" header with the value "Bearer <token>"
+      scheme: bearer
+      type: http

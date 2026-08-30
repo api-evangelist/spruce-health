@@ -1,0 +1,1308 @@
+openapi: 3.2.0
+info:
+  title: Spruce Health Conversations API
+  version: 1.0.0
+  description: The Conversations operations of the Spruce Health API, split by tag from the OpenAPI Spruce Health publishes for developer.sprucehealth.com (ReadMe registry @spruce/v1.0#13needamst2v4m6). Base https://api.sprucehealth.com/v1, Bearer organization token.
+  contact:
+    name: Spruce Health
+    url: https://developer.sprucehealth.com
+servers:
+- url: https://api.sprucehealth.com/v1
+  variables:
+    domain:
+      default: api.sprucehealth.com
+security:
+- spruceAPIToken: []
+tags:
+- name: Conversations
+paths:
+  /conversations:
+    get:
+      description: 'This operation lists all conversations available to the organization. This is an eventually consistent view and may take a short time before new conversations appear in results.
+
+
+
+        To iterate through all conversations in the organization, list the first page of conversations (without specifying `paginationToken` or `startFrom`). If `hasMore=true`, the provide the `paginationToken` to the API to list subsequent pages of conversations until `hasMore=false`.
+
+
+
+        ## Detecting conversations with new messages
+
+
+        Note that the conversations are ordered by created date by default. You can also order them by the time of last activity in the conversation by specifying `orderBy=last_message`. This is particularly helpful when trying to determine conversations with new activity in them. In this particular case, you can query the list of conversations with `orderBy=last_message` and capture the `lastMessageAt` time for the last conversation in the list. On the next query, you can then `startFrom=<lastMessageAt time you saved>` and `orderBy=last_message` to return any conversations with new activity since your last query.
+
+
+
+        While you can determine the conversations with new activity, it is also important to know if the latest messages in each conversation were from your teammates or from an external contact (like a patient). To determine this, you can use the [listing of conversation items API](/reference/conversationitems) to query for the latest items since a particular time with the `startFrom` field. If any message in the list returned has `direction=inbound` then it indicates a message received since the last query for message items.
+
+        '
+      operationId: ListConversations
+      parameters:
+      - description: How many conversations to return at one time (max 200)
+        in: query
+        name: pageSize
+        required: false
+        schema:
+          format: int32
+          maximum: 200
+          minimum: 1
+          type: integer
+      - description: 'After fetching a set of conversations, use the returned `paginationToken` to fetch the next page of conversations. Only one of `startFrom` or `paginationToken` can be provided.
+
+          '
+        in: query
+        name: paginationToken
+        required: false
+        schema:
+          $ref: '#/components/schemas/paginationToken'
+      - description: 'Determines the order of the results. When optionally combined with `startFrom`, you can get conversationswhere the time that you''re ordering by is greater than or equal to the specified start from date. For example, `"orderBy": "last_message"` and `"startFrom": "2025-01-01T00:00:00.000Z"` will return conversations with a last message time greater than or equal to January 1, 2025 midnight UTC (useful for fetching delta updates from the last time you fetched).
+
+          '
+        in: query
+        name: orderBy
+        required: true
+        schema:
+          $ref: '#/components/schemas/conversations_orderBy'
+      - description: 'Only return conversations whose ordering field value is greater than or equal to this timestamp.
+
+          **Format** — RFC 3339 “date-time” (`YYYY-MM-DDTHH:mm:ss.SSS±hh:mm`). Use **Z** for UTC or an explicit offset such as **-07:00**.
+
+          - When `orderBy=created`, you will receive conversations created greater than or equal to the provided startFrom time.
+
+          - When `orderBy=last_message`, you will receive conversations with a last message time greater than or equal to the provided startFrom time.
+
+          - Only one of `startFrom` or `paginationToken` can be provided.
+
+          '
+        examples:
+          laPDT:
+            summary: Same instant in Los Angeles (PDT)
+            value: '2020-03-31T17:00:00-07:00'
+          utcMidnight:
+            summary: UTC start of 1 Apr 2020
+            value: '2020-04-01T00:00:00Z'
+        in: query
+        name: startFrom
+        required: false
+        schema:
+          format: date-time
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  conversations:
+                    items:
+                      $ref: '#/components/schemas/conversation'
+                    type: array
+                  hasMore:
+                    $ref: '#/components/schemas/hasMore'
+                  paginationToken:
+                    $ref: '#/components/schemas/paginationToken'
+                  totalCount:
+                    $ref: '#/components/schemas/totalCount'
+                    description: Total count represents the total number of conversations available. This is a best effort calculation at the time of the initial query. This count will not be recalculated more than once every 60 seconds while iterating a set of results.
+                required:
+                - totalCount
+                - conversations
+                - hasMore
+                type: object
+          description: Expected response to a valid request
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: List and filter all conversations available to the organization
+      tags:
+      - Conversations
+    post:
+      description: 'This operation creates a new conversation within an organization. The following conversation types are supported:
+
+
+        ### Secure Conversations (`type: "secure"`)
+
+
+        A secure conversation can be started with a single contact or a group of contacts. All contacts must be patients and either have a Spruce account or a pending secure invite.
+
+
+        ### Note Conversations (`type: "note"`)
+
+
+        A note conversation is an internal-only conversation for documenting information. Notes can optionally include organization members/groups and can be associated with contacts for organizational purposes (via `associatedContactIds`). Associated contacts will not have access to the note.
+
+
+        ### Asynchronous Message Processing
+
+
+        If a message is included in the conversation creation request, the message will be posted asynchronously after the conversation is created. The API will immediately return the conversation details along with a `postMessageRequestId` that can be used to track when the message is actually sent.
+
+
+        The `postMessageRequestId` returned in the response can be matched against the `requestID` field of the `conversationItem.created` webhook event to identify when the message has been successfully posted to the conversation.
+
+        '
+      operationId: CreateConversation
+      parameters:
+      - $ref: '#/components/parameters/s-idempotency-key'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createConversation'
+              description: Conversation json object. The internal secure endpoint and destinations are required.
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                properties:
+                  conversation:
+                    $ref: '#/components/schemas/conversation'
+                  postMessageRequestId:
+                    $ref: '#/components/schemas/asyncRequest_id'
+                required:
+                - conversation
+                type: object
+          description: created
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: Create a new conversation
+      tags:
+      - Conversations
+  /conversations/{conversationId}:
+    get:
+      description: This operation fetches a specific conversation for the provided id.
+      operationId: Conversation
+      parameters:
+      - description: The id of the conversation to retrieve
+        in: path
+        name: conversationId
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  conversation:
+                    $ref: '#/components/schemas/conversation'
+                required:
+                - conversation
+                type: object
+          description: Expected response to a valid request
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: Get a conversation for a given id
+      tags:
+      - Conversations
+    patch:
+      description: 'This operation updates a specific conversation by id.
+
+
+        Fields provided in the input object will be updated, omitted fields *(null)* will be unchanged.'
+      operationId: UpdateConversation
+      parameters:
+      - $ref: '#/components/parameters/s-idempotency-key'
+      - description: The id of the conversation to update
+        in: path
+        name: conversationId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateConversation'
+              description: Conversation json object. Omitted fields are not updated.
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/conversation'
+          description: ok response
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: duplicate request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: Update a conversation
+      tags:
+      - Conversations
+  /conversations/{conversationId}/items:
+    get:
+      description: This operation lists all conversations items available in a conversation. This is an eventually consistent view and may take a short time before new conversation items appear in results.
+      operationId: ConversationItems
+      parameters:
+      - description: The id of the conversation to list items for
+        in: path
+        name: conversationId
+        required: true
+        schema:
+          type: string
+      - description: How many conversation items to return at one time (max 200)
+        in: query
+        name: pageSize
+        required: false
+        schema:
+          format: int32
+          maximum: 200
+          minimum: 1
+          type: integer
+      - description: The order in which conversation items are returned.
+        in: query
+        name: order
+        required: false
+        schema:
+          $ref: '#/components/schemas/conversationItems_Order'
+      - in: query
+        name: paginationToken
+        required: false
+        schema:
+          $ref: '#/components/schemas/paginationToken'
+      - description: The created time after which to query for new items in a conversation.
+        in: query
+        name: startFrom
+        required: false
+        schema:
+          example: '2020-04-01T00:00:00Z'
+          format: date-time
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  conversationItems:
+                    items:
+                      $ref: '#/components/schemas/conversationItem'
+                    type: array
+                  hasMore:
+                    $ref: '#/components/schemas/hasMore'
+                  paginationToken:
+                    $ref: '#/components/schemas/paginationToken'
+                  totalCount:
+                    $ref: '#/components/schemas/totalCount'
+                    description: Total count represents the total number of conversation items available. This is a best effort calculation at the time of the initial query. This count will not be recalculated more than once every 60 seconds while iterating a set of results.
+                required:
+                - totalCount
+                - conversationItems
+                - hasMore
+                type: object
+          description: Expected response to a valid request
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: List and filter all conversation items in a conversation
+      tags:
+      - Conversations
+  /conversations/{conversationId}/messages:
+    post:
+      description: 'This operation posts a message in a conversation as specified by the conversationId. You can retrieve the conversationId by [listing the conversations for a contact](/reference/contactconversations) or by [listing all conversations in the organization](/reference/conversations). You can also [send messages to a phone number, an email address, fax number, or securely message a contact](/reference/postmessagefromendpoint) using a [specific internal endpoint](/reference/internalendpoints). The `requestID` returned by this API may be used to match against the `requestID` field of the `conversationItem.created` webhook event to identify when the message is posted.
+
+        ## Posting an internal message containing a page for an organization member
+
+        To post a message with a page for an organization member, you''ll first need to know the member''s id. You can find the id of the organization member by [listing all organization members](/reference/organizationmembers). Once the member id is known, you can post a message to the conversation with `internal=true` and an element of `type=page` and `value=<member-id>` in the list of `body` elements being posted.
+
+        The `body` parameter is a list of message elements. Each element can be of type `text` or `page`. The request can contain combinations of `text` and `page` elements to create internal messages with useful content while also notifying a set of members.
+
+        ## Posting to a Team or Note conversation
+
+        You can also use this API to post messages into a Team or Note conversations. For Note conversations, you will have to specify `internal=true` since only internal messages can be posted in Note conversations.'
+      operationId: PostConversationMessage
+      parameters:
+      - $ref: '#/components/parameters/s-idempotency-key'
+      - description: The id of the conversation to post to
+        in: path
+        name: conversationId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/conversation_messagePost'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  requestId:
+                    $ref: '#/components/schemas/asyncRequest_id'
+                required:
+                - requestId
+                type: object
+          description: ok
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: duplicate request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: Post a message to a specific conversation
+      tags:
+      - Conversations
+components:
+  schemas:
+    conversation_id:
+      description: Spruce's conversation ID
+      example: t_0E5QDGJC03000
+      type: string
+    conversationItem_ImageAttachment:
+      properties:
+        mimetype:
+          description: The mimetype of the image attachment.
+          example: image/png
+          type: string
+        signedUrl:
+          $ref: '#/components/schemas/signedUrl'
+          description: The URL used to fetch the image attachment.
+      required:
+      - mimetype
+      - signedUrl
+      type: object
+    conversationItem_Transcription:
+      properties:
+        id:
+          description: The id of the transcription job. Pass this to the [Transcription endpoint](/reference/transcription) to fetch the full transcription text.
+          type: string
+        status:
+          description: The current status of the transcription. When `pending`, the transcription is still being processed.
+          enum:
+          - completed
+          - pending
+          - failed
+          - noSpeech
+          type: string
+        summarizationStatus:
+          description: The current status of the summarization, if the transcription is being summarized. Null when no summarization was requested.
+          enum:
+          - completed
+          - pending
+          - failed
+          type: string
+      required:
+      - id
+      - status
+      type: object
+    conversationItems_Order:
+      description: The order of the conversation items returned
+      enum:
+      - newest_first
+      - oldest_first
+      example: newest_first
+      type: string
+    teammate_id:
+      description: The id of the teammate
+      example: entity_0E5QDGJC03000
+      type: string
+    conversation_tagId:
+      description: Spruce's conversation tag ID
+      example: tag_0E5QDGJC03000
+      type: string
+    deviceInformation:
+      properties:
+        accessID:
+          description: The access ID of API credentials used to make the request.
+          type: string
+        appVersion:
+          description: The version of the app.
+          type: string
+        device:
+          description: The type of the device.
+          type: string
+        deviceId:
+          description: The id of the device.
+          type: string
+        deviceModel:
+          description: The model of the device.
+          type: string
+        platform:
+          description: The platform of the device.
+          type: string
+      type: object
+    objectType:
+      description: String representing the object's type
+      type: string
+    conversation:
+      properties:
+        apiURL:
+          description: An absolute URL for fetching this conversation from the API
+          example: https://api.sprucehealth.com/conversations/t_0E5QDJJC03000
+          format: url
+          type: string
+        appURL:
+          description: An absolute URL to view the conversation in the Spruce app
+          example: https://app.sprucehealth.com/org/entity_0D4QABCC06000/thread/t_0E5QDJJC03000
+          format: url
+          type: string
+        archived:
+          description: Whether or not the conversation is archived
+          example: false
+          type: boolean
+        assignedToMemberId:
+          description: The id of the teammate the conversation is assigned to
+          example: entity_0D4QABCC06000
+          type: string
+        associatedContactIds:
+          description: The ids of the contacts associated with the conversation. This may include contacts that are not a part of the conversation. For example, the conversation may be with parents, but associated with a contact representing their child.
+          example:
+          - entity_0D4QABCC06000
+          items:
+            type: string
+          type: array
+        createdAt:
+          description: The date the conversation was created
+          example: '2020-04-01T00:00:00Z'
+          format: date-time
+          type: string
+        externalParticipants:
+          description: The external participants in the conversation.
+          items:
+            properties:
+              contact:
+                description: The id of the contact associated with the participant. This will be omitted if the participant is not a saved contact.
+                example: entity_0D4QABCC06000
+                type: string
+              displayName:
+                description: The display name of the participant
+                example:
+                - 555-555-5555
+                - John Doe
+                - patient@example.com
+                type: string
+              endpoint:
+                $ref: '#/components/schemas/endpoint'
+                description: The endpoint of the participant, such as their phone number or email address. For secure conversations, there will not be an endpoint.
+            required:
+            - displayName
+            type: object
+          type: array
+        id:
+          $ref: '#/components/schemas/conversation_id'
+        internalEndpoint:
+          $ref: '#/components/schemas/endpoint'
+          description: 'The internal endpoint of the conversation. For secure conversations, this will be a Spruce Link.
+
+
+            Note: for secure endpoints, the `id` returned here is a derived value that will not equal the `endpoint.id` returned for the same Spruce Link by the list internal endpoints API. Use `rawValue` to match a conversation''s secure internal endpoint to the corresponding Spruce Link. Endpoint ids for phone, fax, and email channels use the same format across responses and can be compared directly.
+
+            '
+        internalMemberIds:
+          description: The ids of the teammates, teams and/or your organization that are members of the conversation.
+          example:
+          - entity_0D4QABCC06000
+          items:
+            type: string
+          type: array
+        isReadOnly:
+          description: If the conversation is read-only, messages cannot be sent to it.
+          example: false
+          type: boolean
+        lastMessageAt:
+          description: The time of the conversations latest message
+          example: '2020-04-01T00:00:00Z'
+          format: date-time
+          type: string
+        object:
+          $ref: '#/components/schemas/objectType'
+        subtitle:
+          description: The subtitle of the conversation
+          example: Billing
+          type: string
+        tags:
+          $ref: '#/components/schemas/conversation_tags'
+        title:
+          description: The title of the conversation
+          example: John Doe
+          type: string
+        type:
+          description: The type of the conversation (e.g. 'email', 'phone', 'secure', etc.). Note that SMS will be in a 'phone' conversation, and video calls will be in a 'secure' conversation. More conversation types may be added in the future, so ensure while parsing this that you gracefully handle any new/unexpected values.
+          enum:
+          - email
+          - phone
+          - secure
+          - fax
+          - team
+          - note
+          - other
+          type: string
+      required:
+      - appURL
+      - apiURL
+      - archived
+      - createdAt
+      - id
+      - isReadOnly
+      - tags
+      - type
+      - title
+      - object
+      type: object
+    conversations_orderBy:
+      description: The order of the conversations returned
+      enum:
+      - created
+      - last_message
+      example: created
+      type: string
+    create_conversation_note:
+      properties:
+        associatedContactIds:
+          description: The ids of contacts that this note is regarding. These contacts will not have access to the note but will be associated with it for organizational purposes.
+          example:
+          - entity_0D4QABCC06000
+          items:
+            type: string
+          type: array
+        memberIds:
+          description: The ids of organization members or groups to include in the note conversation. If not provided, the note will be private to the creator.
+          example:
+          - entity_0D4QABCC06000
+          items:
+            type: string
+          type: array
+        message:
+          $ref: '#/components/schemas/conversation_messagePost'
+        title:
+          description: The title of the note conversation. If not provided, a default title will be generated.
+          example: Patient Follow-up Notes
+          type: string
+      type: object
+    conversationItem_Page:
+      properties:
+        id:
+          description: The id of the page.
+          type: string
+        memberId:
+          description: The id of the teammate being paged.
+          example: entity_0D4QABCC06000
+          type: string
+        resolved:
+          description: If the page has been resolved.
+          type: boolean
+        resolvedAt:
+          description: The date time the page was resolved at.
+          example: '2020-04-01T00:00:00Z'
+          format: date-time
+          type: string
+        resolvedByMemberId:
+          description: The id of the teammate that resolved the page.
+          example: entity_0D4QABCC06000
+          type: string
+      required:
+      - id
+      - memberId
+      - resolved
+      type: object
+    error:
+      properties:
+        message:
+          example: Invalid Contact ID
+          type: string
+        statusCode:
+          example: 400
+          type: integer
+        type:
+          example: BAD_PARAMETER
+          type: string
+      required:
+      - message
+      - statusCode
+      - type
+      type: object
+    conversation_messageBodyElement:
+      description: An element of a message body. This can be either a `text` or `page` type element. A `text` element is a string of text to be placed in the message. A `page` element is a reference to an organization member. For a `page` element, the value field should be the Spruce id of the organization member being referenced.
+      properties:
+        type:
+          enum:
+          - text
+          - page
+          example: text
+          type: string
+        value:
+          description: The value of the message body element
+          example: Hello, how are you?
+          type: string
+      required:
+      - type
+      - value
+      type: object
+    paginationToken:
+      description: Token given in a previous response to allow requesting the next page
+      example: abcdefghijklmnop
+      type: string
+    conversation_messagePost_attachment:
+      properties:
+        attachmentId:
+          description: The id of the attachment. In most cases, this will be a media id returned from posting a file to the [media endpoint](/reference/uploadmedia).
+          example: d7b25969-86ec-7e37-3776-3577-c0637a0c
+          type: string
+        title:
+          description: The title of the attachment
+          example: My Image
+          type: string
+      required:
+      - attachmentId
+      - title
+      type: object
+    conversationItem_id:
+      description: The id of a conversation item.
+      example: ti_0D4QABCC06000
+      type: string
+    totalCount:
+      example: 750
+      format: int32
+      type: integer
+    create_conversation_secure:
+      properties:
+        destinationContactIds:
+          description: The ids of the destination contacts.
+          example:
+          - entity_0D4QABCC06000
+          items:
+            type: string
+          type: array
+        internalEndpointId:
+          description: Organization's internal endpoint ID that will be used as the internal endpoint for the conversation.
+          example: organizationCode_2ER39ETHBQ800
+          type: string
+        message:
+          $ref: '#/components/schemas/conversation_messagePost'
+        subject:
+          description: The conversation's subject.
+          example: Annual Physical Exam
+          type: string
+      required:
+      - destinationContactIds
+      - internalEndpointId
+      type: object
+    endpoint:
+      properties:
+        channel:
+          description: The channel of the endpoint (e.g. 'email', 'phone', 'fax', etc.). More endpoint channels may be added in the future, so ensure while parsing this that you gracefully handle any new/unexpected values.
+          enum:
+          - email
+          - phone
+          - fax
+          - secure
+          type: string
+        displayValue:
+          description: The display value of the endpoint. This is the value that should be displayed to the user when showing the endpoint, along with the label if it's populated.
+          example:
+            email:
+              value: patient@example.com
+            phone:
+              value: (555) 555-5555
+            secure:
+              value: spruce.care/123456
+          type: string
+        id:
+          $ref: '#/components/schemas/endpoint_id'
+        isInternal:
+          description: Internal endpoints are endpoints that are owned by your organization, such as your organization's Spruce Phone Numbers or Spruce Links.
+          example: false
+          type: boolean
+        label:
+          description: The optional label of the endpoint
+          example:
+          - Home
+          - Work
+          type: string
+        object:
+          $ref: '#/components/schemas/objectType'
+        rawValue:
+          description: The raw value of the endpoint. This can be used for programmatically comparing contact values, and is the stable identifier to use when matching a secure endpoint on a conversation back to the corresponding Spruce Link returned by the list internal endpoints API. The raw value for a phone/fax number will be in E164 format.
+          example:
+            email:
+              value: patient@example.com
+            phone:
+              value: 15555555555
+            secure:
+              value: https://spruce.care/123456
+          type: string
+      required:
+      - id
+      - channel
+      - displayValue
+      - rawValue
+      - isInternal
+      - object
+      type: object
+    asyncRequest_id:
+      description: The id of an asynchronous request
+      example: asyncRequest_0D4QABCC06000
+      type: string
+    initiatedBy:
+      properties:
+        lineId:
+          description: the ID of the phone line on the Spruce system this call was initiated by
+          type: string
+        teammateID:
+          $ref: '#/components/schemas/teammate_id'
+      type: object
+    conversation_messagePost:
+      properties:
+        attachments:
+          items:
+            $ref: '#/components/schemas/conversation_messagePost_attachment'
+          maxItems: 5
+          type: array
+        author:
+          description: The ID of the organization member (teammate, team, or organization) to send the message as. If not provided, defaults to the organization.
+          example: entity_0D4QABCC06000
+          type: string
+        body:
+          items:
+            $ref: '#/components/schemas/conversation_messageBodyElement'
+          type: array
+        internal:
+          description: Whether the message is internal or not
+          example: false
+          type: boolean
+        stayArchived:
+          description: Whether the conversation should stay archived (if it is already archived) after the message is sent
+          example: false
+          type: boolean
+      required:
+      - body
+      type: object
+    conversationItem_Button:
+      properties:
+        id:
+          description: The id of the button.
+          type: string
+        state:
+          description: The state of the button.
+          enum:
+          - disabled
+          - normal
+          - selected
+          type: string
+        text:
+          description: The text of the button.
+          type: string
+      required:
+      - id
+      - text
+      - state
+      type: object
+    conversationItem_Attachment:
+      properties:
+        data:
+          anyOf:
+          - $ref: '#/components/schemas/conversationItem_AudioAttachment'
+          - $ref: '#/components/schemas/conversationItem_DocumentAttachment'
+          - $ref: '#/components/schemas/conversationItem_EntityProfileAttachment'
+          - $ref: '#/components/schemas/conversationItem_ImageAttachment'
+          - $ref: '#/components/schemas/conversationItem_VideoAttachment'
+        title:
+          description: The title of the attachment.
+          example: example.pdf
+          type: string
+        type:
+          description: The type of the attachment.
+          enum:
+          - audio
+          - carePlan
+          - document
+          - entityProfile
+          - genericUrl
+          - image
+          - paymentRequest
+          - video
+          - visit
+          type: string
+      required:
+      - title
+      - type
+      type: object
+    conversationItem_Author:
+      properties:
+        deviceInformation:
+          $ref: '#/components/schemas/deviceInformation'
+        displayName:
+          type: string
+        id:
+          description: 'The id of the entity that authored the conversation item, populated only when it identifies a stable Spruce entity. It will be set for items authored by a teammate, team, or your organization, and for items received from a saved contact through Spruce secure messaging (where the id matches the contact id). It will be omitted for items received from a contact over a standard channel (SMS, voice, email, or fax) because the sender''s identity is derived from an endpoint (such as a phone number or email address) that can be reassigned to a different contact over time. It may also be omitted for system-generated items or when the author entity could not be resolved.
+
+            '
+          example: entity_0D4QABCC06000
+          type: string
+      required:
+      - displayName
+      type: object
+    conversationItem_PhoneCallEvent:
+      properties:
+        answered:
+          description: If the call was answered.
+          type: boolean
+        answeredBy:
+          $ref: '#/components/schemas/answeredBy'
+          description: If an inbound call was answered, which desk phone or external phone number answered it.
+        callFlowMenuOption:
+          description: For inbound calls that went through a Call Flow menu, the description of the specific menu option the caller selected (e.g., "Option 1 - Billing Questions"). This represents the final node reached in the call flow.
+          example: Option 2 - Hours and Locations
+          type: string
+        callFlowTopLevelMenuOption:
+          description: For inbound calls that went through a Call Flow menu with nested options, the description of the first-level (top-level) menu option the caller selected. This helps identify the main category chosen before any sub-menu navigation.
+          example: Main Menu - Press 1 for Appointments
+          type: string
+        duration:
+          description: The duration of the call in seconds.
+          type: integer
+        failed:
+          description: If the call failed.
+          type: boolean
+        initiatedBy:
+          $ref: '#/components/schemas/initiatedBy'
+          description: For outbound calls, which desk phone or teammate initiated it.
+        recordings:
+          description: The recordings of the call if any exist.
+          items:
+            $ref: '#/components/schemas/conversationItem_AudioAttachment'
+          type: array
+        spam:
+          description: If the call was marked as spam.
+          type: boolean
+        voicemail:
+          $ref: '#/components/schemas/conversationItem_AudioAttachment'
+      required:
+      - answered
+      - duration
+      - failed
+      - inbound
+      - spam
+      type: object
+    answeredBy:
+      properties:
+        externalNumber:
+          description: the telephone number external to Spruce this call was answered by
+          type: string
+        lineId:
+          description: the ID of the phone line on the Spruce system this call was answered by
+          type: string
+        teammateID:
+          $ref: '#/components/schemas/teammate_id'
+      type: object
+    conversationItem_AudioAttachment:
+      properties:
+        mimetype:
+          description: The mimetype of the audio attachment.
+          example: audio/mpeg
+          type: string
+        signedUrl:
+          $ref: '#/components/schemas/signedUrl'
+          description: The URL used to fetch the audio attachment.
+        transcription:
+          $ref: '#/components/schemas/conversationItem_Transcription'
+          description: The transcription for this audio attachment, if available. Use the [Transcription endpoint](/reference/transcription) to fetch the full transcription text.
+      required:
+      - mimetype
+      - signedUrl
+      type: object
+    updateConversation:
+      description: Any omitted or null field will not be updated. To clear a field, pass an empty value such as "" or []
+      properties:
+        archived:
+          description: Whether the conversation should be archived (true) or unarchived (false)
+          type: boolean
+        assignToMemberId:
+          description: The id of a team or teammate to assign the conversation to. If the specified teammate or team is not a member of the conversation, they will be added as a member.
+          example: entity_0D4QABCC06000
+          type: string
+        tagIds:
+          $ref: '#/components/schemas/conversation_tagIds'
+      type: object
+    endpoint_id:
+      description: 'The id of the endpoint.
+
+
+        For secure (Spruce Link) endpoints, the id format depends on where the endpoint is returned: the list internal endpoints API returns the underlying organization invite id, while a secure endpoint that appears on a conversation is returned with a different, derived value. To determine whether a conversation belongs to a particular Spruce Link, compare `endpoint.rawValue` rather than `endpoint.id`. Endpoint ids for phone, fax, and email channels use the same format across responses.
+
+        '
+      example: 15555555555
+      type: string
+    create_conversation_type:
+      description: The type of conversation to create.
+      enum:
+      - secure
+      - note
+      example: secure
+      type: string
+    createConversation:
+      properties:
+        note:
+          $ref: '#/components/schemas/create_conversation_note'
+        secure:
+          $ref: '#/components/schemas/create_conversation_secure'
+        type:
+          $ref: '#/components/schemas/create_conversation_type'
+      required:
+      - type
+      type: object
+    conversation_tagValue:
+      description: The text value of a conversation tag
+      example: Smith
+      type: string
+    conversationItem_VideoAttachment:
+      properties:
+        mimetype:
+          description: The mimetype of the video attachment.
+          example: video/mp4
+          type: string
+        signedUrl:
+          $ref: '#/components/schemas/signedUrl'
+          description: The URL used to fetch the video attachment.
+      required:
+      - mimetype
+      - signedUrl
+      type: object
+    conversation_tag:
+      properties:
+        id:
+          $ref: '#/components/schemas/conversation_tagId'
+        object:
+          $ref: '#/components/schemas/objectType'
+        value:
+          $ref: '#/components/schemas/conversation_tagValue'
+      required:
+      - id
+      - value
+      - object
+      type: object
+    conversationItem_DocumentAttachment:
+      properties:
+        mimetype:
+          description: The mimetype of the document attachment.
+          example: application/pdf
+          type: string
+        name:
+          description: The name associated with the attached document.
+          type: string
+        signedUrl:
+          $ref: '#/components/schemas/signedUrl'
+          description: The URL used to fetch the document attachment.
+      required:
+      - name
+      - mimetype
+      - signedUrl
+      type: object
+    conversation_tags:
+      items:
+        $ref: '#/components/schemas/conversation_tag'
+      type: array
+    conversationItem_Event:
+      properties:
+        data:
+          anyOf:
+          - $ref: '#/components/schemas/conversationItem_PhoneCallEvent'
+          - $ref: '#/components/schemas/conversationItem_VideoCallEvent'
+        type:
+          description: The type of the event. Additional events will be added in the future, so any parsing of this field should gracefully handle unexpected values.
+          enum:
+          - inboundCall
+          - inboundVideoCall
+          - outboundCall
+          - outboundVideoCall
+          type: string
+      required:
+      - type
+      type: object
+    conversation_tagIds:
+      description: An array of Spruce conversation tag ids
+      items:
+        $ref: '#/components/schemas/conversation_tagId'
+      type: array
+    signedUrl:
+      properties:
+        expiresAt:
+          description: The date the signed URL expires.
+          format: date-time
+          type: string
+        url:
+          description: The signed URL.
+          format: url
+          type: string
+      required:
+      - url
+      - expiresAt
+      type: object
+    conversationItem_VideoCallEvent:
+      properties:
+        answered:
+          description: If the call was answered.
+          type: boolean
+        duration:
+          description: The duration of the call in seconds.
+          type: integer
+        initiatedBy:
+          $ref: '#/components/schemas/teammate_id'
+          description: The Spruce is of the teammate that initiated it..
+      required:
+      - answered
+      - duration
+      - initiatedBy
+      type: object
+    hasMore:
+      type: boolean
+    conversationItem:
+      properties:
+        apiURL:
+          description: An absolute URL for fetching this conversation item from the API
+          example: https://api.sprucehealth.com/conversationItems/ti_0E5QDJJC03000
+          format: url
+          type: string
+        appURL:
+          description: An absolute URL to view the conversation item in the Spruce app.
+          example: https://app.sprucehealth.com/org/entity_0D4QABCC06000/thread/t_0E5QDJJC03000/message/ti_23170B3D36G00
+          format: url
+          type: string
+        attachments:
+          description: Attachments for the conversation item.
+          items:
+            $ref: '#/components/schemas/conversationItem_Attachment'
+          type: array
+        author:
+          $ref: '#/components/schemas/conversationItem_Author'
+          description: The author of the conversation item.
+        buttons:
+          description: The buttons associated with the conversation item.
+          items:
+            $ref: '#/components/schemas/conversationItem_Button'
+          type: array
+        canDelete:
+          description: If the conversation item can be deleted.
+          example: true
+          type: boolean
+        conversation:
+          $ref: '#/components/schemas/conversation'
+          description: The parent conversation object. This field is only present in webhook event payloads (e.g. conversationItem.created) and is omitted from REST API responses.
+        conversationId:
+          $ref: '#/components/schemas/conversation_id'
+        createdAt:
+          description: The date time the conversation item was created.
+          example: '2020-04-01T00:00:00Z'
+          format: date-time
+          type: string
+        direction:
+          description: The direction of the item relative to this organization. Possible values are `inbound`, `outbound` and `none`. `inbound` indicates a message received by the organization, `outbound` indicates a message sent to an external contact by a teammate in the organization. `none` indicates a message that is likely internal to the organization or one for which the direction cannot be determined.
+          enum:
+          - inbound
+          - outbound
+          - none
+          type: string
+        event:
+          $ref: '#/components/schemas/conversationItem_Event'
+          description: Any event data associate with the conversation item.
+        id:
+          $ref: '#/components/schemas/conversationItem_id'
+        isInternalNote:
+          description: If the conversation item is an internal note - which is visible only to the posting side of the conversation.
+          example: false
+          type: boolean
+        modifiedAt:
+          description: The date time the conversation item was last modified.
+          example: '2020-04-01T00:00:00Z'
+          format: date-time
+          type: string
+        object:
+          $ref: '#/components/schemas/objectType'
+        pages:
+          description: The pages associated with the conversation item.
+          items:
+            $ref: '#/components/schemas/conversationItem_Page'
+          type: array
+        requestId:
+          $ref: '#/components/schemas/asyncRequest_id'
+        text:
+          description: The text of the conversation item. If the conversation item contains pages, they will be listed in the pages property.
+          example: Can you look at this @Dr. Smith?
+          type: string
+      required:
+      - id
+      - conversationId
+      - attachments
+      - author
+      - direction
+      - isInternalNote
+      - appURL
+      - apiURL
+      - text
+      - pages
+      - buttons
+      - modifiedAt
+      - createdAt
+      - object
+      - requestId
+      - canDelete
+      type: object
+    conversationItem_EntityProfileAttachment:
+      properties:
+        title:
+          description: The title associated with the attached entity profile.
+          example: John Smith
+          type: string
+        url:
+          description: The URL of the entity profile.
+          type: string
+      required:
+      - title
+      - url
+      type: object
+  headers:
+    s-request-id:
+      description: The ID of the request
+      example: 0E5QDGJC030000E5QDGJC03000
+      schema:
+        type: string
+    s-ratelimit-remaining:
+      description: Requests remaining this minute
+      example: 94
+      schema:
+        type: integer
+    s-ratelimit-limit:
+      description: Request limit per minute
+      example: 100
+      schema:
+        type: integer
+  parameters:
+    s-idempotency-key:
+      description: A unique value generated by the client used to recognize subsequent retries of the same request. Idempotency keys can be up to 255 characters long.
+      example: S7uiKYMMRzAcuG8S
+      in: header
+      name: s-idempotency-key
+      required: false
+      schema:
+        type: string
+  securitySchemes:
+    spruceAPIToken:
+      description: API token provided by Spruce should be passed in an "Authorization" header with the value "Bearer <token>"
+      scheme: bearer
+      type: http

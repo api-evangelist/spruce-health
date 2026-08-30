@@ -1,0 +1,223 @@
+openapi: 3.2.0
+info:
+  title: Spruce Health Contact Tags API
+  version: 1.0.0
+  description: The Contact Tags operations of the Spruce Health API, split by tag from the OpenAPI Spruce Health publishes for developer.sprucehealth.com (ReadMe registry @spruce/v1.0#13needamst2v4m6). Base https://api.sprucehealth.com/v1, Bearer organization token.
+  contact:
+    name: Spruce Health
+    url: https://developer.sprucehealth.com
+servers:
+- url: https://api.sprucehealth.com/v1
+  variables:
+    domain:
+      default: api.sprucehealth.com
+security:
+- spruceAPIToken: []
+tags:
+- name: Contact Tags
+paths:
+  /contacts/tags:
+    get:
+      description: 'This operation lists all contact tags available to a given organization.
+
+
+        The `hasMore` field can be used to determine if there are remaining results to list. The `paginationToken` field can be provided on subsequents calls to retrieve the next page of results.
+
+        '
+      operationId: ContactTags
+      parameters:
+      - description: How many tags to return at one time
+        in: query
+        name: pageSize
+        required: false
+        schema:
+          format: int32
+          maximum: 500
+          minimum: 1
+          type: integer
+      - in: query
+        name: paginationToken
+        required: false
+        schema:
+          $ref: '#/components/schemas/paginationToken'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  hasMore:
+                    $ref: '#/components/schemas/hasMore'
+                  paginationToken:
+                    $ref: '#/components/schemas/paginationToken'
+                  tags:
+                    $ref: '#/components/schemas/contact_tags'
+                  totalCount:
+                    $ref: '#/components/schemas/totalCount'
+                required:
+                - totalCount
+                - tags
+                - hasMore
+                type: object
+          description: Expected response to a valid request
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: List all contact tags available to the organization
+      tags:
+      - Contact Tags
+    post:
+      description: This operation creates a contact tag for the given organization. This tag can then be applied to contacts in subsequent operations. Requesting creation of an already existing tag will result in a `201` response and the response will contain the existing tag.
+      operationId: CreateContactTag
+      parameters:
+      - $ref: '#/components/parameters/s-idempotency-key'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/contact_tagValueContent'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/contact_tag'
+          description: created
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: duplicate request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: Create a contact tag
+      tags:
+      - Contact Tags
+components:
+  schemas:
+    objectType:
+      description: String representing the object's type
+      type: string
+    contact_tagId:
+      description: Spruce's contact tag ID
+      example: tag_0E5QDGJC03000
+      type: string
+    error:
+      properties:
+        message:
+          example: Invalid Contact ID
+          type: string
+        statusCode:
+          example: 400
+          type: integer
+        type:
+          example: BAD_PARAMETER
+          type: string
+      required:
+      - message
+      - statusCode
+      - type
+      type: object
+    contact_tagValueContent:
+      properties:
+        value:
+          $ref: '#/components/schemas/contact_tagValue'
+      required:
+      - value
+      type: object
+    contact_tagValue:
+      description: The text value of a contact tag
+      example: Smith
+      type: string
+    contact_tag:
+      properties:
+        id:
+          $ref: '#/components/schemas/contact_tagId'
+        object:
+          $ref: '#/components/schemas/objectType'
+        value:
+          $ref: '#/components/schemas/contact_tagValue'
+      required:
+      - id
+      - value
+      - object
+      type: object
+    paginationToken:
+      description: Token given in a previous response to allow requesting the next page
+      example: abcdefghijklmnop
+      type: string
+    hasMore:
+      type: boolean
+    totalCount:
+      example: 750
+      format: int32
+      type: integer
+    contact_tags:
+      items:
+        $ref: '#/components/schemas/contact_tag'
+      type: array
+  parameters:
+    s-idempotency-key:
+      description: A unique value generated by the client used to recognize subsequent retries of the same request. Idempotency keys can be up to 255 characters long.
+      example: S7uiKYMMRzAcuG8S
+      in: header
+      name: s-idempotency-key
+      required: false
+      schema:
+        type: string
+  headers:
+    s-ratelimit-limit:
+      description: Request limit per minute
+      example: 100
+      schema:
+        type: integer
+    s-request-id:
+      description: The ID of the request
+      example: 0E5QDGJC030000E5QDGJC03000
+      schema:
+        type: string
+    s-ratelimit-remaining:
+      description: Requests remaining this minute
+      example: 94
+      schema:
+        type: integer
+  securitySchemes:
+    spruceAPIToken:
+      description: API token provided by Spruce should be passed in an "Authorization" header with the value "Bearer <token>"
+      scheme: bearer
+      type: http

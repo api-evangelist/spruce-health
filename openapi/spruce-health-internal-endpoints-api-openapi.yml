@@ -1,0 +1,554 @@
+openapi: 3.2.0
+info:
+  title: Spruce Health Internal Endpoints API
+  version: 1.0.0
+  description: The Internal Endpoints operations of the Spruce Health API, split by tag from the OpenAPI Spruce Health publishes for developer.sprucehealth.com (ReadMe registry @spruce/v1.0#13needamst2v4m6). Base https://api.sprucehealth.com/v1, Bearer organization token.
+  contact:
+    name: Spruce Health
+    url: https://developer.sprucehealth.com
+servers:
+- url: https://api.sprucehealth.com/v1
+  variables:
+    domain:
+      default: api.sprucehealth.com
+security:
+- spruceAPIToken: []
+tags:
+- name: Internal Endpoints
+paths:
+  /internalendpoints:
+    get:
+      description: This operation lists all internal endpoints which organizations can use to communicate with. This includes all Spruce phone numbers, fax numbers, email addresses and Spruce Links. You can then [use an internal endpoint to send a message](/reference/postmessagefromendpoint).
+      operationId: InternalEndpoints
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  internalEndpoints:
+                    items:
+                      $ref: '#/components/schemas/internalEndpoint'
+                    type: array
+                required:
+                - internalEndpoints
+                type: object
+          description: Expected response to a valid request
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: List all internal endpoints
+      tags:
+      - Internal Endpoints
+  /internalendpoints/{internalEndpointId}/calls:
+    post:
+      description: 'This operation creates an outbound proxy call from an internal endpoint to an external phone number and returns the proxy number for use.
+
+        To learn more about proxy calling on Spruce, [visit this link](https://help.sprucehealth.com/hc/en-us/articles/40126738273435-Web-Desktop-Phone-Calls#h_01K322JXWY7T60ESF4DFTBKZP0). '
+      operationId: PostCreateProxyCall
+      parameters:
+      - $ref: '#/components/parameters/s-idempotency-key'
+      - description: The id of the endpoint to make the call from.
+        in: path
+        name: internalEndpointId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                destinationNumber:
+                  description: The destination phone number to call.
+                  type: string
+                originatingNumber:
+                  description: The phone number of the device to make the call from.
+                  type: string
+              required:
+              - originatingNumber
+              - destinationNumber
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  proxyNumber:
+                    description: The proxy number to dial to complete the call.
+                    type: string
+                required:
+                - proxyNumber
+                - requestId
+                type: object
+          description: ok response
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: duplicate request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: Create an outbound proxy call
+      tags:
+      - Internal Endpoints
+  /internalendpoints/{internalEndpointId}/conversations:
+    post:
+      description: 'This operation sends a message to an external endpoint (phone number or email address) or a contact (secure messaging). Only one of secureEndpoint or smsOrEmailEndpoint should be specified. You will need to also specify the appropriate internal endpoint from the [list of available internal endpoints for an organization](/reference/internalendpoints). The RequestID returned by this API may be used to match against the `RequestID` field of the `conversationItem.created` webhook event to identify when the message is posted.
+
+
+        ## Send a secure message
+
+        * Get the appropriate Spruce phone number from the [list of internal endpoints for an organization](/reference/internalendpoints) (of channel type `secure`)
+
+        * Specify the internal endpoint''s `endpoint.Id` in the `internalEndpointId` path parameter
+
+        * Get the Id of the appropriate contact to send the secure message to. You can [list all contacts in the organization](/reference/listcontacts) or [search for the appropriate contact](/reference/searchcontacts) to determine the contact Id if you do not have it already.
+
+        * Populate the `destination.secureEndpoint` object with the `contactId`, the appropriate `deliveryMethod` and `subject` for the conversation.
+
+
+        The `deliveryMethod` can be one of the following:
+
+        * (Default) `any_available_secure_conversation`: The system will first try to deliver messages using conversations from the specified internal endpoint. Then it will try to deliver to any existing secure conversation with the recipient. Then, if no conversation exists, a new secure conversation will be created.
+
+        * `only_conversations_matching_internal_endpoint`: The system will deliver messages in conversations from the specified internal endpoint. If such a conversation doesn''t yet exist, a new one will be created.
+
+        * `new_conversation`: This option will create a new conversation, separate from any existing conversation.
+
+        ## Send an SMS
+
+        * Get the appropriate Spruce phone number from the [list of internal endpoints for an organization](/reference/internalendpoints) (of channel type `phone`)
+
+        * Specify the internal endpoint''s `endpoint.Id` in the `internalEndpointId` path parameter
+
+        * Specify the phone number to send the the message to in the `destination.smsOrEmailEndpoint` body parameter
+
+        ## Send an email
+
+        * Get the appropriate Spruce phone number from the [list of internal endpoints for an organization](/reference/internalendpoints) (of channel type `email`)
+
+        * Specify the internal endpoint''s `endpoint.Id` in the `internalEndpointId` path parameter
+
+        * Specify the email address to send the the message to in the `destination.smsOrEmailEndpoint` body parameter
+
+        ## Send a fax
+
+        * Get the appropriate Spruce fax number from the [list of internal endpoints for an organization](/reference/internalendpoints) (of channel type `fax`)
+
+        * Specify the internal endpoint''s `endpoint.Id` in the `internalEndpointId` path parameter
+
+        * Specify the fax number to send the the message to in the `destination.faxEndpoint` body parameter
+
+        * Note: Each outbound fax message sent from an internal endpoint will result in a new fax conversation being created
+
+        '
+      operationId: PostMessageFromEndpoint
+      parameters:
+      - $ref: '#/components/parameters/s-idempotency-key'
+      - description: The id of the endpoint to send the message from.
+        in: path
+        name: internalEndpointId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                destination:
+                  properties:
+                    faxEndpoint:
+                      description: The fax number to send the message to.
+                      type: string
+                    secureEndpoint:
+                      properties:
+                        contactId:
+                          description: The Spruce id of the contact to send the message to.
+                          type: string
+                        deliveryMethod:
+                          $ref: '#/components/schemas/conversation_messagePost_secureConversationSelection'
+                        subject:
+                          description: The subject of the message.
+                          type: string
+                      required:
+                      - contactId
+                      type: object
+                    smsOrEmailEndpoint:
+                      description: The phone number or email address to send the message to.
+                      type: string
+                  type: object
+                message:
+                  $ref: '#/components/schemas/conversation_messagePost'
+                sendAt:
+                  description: The date and time the message is scheduled to be sent
+                  example: '2020-04-01T00:00:00Z'
+                  format: date-time
+                  type: string
+              required:
+              - destination
+              - message
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  requestId:
+                    $ref: '#/components/schemas/asyncRequest_id'
+                required:
+                - requestId
+                type: object
+          description: ok response
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: duplicate request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: Send a message from an internal endpoint
+      tags:
+      - Internal Endpoints
+components:
+  schemas:
+    objectType:
+      description: String representing the object's type
+      type: string
+    internalEndpoint:
+      properties:
+        additionalMembers:
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/teammate'
+            - $ref: '#/components/schemas/team'
+            - $ref: '#/components/schemas/organization'
+          type: array
+        endpoint:
+          $ref: '#/components/schemas/endpoint'
+        object:
+          $ref: '#/components/schemas/objectType'
+        owner:
+          oneOf:
+          - $ref: '#/components/schemas/teammate'
+          - $ref: '#/components/schemas/team'
+          - $ref: '#/components/schemas/organization'
+      required:
+      - endpoint
+      - owner
+      - object
+      type: object
+    conversation_messagePost:
+      properties:
+        attachments:
+          items:
+            $ref: '#/components/schemas/conversation_messagePost_attachment'
+          maxItems: 5
+          type: array
+        author:
+          description: The ID of the organization member (teammate, team, or organization) to send the message as. If not provided, defaults to the organization.
+          example: entity_0D4QABCC06000
+          type: string
+        body:
+          items:
+            $ref: '#/components/schemas/conversation_messageBodyElement'
+          type: array
+        internal:
+          description: Whether the message is internal or not
+          example: false
+          type: boolean
+        stayArchived:
+          description: Whether the conversation should stay archived (if it is already archived) after the message is sent
+          example: false
+          type: boolean
+      required:
+      - body
+      type: object
+    organization:
+      properties:
+        id:
+          description: The id of the organization
+          example: entity_0D4QABCC06000
+          type: string
+        name:
+          description: The name of the organization
+          example: Spruce Health
+          type: string
+        object:
+          $ref: '#/components/schemas/objectType'
+        type:
+          description: This will always be 'organization'. This is provided for cases where a organization may be in a mixed list with teammtes and/or teams.
+          example: organization
+          type: string
+      required:
+      - id
+      - name
+      - type
+      - object
+      type: object
+    error:
+      properties:
+        message:
+          example: Invalid Contact ID
+          type: string
+        statusCode:
+          example: 400
+          type: integer
+        type:
+          example: BAD_PARAMETER
+          type: string
+      required:
+      - message
+      - statusCode
+      - type
+      type: object
+    team:
+      properties:
+        id:
+          description: The id of the team
+          example: entity_0D4QABCC06000
+          type: string
+        name:
+          description: The name of the team
+          example: Billing Team
+          type: string
+        object:
+          $ref: '#/components/schemas/objectType'
+        type:
+          description: This will always be 'team'. This is provided for cases where a team may be in a mixed list with teammtes and/or your organization.
+          example: team
+          type: string
+      required:
+      - id
+      - name
+      - type
+      - object
+      type: object
+    conversation_messageBodyElement:
+      description: An element of a message body. This can be either a `text` or `page` type element. A `text` element is a string of text to be placed in the message. A `page` element is a reference to an organization member. For a `page` element, the value field should be the Spruce id of the organization member being referenced.
+      properties:
+        type:
+          enum:
+          - text
+          - page
+          example: text
+          type: string
+        value:
+          description: The value of the message body element
+          example: Hello, how are you?
+          type: string
+      required:
+      - type
+      - value
+      type: object
+    conversation_messagePost_attachment:
+      properties:
+        attachmentId:
+          description: The id of the attachment. In most cases, this will be a media id returned from posting a file to the [media endpoint](/reference/uploadmedia).
+          example: d7b25969-86ec-7e37-3776-3577-c0637a0c
+          type: string
+        title:
+          description: The title of the attachment
+          example: My Image
+          type: string
+      required:
+      - attachmentId
+      - title
+      type: object
+    teammate:
+      properties:
+        displayName:
+          description: The full name of the teammate, including any title provided
+          example: John Doe, MD
+          type: string
+        email:
+          description: The email address of the teammate
+          example: provider@example.com
+          format: email
+          type: string
+        id:
+          $ref: '#/components/schemas/teammate_id'
+        isAdmin:
+          description: Whether or not the teammate is an admin on Spruce
+          example: false
+          type: boolean
+        isSuspended:
+          description: Whether or not the teammate is currently suspended. A suspended teammate is retained as a member of the organization but cannot sign in and does not receive new calls or messages.
+          example: false
+          type: boolean
+        object:
+          $ref: '#/components/schemas/objectType'
+        type:
+          description: This will always be 'teammate'. This is provided for cases where a teammate may be in a mixed list with teams and/or your organization.
+          example: teammate
+          type: string
+      required:
+      - id
+      - displayName
+      - isAdmin
+      - isSuspended
+      - type
+      - object
+      type: object
+    teammate_id:
+      description: The id of the teammate
+      example: entity_0E5QDGJC03000
+      type: string
+    endpoint_id:
+      description: 'The id of the endpoint.
+
+
+        For secure (Spruce Link) endpoints, the id format depends on where the endpoint is returned: the list internal endpoints API returns the underlying organization invite id, while a secure endpoint that appears on a conversation is returned with a different, derived value. To determine whether a conversation belongs to a particular Spruce Link, compare `endpoint.rawValue` rather than `endpoint.id`. Endpoint ids for phone, fax, and email channels use the same format across responses.
+
+        '
+      example: 15555555555
+      type: string
+    endpoint:
+      properties:
+        channel:
+          description: The channel of the endpoint (e.g. 'email', 'phone', 'fax', etc.). More endpoint channels may be added in the future, so ensure while parsing this that you gracefully handle any new/unexpected values.
+          enum:
+          - email
+          - phone
+          - fax
+          - secure
+          type: string
+        displayValue:
+          description: The display value of the endpoint. This is the value that should be displayed to the user when showing the endpoint, along with the label if it's populated.
+          example:
+            email:
+              value: patient@example.com
+            phone:
+              value: (555) 555-5555
+            secure:
+              value: spruce.care/123456
+          type: string
+        id:
+          $ref: '#/components/schemas/endpoint_id'
+        isInternal:
+          description: Internal endpoints are endpoints that are owned by your organization, such as your organization's Spruce Phone Numbers or Spruce Links.
+          example: false
+          type: boolean
+        label:
+          description: The optional label of the endpoint
+          example:
+          - Home
+          - Work
+          type: string
+        object:
+          $ref: '#/components/schemas/objectType'
+        rawValue:
+          description: The raw value of the endpoint. This can be used for programmatically comparing contact values, and is the stable identifier to use when matching a secure endpoint on a conversation back to the corresponding Spruce Link returned by the list internal endpoints API. The raw value for a phone/fax number will be in E164 format.
+          example:
+            email:
+              value: patient@example.com
+            phone:
+              value: 15555555555
+            secure:
+              value: https://spruce.care/123456
+          type: string
+      required:
+      - id
+      - channel
+      - displayValue
+      - rawValue
+      - isInternal
+      - object
+      type: object
+    conversation_messagePost_secureConversationSelection:
+      description: ' `any_available_secure_conversation`: The system will first try to deliver messages using conversations from the specified internal endpoint. Then it will try to deliver to any existing secure conversation with the recipient. Then, if no conversation exists, a new secure conversation will be created.
+
+        `only_conversations_matching_internal_endpoint`: The system will deliver messages in conversations from the specified internal endpoint. If such a conversation doesn''t yet exist, a new one will be created.
+
+        `new_conversation`: This option will create a new conversation, separate from any existing conversation. '
+      enum:
+      - any_available_secure_conversation
+      - only_conversations_matching_internal_endpoint
+      - new_conversation
+      example: only_conversations_matching_internal_endpoint
+      type: string
+    asyncRequest_id:
+      description: The id of an asynchronous request
+      example: asyncRequest_0D4QABCC06000
+      type: string
+  parameters:
+    s-idempotency-key:
+      description: A unique value generated by the client used to recognize subsequent retries of the same request. Idempotency keys can be up to 255 characters long.
+      example: S7uiKYMMRzAcuG8S
+      in: header
+      name: s-idempotency-key
+      required: false
+      schema:
+        type: string
+  headers:
+    s-ratelimit-limit:
+      description: Request limit per minute
+      example: 100
+      schema:
+        type: integer
+    s-request-id:
+      description: The ID of the request
+      example: 0E5QDGJC030000E5QDGJC03000
+      schema:
+        type: string
+    s-ratelimit-remaining:
+      description: Requests remaining this minute
+      example: 94
+      schema:
+        type: integer
+  securitySchemes:
+    spruceAPIToken:
+      description: API token provided by Spruce should be passed in an "Authorization" header with the value "Bearer <token>"
+      scheme: bearer
+      type: http

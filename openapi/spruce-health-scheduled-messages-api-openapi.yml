@@ -1,0 +1,557 @@
+openapi: 3.2.0
+info:
+  title: Spruce Health Scheduled Messages API
+  version: 1.0.0
+  description: The Scheduled Messages operations of the Spruce Health API, split by tag from the OpenAPI Spruce Health publishes for developer.sprucehealth.com (ReadMe registry @spruce/v1.0#13needamst2v4m6). Base https://api.sprucehealth.com/v1, Bearer organization token.
+  contact:
+    name: Spruce Health
+    url: https://developer.sprucehealth.com
+servers:
+- url: https://api.sprucehealth.com/v1
+  variables:
+    domain:
+      default: api.sprucehealth.com
+security:
+- spruceAPIToken: []
+tags:
+- name: Scheduled Messages
+paths:
+  /conversations/{conversationId}/scheduledmessages:
+    get:
+      description: This operation lists the messages that are scheduled in a conversation.
+      operationId: ListConversationScheduledMessages
+      parameters:
+      - description: The id of the conversation to get the scheduled messages for
+        in: path
+        name: conversationId
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  scheduledMessages:
+                    items:
+                      $ref: '#/components/schemas/scheduledMessage'
+                    type: array
+                required:
+                - scheduledMessages
+                type: object
+          description: An array of messages that are scheduled in a conversation
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: List any messages scheduled in a conversation
+      tags:
+      - Scheduled Messages
+    post:
+      description: This operation creates a scheduled message to be sent in a conversation at the designated time. If no author is specified, the message will be sent as the organization.
+      operationId: ScheduleConversationMessage
+      parameters:
+      - $ref: '#/components/parameters/s-idempotency-key'
+      - description: The id of the conversation to schedule the message for
+        in: path
+        name: conversationId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                message:
+                  $ref: '#/components/schemas/scheduledMessage_messagePost'
+                sendAt:
+                  description: The date and time the message is scheduled to be sent
+                  example: '2020-04-01T00:00:00Z'
+                  format: date-time
+                  type: string
+              required:
+              - message
+              - sendAt
+              type: object
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                properties:
+                  scheduledMessage:
+                    $ref: '#/components/schemas/scheduledMessage'
+                required:
+                - scheduledMessage
+                type: object
+          description: created
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: duplicate request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: Schedule a message to be sent in a conversation
+      tags:
+      - Scheduled Messages
+  /scheduledmessages:
+    get:
+      description: This operation lists the messages that are scheduled to be sent from the organization.
+      operationId: ListScheduledMessages
+      parameters:
+      - in: query
+        name: paginationToken
+        required: false
+        schema:
+          $ref: '#/components/schemas/paginationToken'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  hasMore:
+                    $ref: '#/components/schemas/hasMore'
+                  paginationToken:
+                    $ref: '#/components/schemas/paginationToken'
+                  scheduledMessages:
+                    items:
+                      $ref: '#/components/schemas/scheduledMessage'
+                    type: array
+                  totalCount:
+                    $ref: '#/components/schemas/totalCount'
+                required:
+                - totalCount
+                - scheduledMessages
+                - hasMore
+                type: object
+          description: An array of messages that are scheduled for the organization
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: List any messages scheduled for the organization
+      tags:
+      - Scheduled Messages
+  /scheduledmessages/{scheduledMessageId}:
+    delete:
+      description: This operation deletes a scheduled message specified by id.
+      operationId: DeleteScheduledMessage
+      parameters:
+      - description: The id of the scheduled message to delete
+        in: path
+        name: scheduledMessageId
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Ok
+          headers:
+            s-ratelimit-limit:
+              $ref: '#/components/headers/s-ratelimit-limit'
+            s-ratelimit-remaining:
+              $ref: '#/components/headers/s-ratelimit-remaining'
+            s-request-id:
+              $ref: '#/components/headers/s-request-id'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: unexpected error
+      summary: Delete a scheduled message
+      tags:
+      - Scheduled Messages
+components:
+  schemas:
+    conversation_id:
+      description: Spruce's conversation ID
+      example: t_0E5QDGJC03000
+      type: string
+    scheduledMessage_id:
+      description: Spruce's scheduled message ID
+      example: scm_26RRC7PQ6JG00
+      type: string
+    conversationItem_ImageAttachment:
+      properties:
+        mimetype:
+          description: The mimetype of the image attachment.
+          example: image/png
+          type: string
+        signedUrl:
+          $ref: '#/components/schemas/signedUrl'
+          description: The URL used to fetch the image attachment.
+      required:
+      - mimetype
+      - signedUrl
+      type: object
+    conversationItem_Transcription:
+      properties:
+        id:
+          description: The id of the transcription job. Pass this to the [Transcription endpoint](/reference/transcription) to fetch the full transcription text.
+          type: string
+        status:
+          description: The current status of the transcription. When `pending`, the transcription is still being processed.
+          enum:
+          - completed
+          - pending
+          - failed
+          - noSpeech
+          type: string
+        summarizationStatus:
+          description: The current status of the summarization, if the transcription is being summarized. Null when no summarization was requested.
+          enum:
+          - completed
+          - pending
+          - failed
+          type: string
+      required:
+      - id
+      - status
+      type: object
+    scheduledMessage_message:
+      properties:
+        attachments:
+          description: Attachments for the scheduled message
+          items:
+            $ref: '#/components/schemas/conversationItem_Attachment'
+          type: array
+        pagedInternalMemberIds:
+          description: The internal member ids that are paged in the scheduled message.
+          items:
+            type: string
+          type: array
+        text:
+          description: The text of the conversation item. If the conversation item contains pages, they will be listed in the pages property.
+          example: Can you look at this @Dr. Smith?
+          type: string
+      required:
+      - attachments
+      - pagedInternalMemberIds
+      - text
+      type: object
+    scheduledMessage_sentConversationItemId:
+      description: The id of the conversation item that was created when the scheduled message was sent. This is absent until the message has been sent.
+      example: ti_0D4QABCC06000
+      type: string
+    objectType:
+      description: String representing the object's type
+      type: string
+    error:
+      properties:
+        message:
+          example: Invalid Contact ID
+          type: string
+        statusCode:
+          example: 400
+          type: integer
+        type:
+          example: BAD_PARAMETER
+          type: string
+      required:
+      - message
+      - statusCode
+      - type
+      type: object
+    conversation_messageBodyElement:
+      description: An element of a message body. This can be either a `text` or `page` type element. A `text` element is a string of text to be placed in the message. A `page` element is a reference to an organization member. For a `page` element, the value field should be the Spruce id of the organization member being referenced.
+      properties:
+        type:
+          enum:
+          - text
+          - page
+          example: text
+          type: string
+        value:
+          description: The value of the message body element
+          example: Hello, how are you?
+          type: string
+      required:
+      - type
+      - value
+      type: object
+    totalCount:
+      example: 750
+      format: int32
+      type: integer
+    paginationToken:
+      description: Token given in a previous response to allow requesting the next page
+      example: abcdefghijklmnop
+      type: string
+    conversationItem_Attachment:
+      properties:
+        data:
+          anyOf:
+          - $ref: '#/components/schemas/conversationItem_AudioAttachment'
+          - $ref: '#/components/schemas/conversationItem_DocumentAttachment'
+          - $ref: '#/components/schemas/conversationItem_EntityProfileAttachment'
+          - $ref: '#/components/schemas/conversationItem_ImageAttachment'
+          - $ref: '#/components/schemas/conversationItem_VideoAttachment'
+        title:
+          description: The title of the attachment.
+          example: example.pdf
+          type: string
+        type:
+          description: The type of the attachment.
+          enum:
+          - audio
+          - carePlan
+          - document
+          - entityProfile
+          - genericUrl
+          - image
+          - paymentRequest
+          - video
+          - visit
+          type: string
+      required:
+      - title
+      - type
+      type: object
+    scheduledMessage:
+      properties:
+        conversationId:
+          $ref: '#/components/schemas/conversation_id'
+        createdAt:
+          description: The date and time the scheduled message was created
+          example: '2020-04-01T00:00:00Z'
+          format: date-time
+          type: string
+        id:
+          $ref: '#/components/schemas/scheduledMessage_id'
+        isInternalNote:
+          description: If the conversation item is an internal note - which is visible only to the posting side of the conversation.
+          example: false
+          type: boolean
+        message:
+          $ref: '#/components/schemas/scheduledMessage_message'
+        modifiedAt:
+          description: The date and time the scheduled message was modified
+          example: '2020-04-01T00:00:00Z'
+          format: date-time
+          type: string
+        object:
+          $ref: '#/components/schemas/objectType'
+        scheduledToSendAt:
+          description: The date and time the message is scheduled to be sent
+          example: '2020-04-01T00:00:00Z'
+          format: date-time
+          type: string
+        sendAsInternalMemberId:
+          $ref: '#/components/schemas/internalMember_id'
+        sentConversationItemId:
+          $ref: '#/components/schemas/scheduledMessage_sentConversationItemId'
+      required:
+      - id
+      - conversationId
+      - createdAt
+      - isInternalNote
+      - message
+      - modifiedAt
+      - sendAsInternalMemberId
+      - scheduledToSendAt
+      - object
+      type: object
+    conversationItem_AudioAttachment:
+      properties:
+        mimetype:
+          description: The mimetype of the audio attachment.
+          example: audio/mpeg
+          type: string
+        signedUrl:
+          $ref: '#/components/schemas/signedUrl'
+          description: The URL used to fetch the audio attachment.
+        transcription:
+          $ref: '#/components/schemas/conversationItem_Transcription'
+          description: The transcription for this audio attachment, if available. Use the [Transcription endpoint](/reference/transcription) to fetch the full transcription text.
+      required:
+      - mimetype
+      - signedUrl
+      type: object
+    scheduledMessage_messagePost:
+      properties:
+        author:
+          description: The ID of the organization member (teammate, team, or organization) to send the message as. If not provided, defaults to the organization.
+          example: entity_0D4QABCC06000
+          type: string
+        body:
+          items:
+            $ref: '#/components/schemas/conversation_messageBodyElement'
+          type: array
+        internal:
+          description: Whether the message is internal or not
+          example: false
+          type: boolean
+      required:
+      - body
+      type: object
+    conversationItem_VideoAttachment:
+      properties:
+        mimetype:
+          description: The mimetype of the video attachment.
+          example: video/mp4
+          type: string
+        signedUrl:
+          $ref: '#/components/schemas/signedUrl'
+          description: The URL used to fetch the video attachment.
+      required:
+      - mimetype
+      - signedUrl
+      type: object
+    conversationItem_DocumentAttachment:
+      properties:
+        mimetype:
+          description: The mimetype of the document attachment.
+          example: application/pdf
+          type: string
+        name:
+          description: The name associated with the attached document.
+          type: string
+        signedUrl:
+          $ref: '#/components/schemas/signedUrl'
+          description: The URL used to fetch the document attachment.
+      required:
+      - name
+      - mimetype
+      - signedUrl
+      type: object
+    internalMember_id:
+      description: The id of a team or teammate in the organization
+      example: entity_0D4QABCC06000
+      type: string
+    signedUrl:
+      properties:
+        expiresAt:
+          description: The date the signed URL expires.
+          format: date-time
+          type: string
+        url:
+          description: The signed URL.
+          format: url
+          type: string
+      required:
+      - url
+      - expiresAt
+      type: object
+    hasMore:
+      type: boolean
+    conversationItem_EntityProfileAttachment:
+      properties:
+        title:
+          description: The title associated with the attached entity profile.
+          example: John Smith
+          type: string
+        url:
+          description: The URL of the entity profile.
+          type: string
+      required:
+      - title
+      - url
+      type: object
+  headers:
+    s-request-id:
+      description: The ID of the request
+      example: 0E5QDGJC030000E5QDGJC03000
+      schema:
+        type: string
+    s-ratelimit-remaining:
+      description: Requests remaining this minute
+      example: 94
+      schema:
+        type: integer
+    s-ratelimit-limit:
+      description: Request limit per minute
+      example: 100
+      schema:
+        type: integer
+  parameters:
+    s-idempotency-key:
+      description: A unique value generated by the client used to recognize subsequent retries of the same request. Idempotency keys can be up to 255 characters long.
+      example: S7uiKYMMRzAcuG8S
+      in: header
+      name: s-idempotency-key
+      required: false
+      schema:
+        type: string
+  securitySchemes:
+    spruceAPIToken:
+      description: API token provided by Spruce should be passed in an "Authorization" header with the value "Bearer <token>"
+      scheme: bearer
+      type: http
