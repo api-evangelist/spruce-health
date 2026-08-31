@@ -1340,6 +1340,8 @@ apis:
   humanURL: https://developer.sprucehealth.com/reference/contactfields
   baseURL: https://api.sprucehealth.com/v1
   tags:
+  - Team
+  tags_raw:
   - Teams
   properties:
   - type: OpenAPI
@@ -1548,6 +1550,8 @@ apis:
   humanURL: https://developer.sprucehealth.com/reference/contactfields
   baseURL: https://api.sprucehealth.com/v1
   tags:
+  - Webhook
+  tags_raw:
   - Webhooks
   properties:
   - type: OpenAPI

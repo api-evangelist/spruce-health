@@ -9,13 +9,20 @@
       "method": "none"
     },
     {
+      "source": "https://sprucehealth.com/whats-new/rss.xml",
+      "feed_url": "https://sprucehealth.com/whats-new/rss.xml",
+      "title": "",
+      "saved": 0,
+      "method": "feed"
+    },
+    {
       "source": "https://sprucehealth.com/whats-new",
       "feed_url": "https://sprucehealth.com/whats-new/rss.xml",
       "title": "",
-      "saved": 1,
+      "saved": 0,
       "method": "discovered"
     }
   ],
-  "post_count": 1,
-  "fetched": "2026-08-22T20:20:02Z"
+  "post_count": 50,
+  "fetched": "2026-08-30T22:33:40Z"
 }
