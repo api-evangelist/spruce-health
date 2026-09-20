@@ -11,7 +11,7 @@ capability_model:
   attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
     CC BY 4.0
   notice: NOTICE
-edge_count: 3
+edge_count: 4
 edges:
 - tag: Contacts
   spec_file: spruce-health-contacts-api-openapi.yml
@@ -33,6 +33,18 @@ edges:
     a specific conversation
   reason: Creation, listing and messaging within patient conversation threads on a unified phone/SMS/secure-messaging
     platform — handling of inbound and outbound customer contacts.
+- tag: Scheduled Messages
+  spec_file: spruce-health-scheduled-messages-api-openapi.yml
+  capability_id: BC-2910.10
+  capability_id_l1: BC-2910
+  capability_name: Patient Engagement & Communication
+  confidence: 0.7
+  evidence: POST /conversations/{conversationId}/scheduledmessages  ScheduleConversationMessage  Schedule
+    a message to be sent in a conversation
+  reason: Scheduling and managing outbound messages in patient conversations on a medical-practice communication
+    platform is multi-channel patient/family communication (reminders, follow-ups). Some ambiguity remains
+    as conversations could include internal team chat.
+  recovered_from: vertical-healthcare-providers-edges.json
 - tag: Webhooks
   spec_file: spruce-health-webhooks-api-openapi.yml
   capability_id: BC-4270.80
