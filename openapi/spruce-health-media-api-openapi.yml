@@ -2,10 +2,6 @@ openapi: 3.2.0
 info:
   title: Spruce Health Media API
   version: 1.0.0
-  description: The Media operations of the Spruce Health API, split by tag from the OpenAPI Spruce Health publishes for developer.sprucehealth.com (ReadMe registry @spruce/v1.0#13needamst2v4m6). Base https://api.sprucehealth.com/v1, Bearer organization token.
-  contact:
-    name: Spruce Health
-    url: https://developer.sprucehealth.com
 servers:
 - url: https://api.sprucehealth.com/v1
   variables:
@@ -18,7 +14,7 @@ tags:
 paths:
   /media:
     post:
-      description: 'This operation uploads media such a images, videos, and files to Spruce for use in messaging. Uploading a file will return a media ID that can be used to reference the file in other operations. Callers of this API should record the resulting media ID for future use. A media ID can be used in the `attachmentID` field of the [conversation message post attachment](/reference/postmessagefromendpoint). Media IDs can be used multiple times.
+      description: 'This operation uploads media such a images, videos, and files to Spruce for use in messaging. Uploading a file will return a media ID that can be used to reference the file in other operations. Callers of this API should record the resulting media ID for future use. A media ID can be used in the `attachmentID` field of the conversation message post attachment. Media IDs can be used multiple times.
 
         The `Content-Type` and `Content-Disposition` headers on the multipart `media` field can use used to provide additional metadata about the media. This metadata can impact how the media is displayed and downloaded from the application.
 
@@ -27,7 +23,7 @@ paths:
 
         * `Content-Disposition: form-data; name="media"; filename="image.png"`
 
-        * `Content-Type: image/png` '
+        * `Content-Type: image/png`'
       operationId: UploadMedia
       requestBody:
         content:
@@ -72,13 +68,6 @@ paths:
       - Media
 components:
   schemas:
-    objectType:
-      description: String representing the object's type
-      type: string
-    media_id:
-      description: Spruce's media message ID
-      example: d7b25969-86ec-7e37-3776-3577-c0637a0c
-      type: string
     error:
       properties:
         message:
@@ -95,6 +84,13 @@ components:
       - statusCode
       - type
       type: object
+    objectType:
+      description: String representing the object's type
+      type: string
+    media_id:
+      description: Spruce's media message ID
+      example: d7b25969-86ec-7e37-3776-3577-c0637a0c
+      type: string
     media:
       properties:
         id:
@@ -106,6 +102,11 @@ components:
       - object
       type: object
   headers:
+    s-ratelimit-remaining:
+      description: Requests remaining this minute
+      example: 94
+      schema:
+        type: integer
     s-ratelimit-limit:
       description: Request limit per minute
       example: 100
@@ -116,11 +117,6 @@ components:
       example: 0E5QDGJC030000E5QDGJC03000
       schema:
         type: string
-    s-ratelimit-remaining:
-      description: Requests remaining this minute
-      example: 94
-      schema:
-        type: integer
   securitySchemes:
     spruceAPIToken:
       description: API token provided by Spruce should be passed in an "Authorization" header with the value "Bearer <token>"
