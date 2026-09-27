@@ -257,6 +257,79 @@ paths:
       - Internal Endpoints
 components:
   schemas:
+    teammate:
+      properties:
+        displayName:
+          description: The full name of the teammate, including any title provided
+          example: John Doe, MD
+          type: string
+        email:
+          description: The email address of the teammate
+          example: provider@example.com
+          format: email
+          type: string
+        id:
+          $ref: '#/components/schemas/teammate_id'
+        isAdmin:
+          description: Whether or not the teammate is an admin on Spruce
+          example: false
+          type: boolean
+        isSuspended:
+          description: Whether or not the teammate is currently suspended. A suspended teammate is retained as a member of the organization but cannot sign in and does not receive new calls or messages.
+          example: false
+          type: boolean
+        object:
+          $ref: '#/components/schemas/objectType'
+        type:
+          description: This will always be 'teammate'. This is provided for cases where a teammate may be in a mixed list with teams and/or your organization.
+          example: teammate
+          type: string
+      required:
+      - id
+      - displayName
+      - isAdmin
+      - isSuspended
+      - type
+      - object
+      type: object
+    conversation_messagePost_secureConversationSelection:
+      description: ' `any_available_secure_conversation`: The system will first try to deliver messages using conversations from the specified internal endpoint. Then it will try to deliver to any existing secure conversation with the recipient. Then, if no conversation exists, a new secure conversation will be created.
+
+        `only_conversations_matching_internal_endpoint`: The system will deliver messages in conversations from the specified internal endpoint. If such a conversation doesn''t yet exist, a new one will be created.
+
+        `new_conversation`: This option will create a new conversation, separate from any existing conversation. '
+      enum:
+      - any_available_secure_conversation
+      - only_conversations_matching_internal_endpoint
+      - new_conversation
+      example: only_conversations_matching_internal_endpoint
+      type: string
+    conversation_messagePost:
+      properties:
+        attachments:
+          items:
+            $ref: '#/components/schemas/conversation_messagePost_attachment'
+          maxItems: 5
+          type: array
+        author:
+          description: The ID of the organization member (teammate, team, or organization) to send the message as. If not provided, defaults to the organization.
+          example: entity_0D4QABCC06000
+          type: string
+        body:
+          items:
+            $ref: '#/components/schemas/conversation_messageBodyElement'
+          type: array
+        internal:
+          description: Whether the message is internal or not
+          example: false
+          type: boolean
+        stayArchived:
+          description: Whether the conversation should stay archived (if it is already archived) after the message is sent
+          example: false
+          type: boolean
+      required:
+      - body
+      type: object
     error:
       properties:
         message:
@@ -273,10 +346,6 @@ components:
       - statusCode
       - type
       type: object
-    teammate_id:
-      description: The id of the teammate
-      example: entity_0E5QDGJC03000
-      type: string
     endpoint:
       properties:
         channel:
@@ -329,57 +398,6 @@ components:
       - isInternal
       - object
       type: object
-    endpoint_id:
-      description: 'The id of the endpoint.
-
-
-        For secure (Spruce Link) endpoints, the id format depends on where the endpoint is returned: the list internal endpoints API returns the underlying organization invite id, while a secure endpoint that appears on a conversation is returned with a different, derived value. To determine whether a conversation belongs to a particular Spruce Link, compare `endpoint.rawValue` rather than `endpoint.id`. Endpoint ids for phone, fax, and email channels use the same format across responses.
-
-        '
-      example: 15555555555
-      type: string
-    conversation_messageBodyElement:
-      description: An element of a message body. This can be either a `text` or `page` type element. A `text` element is a string of text to be placed in the message. A `page` element is a reference to an organization member. For a `page` element, the value field should be the Spruce id of the organization member being referenced.
-      properties:
-        type:
-          enum:
-          - text
-          - page
-          example: text
-          type: string
-        value:
-          description: The value of the message body element
-          example: Hello, how are you?
-          type: string
-      required:
-      - type
-      - value
-      type: object
-    objectType:
-      description: String representing the object's type
-      type: string
-    team:
-      properties:
-        id:
-          description: The id of the team
-          example: entity_0D4QABCC06000
-          type: string
-        name:
-          description: The name of the team
-          example: Billing Team
-          type: string
-        object:
-          $ref: '#/components/schemas/objectType'
-        type:
-          description: This will always be 'team'. This is provided for cases where a team may be in a mixed list with teammtes and/or your organization.
-          example: team
-          type: string
-      required:
-      - id
-      - name
-      - type
-      - object
-      type: object
     organization:
       properties:
         id:
@@ -402,31 +420,54 @@ components:
       - type
       - object
       type: object
-    conversation_messagePost:
+    teammate_id:
+      description: The id of the teammate
+      example: entity_0E5QDGJC03000
+      type: string
+    conversation_messagePost_attachment:
       properties:
-        attachments:
-          items:
-            $ref: '#/components/schemas/conversation_messagePost_attachment'
-          maxItems: 5
-          type: array
-        author:
-          description: The ID of the organization member (teammate, team, or organization) to send the message as. If not provided, defaults to the organization.
+        attachmentId:
+          description: The id of the attachment. In most cases, this will be a media id returned from posting a file to the [media endpoint](/reference/uploadmedia).
+          example: d7b25969-86ec-7e37-3776-3577-c0637a0c
+          type: string
+        title:
+          description: The title of the attachment
+          example: My Image
+          type: string
+      required:
+      - attachmentId
+      - title
+      type: object
+    endpoint_id:
+      description: 'The id of the endpoint.
+
+
+        For secure (Spruce Link) endpoints, the id format depends on where the endpoint is returned: the list internal endpoints API returns the underlying organization invite id, while a secure endpoint that appears on a conversation is returned with a different, derived value. To determine whether a conversation belongs to a particular Spruce Link, compare `endpoint.rawValue` rather than `endpoint.id`. Endpoint ids for phone, fax, and email channels use the same format across responses.
+
+        '
+      example: 15555555555
+      type: string
+    team:
+      properties:
+        id:
+          description: The id of the team
           example: entity_0D4QABCC06000
           type: string
-        body:
-          items:
-            $ref: '#/components/schemas/conversation_messageBodyElement'
-          type: array
-        internal:
-          description: Whether the message is internal or not
-          example: false
-          type: boolean
-        stayArchived:
-          description: Whether the conversation should stay archived (if it is already archived) after the message is sent
-          example: false
-          type: boolean
+        name:
+          description: The name of the team
+          example: Billing Team
+          type: string
+        object:
+          $ref: '#/components/schemas/objectType'
+        type:
+          description: This will always be 'team'. This is provided for cases where a team may be in a mixed list with teammtes and/or your organization.
+          example: team
+          type: string
       required:
-      - body
+      - id
+      - name
+      - type
+      - object
       type: object
     internalEndpoint:
       properties:
@@ -451,71 +492,30 @@ components:
       - owner
       - object
       type: object
-    conversation_messagePost_attachment:
-      properties:
-        attachmentId:
-          description: The id of the attachment. In most cases, this will be a media id returned from posting a file to the [media endpoint](/reference/uploadmedia).
-          example: d7b25969-86ec-7e37-3776-3577-c0637a0c
-          type: string
-        title:
-          description: The title of the attachment
-          example: My Image
-          type: string
-      required:
-      - attachmentId
-      - title
-      type: object
-    conversation_messagePost_secureConversationSelection:
-      description: ' `any_available_secure_conversation`: The system will first try to deliver messages using conversations from the specified internal endpoint. Then it will try to deliver to any existing secure conversation with the recipient. Then, if no conversation exists, a new secure conversation will be created.
-
-        `only_conversations_matching_internal_endpoint`: The system will deliver messages in conversations from the specified internal endpoint. If such a conversation doesn''t yet exist, a new one will be created.
-
-        `new_conversation`: This option will create a new conversation, separate from any existing conversation. '
-      enum:
-      - any_available_secure_conversation
-      - only_conversations_matching_internal_endpoint
-      - new_conversation
-      example: only_conversations_matching_internal_endpoint
+    objectType:
+      description: String representing the object's type
       type: string
-    teammate:
-      properties:
-        displayName:
-          description: The full name of the teammate, including any title provided
-          example: John Doe, MD
-          type: string
-        email:
-          description: The email address of the teammate
-          example: provider@example.com
-          format: email
-          type: string
-        id:
-          $ref: '#/components/schemas/teammate_id'
-        isAdmin:
-          description: Whether or not the teammate is an admin on Spruce
-          example: false
-          type: boolean
-        isSuspended:
-          description: Whether or not the teammate is currently suspended. A suspended teammate is retained as a member of the organization but cannot sign in and does not receive new calls or messages.
-          example: false
-          type: boolean
-        object:
-          $ref: '#/components/schemas/objectType'
-        type:
-          description: This will always be 'teammate'. This is provided for cases where a teammate may be in a mixed list with teams and/or your organization.
-          example: teammate
-          type: string
-      required:
-      - id
-      - displayName
-      - isAdmin
-      - isSuspended
-      - type
-      - object
-      type: object
     asyncRequest_id:
       description: The id of an asynchronous request
       example: asyncRequest_0D4QABCC06000
       type: string
+    conversation_messageBodyElement:
+      description: An element of a message body. This can be either a `text` or `page` type element. A `text` element is a string of text to be placed in the message. A `page` element is a reference to an organization member. For a `page` element, the value field should be the Spruce id of the organization member being referenced.
+      properties:
+        type:
+          enum:
+          - text
+          - page
+          example: text
+          type: string
+        value:
+          description: The value of the message body element
+          example: Hello, how are you?
+          type: string
+      required:
+      - type
+      - value
+      type: object
   headers:
     s-ratelimit-remaining:
       description: Requests remaining this minute
