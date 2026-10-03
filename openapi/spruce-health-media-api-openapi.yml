@@ -68,6 +68,10 @@ paths:
       - Media
 components:
   schemas:
+    media_id:
+      description: Spruce's media message ID
+      example: d7b25969-86ec-7e37-3776-3577-c0637a0c
+      type: string
     error:
       properties:
         message:
@@ -84,9 +88,8 @@ components:
       - statusCode
       - type
       type: object
-    media_id:
-      description: Spruce's media message ID
-      example: d7b25969-86ec-7e37-3776-3577-c0637a0c
+    objectType:
+      description: String representing the object's type
       type: string
     media:
       properties:
@@ -98,10 +101,12 @@ components:
       - id
       - object
       type: object
-    objectType:
-      description: String representing the object's type
-      type: string
   headers:
+    s-ratelimit-limit:
+      description: Request limit per minute
+      example: 100
+      schema:
+        type: integer
     s-ratelimit-remaining:
       description: Requests remaining this minute
       example: 94
@@ -112,11 +117,6 @@ components:
       example: 0E5QDGJC030000E5QDGJC03000
       schema:
         type: string
-    s-ratelimit-limit:
-      description: Request limit per minute
-      example: 100
-      schema:
-        type: integer
   securitySchemes:
     spruceAPIToken:
       description: API token provided by Spruce should be passed in an "Authorization" header with the value "Bearer <token>"

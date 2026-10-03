@@ -73,6 +73,125 @@ paths:
       - Saved Messages
 components:
   schemas:
+    conversationItem_Transcription:
+      properties:
+        id:
+          description: The id of the transcription job. Pass this to the [Transcription endpoint](/reference/transcription) to fetch the full transcription text.
+          type: string
+        status:
+          description: The current status of the transcription. When `pending`, the transcription is still being processed.
+          enum:
+          - completed
+          - pending
+          - failed
+          - noSpeech
+          type: string
+        summarizationStatus:
+          description: The current status of the summarization, if the transcription is being summarized. Null when no summarization was requested.
+          enum:
+          - completed
+          - pending
+          - failed
+          type: string
+      required:
+      - id
+      - status
+      type: object
+    conversationItem_DocumentAttachment:
+      properties:
+        mimetype:
+          description: The mimetype of the document attachment.
+          example: application/pdf
+          type: string
+        name:
+          description: The name associated with the attached document.
+          type: string
+        signedUrl:
+          $ref: '#/components/schemas/signedUrl'
+          description: The URL used to fetch the document attachment.
+      required:
+      - name
+      - mimetype
+      - signedUrl
+      type: object
+    signedUrl:
+      properties:
+        expiresAt:
+          description: The date the signed URL expires.
+          format: date-time
+          type: string
+        url:
+          description: The signed URL.
+          format: url
+          type: string
+      required:
+      - url
+      - expiresAt
+      type: object
+    paginationToken:
+      description: Token given in a previous response to allow requesting the next page
+      example: abcdefghijklmnop
+      type: string
+    savedMessage_id:
+      description: Spruce's saved message ID
+      example: sm_26RRC7PQ6JG00
+      type: string
+    conversationItem_EntityProfileAttachment:
+      properties:
+        title:
+          description: The title associated with the attached entity profile.
+          example: John Smith
+          type: string
+        url:
+          description: The URL of the entity profile.
+          type: string
+      required:
+      - title
+      - url
+      type: object
+    conversationItem_Attachment:
+      properties:
+        data:
+          anyOf:
+          - $ref: '#/components/schemas/conversationItem_AudioAttachment'
+          - $ref: '#/components/schemas/conversationItem_DocumentAttachment'
+          - $ref: '#/components/schemas/conversationItem_EntityProfileAttachment'
+          - $ref: '#/components/schemas/conversationItem_ImageAttachment'
+          - $ref: '#/components/schemas/conversationItem_VideoAttachment'
+        title:
+          description: The title of the attachment.
+          example: example.pdf
+          type: string
+        type:
+          description: The type of the attachment.
+          enum:
+          - audio
+          - carePlan
+          - document
+          - entityProfile
+          - genericUrl
+          - image
+          - paymentRequest
+          - video
+          - visit
+          type: string
+      required:
+      - title
+      - type
+      type: object
+    conversationItem_ImageAttachment:
+      properties:
+        mimetype:
+          description: The mimetype of the image attachment.
+          example: image/png
+          type: string
+        signedUrl:
+          $ref: '#/components/schemas/signedUrl'
+          description: The URL used to fetch the image attachment.
+      required:
+      - mimetype
+      - signedUrl
+      type: object
     error:
       properties:
         message:
@@ -89,6 +208,9 @@ components:
       - statusCode
       - type
       type: object
+    objectType:
+      description: String representing the object's type
+      type: string
     savedMessage:
       properties:
         attachments:
@@ -132,97 +254,19 @@ components:
       - modifiedAt
       - object
       type: object
-    hasMore:
-      type: boolean
-    conversationItem_DocumentAttachment:
+    conversationItem_VideoAttachment:
       properties:
         mimetype:
-          description: The mimetype of the document attachment.
-          example: application/pdf
-          type: string
-        name:
-          description: The name associated with the attached document.
+          description: The mimetype of the video attachment.
+          example: video/mp4
           type: string
         signedUrl:
           $ref: '#/components/schemas/signedUrl'
-          description: The URL used to fetch the document attachment.
+          description: The URL used to fetch the video attachment.
       required:
-      - name
       - mimetype
       - signedUrl
       type: object
-    conversationItem_Transcription:
-      properties:
-        id:
-          description: The id of the transcription job. Pass this to the [Transcription endpoint](/reference/transcription) to fetch the full transcription text.
-          type: string
-        status:
-          description: The current status of the transcription. When `pending`, the transcription is still being processed.
-          enum:
-          - completed
-          - pending
-          - failed
-          - noSpeech
-          type: string
-        summarizationStatus:
-          description: The current status of the summarization, if the transcription is being summarized. Null when no summarization was requested.
-          enum:
-          - completed
-          - pending
-          - failed
-          type: string
-      required:
-      - id
-      - status
-      type: object
-    conversationItem_Attachment:
-      properties:
-        data:
-          anyOf:
-          - $ref: '#/components/schemas/conversationItem_AudioAttachment'
-          - $ref: '#/components/schemas/conversationItem_DocumentAttachment'
-          - $ref: '#/components/schemas/conversationItem_EntityProfileAttachment'
-          - $ref: '#/components/schemas/conversationItem_ImageAttachment'
-          - $ref: '#/components/schemas/conversationItem_VideoAttachment'
-        title:
-          description: The title of the attachment.
-          example: example.pdf
-          type: string
-        type:
-          description: The type of the attachment.
-          enum:
-          - audio
-          - carePlan
-          - document
-          - entityProfile
-          - genericUrl
-          - image
-          - paymentRequest
-          - video
-          - visit
-          type: string
-      required:
-      - title
-      - type
-      type: object
-    signedUrl:
-      properties:
-        expiresAt:
-          description: The date the signed URL expires.
-          format: date-time
-          type: string
-        url:
-          description: The signed URL.
-          format: url
-          type: string
-      required:
-      - url
-      - expiresAt
-      type: object
-    savedMessage_id:
-      description: Spruce's saved message ID
-      example: sm_26RRC7PQ6JG00
-      type: string
     conversationItem_AudioAttachment:
       properties:
         mimetype:
@@ -239,53 +283,14 @@ components:
       - mimetype
       - signedUrl
       type: object
-    conversationItem_VideoAttachment:
-      properties:
-        mimetype:
-          description: The mimetype of the video attachment.
-          example: video/mp4
-          type: string
-        signedUrl:
-          $ref: '#/components/schemas/signedUrl'
-          description: The URL used to fetch the video attachment.
-      required:
-      - mimetype
-      - signedUrl
-      type: object
-    objectType:
-      description: String representing the object's type
-      type: string
-    paginationToken:
-      description: Token given in a previous response to allow requesting the next page
-      example: abcdefghijklmnop
-      type: string
-    conversationItem_ImageAttachment:
-      properties:
-        mimetype:
-          description: The mimetype of the image attachment.
-          example: image/png
-          type: string
-        signedUrl:
-          $ref: '#/components/schemas/signedUrl'
-          description: The URL used to fetch the image attachment.
-      required:
-      - mimetype
-      - signedUrl
-      type: object
-    conversationItem_EntityProfileAttachment:
-      properties:
-        title:
-          description: The title associated with the attached entity profile.
-          example: John Smith
-          type: string
-        url:
-          description: The URL of the entity profile.
-          type: string
-      required:
-      - title
-      - url
-      type: object
+    hasMore:
+      type: boolean
   headers:
+    s-ratelimit-limit:
+      description: Request limit per minute
+      example: 100
+      schema:
+        type: integer
     s-ratelimit-remaining:
       description: Requests remaining this minute
       example: 94
@@ -296,11 +301,6 @@ components:
       example: 0E5QDGJC030000E5QDGJC03000
       schema:
         type: string
-    s-ratelimit-limit:
-      description: Request limit per minute
-      example: 100
-      schema:
-        type: integer
   securitySchemes:
     spruceAPIToken:
       description: API token provided by Spruce should be passed in an "Authorization" header with the value "Bearer <token>"

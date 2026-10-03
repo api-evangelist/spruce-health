@@ -71,6 +71,22 @@ paths:
       - Transcription
 components:
   schemas:
+    summarization:
+      properties:
+        status:
+          description: The status of the summarization job. When `pending`, the summarization is still being processed.
+          enum:
+          - completed
+          - pending
+          - failed
+          type: string
+        text:
+          description: The full plain text of the summarization. Empty until the summarization completes.
+          type: string
+      required:
+      - text
+      - status
+      type: object
     error:
       properties:
         message:
@@ -111,23 +127,12 @@ components:
       - text
       - status
       type: object
-    summarization:
-      properties:
-        status:
-          description: The status of the summarization job. When `pending`, the summarization is still being processed.
-          enum:
-          - completed
-          - pending
-          - failed
-          type: string
-        text:
-          description: The full plain text of the summarization. Empty until the summarization completes.
-          type: string
-      required:
-      - text
-      - status
-      type: object
   headers:
+    s-ratelimit-limit:
+      description: Request limit per minute
+      example: 100
+      schema:
+        type: integer
     s-ratelimit-remaining:
       description: Requests remaining this minute
       example: 94
@@ -138,11 +143,6 @@ components:
       example: 0E5QDGJC030000E5QDGJC03000
       schema:
         type: string
-    s-ratelimit-limit:
-      description: Request limit per minute
-      example: 100
-      schema:
-        type: integer
   securitySchemes:
     spruceAPIToken:
       description: API token provided by Spruce should be passed in an "Authorization" header with the value "Bearer <token>"

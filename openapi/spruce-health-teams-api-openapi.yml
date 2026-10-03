@@ -77,6 +77,88 @@ paths:
       - Teams
 components:
   schemas:
+    paginationToken:
+      description: Token given in a previous response to allow requesting the next page
+      example: abcdefghijklmnop
+      type: string
+    organization:
+      properties:
+        id:
+          description: The id of the organization
+          example: entity_0D4QABCC06000
+          type: string
+        name:
+          description: The name of the organization
+          example: Spruce Health
+          type: string
+        object:
+          $ref: '#/components/schemas/objectType'
+        type:
+          description: This will always be 'organization'. This is provided for cases where a organization may be in a mixed list with teammtes and/or teams.
+          example: organization
+          type: string
+      required:
+      - id
+      - name
+      - type
+      - object
+      type: object
+    totalCount:
+      example: 750
+      format: int32
+      type: integer
+    team:
+      properties:
+        id:
+          description: The id of the team
+          example: entity_0D4QABCC06000
+          type: string
+        name:
+          description: The name of the team
+          example: Billing Team
+          type: string
+        object:
+          $ref: '#/components/schemas/objectType'
+        type:
+          description: This will always be 'team'. This is provided for cases where a team may be in a mixed list with teammtes and/or your organization.
+          example: team
+          type: string
+      required:
+      - id
+      - name
+      - type
+      - object
+      type: object
+    error:
+      properties:
+        message:
+          example: Invalid Contact ID
+          type: string
+        statusCode:
+          example: 400
+          type: integer
+        type:
+          example: BAD_PARAMETER
+          type: string
+      required:
+      - message
+      - statusCode
+      - type
+      type: object
+    objectType:
+      description: String representing the object's type
+      type: string
+    teammate_id:
+      description: The id of the teammate
+      example: entity_0E5QDGJC03000
+      type: string
+    organizationMember:
+      anyOf:
+      - $ref: '#/components/schemas/teammate'
+      - $ref: '#/components/schemas/team'
+      - $ref: '#/components/schemas/organization'
+    hasMore:
+      type: boolean
     teammate:
       properties:
         displayName:
@@ -112,89 +194,12 @@ components:
       - type
       - object
       type: object
-    totalCount:
-      example: 750
-      format: int32
-      type: integer
-    error:
-      properties:
-        message:
-          example: Invalid Contact ID
-          type: string
-        statusCode:
-          example: 400
-          type: integer
-        type:
-          example: BAD_PARAMETER
-          type: string
-      required:
-      - message
-      - statusCode
-      - type
-      type: object
-    hasMore:
-      type: boolean
-    organization:
-      properties:
-        id:
-          description: The id of the organization
-          example: entity_0D4QABCC06000
-          type: string
-        name:
-          description: The name of the organization
-          example: Spruce Health
-          type: string
-        object:
-          $ref: '#/components/schemas/objectType'
-        type:
-          description: This will always be 'organization'. This is provided for cases where a organization may be in a mixed list with teammtes and/or teams.
-          example: organization
-          type: string
-      required:
-      - id
-      - name
-      - type
-      - object
-      type: object
-    teammate_id:
-      description: The id of the teammate
-      example: entity_0E5QDGJC03000
-      type: string
-    organizationMember:
-      anyOf:
-      - $ref: '#/components/schemas/teammate'
-      - $ref: '#/components/schemas/team'
-      - $ref: '#/components/schemas/organization'
-    team:
-      properties:
-        id:
-          description: The id of the team
-          example: entity_0D4QABCC06000
-          type: string
-        name:
-          description: The name of the team
-          example: Billing Team
-          type: string
-        object:
-          $ref: '#/components/schemas/objectType'
-        type:
-          description: This will always be 'team'. This is provided for cases where a team may be in a mixed list with teammtes and/or your organization.
-          example: team
-          type: string
-      required:
-      - id
-      - name
-      - type
-      - object
-      type: object
-    objectType:
-      description: String representing the object's type
-      type: string
-    paginationToken:
-      description: Token given in a previous response to allow requesting the next page
-      example: abcdefghijklmnop
-      type: string
   headers:
+    s-ratelimit-limit:
+      description: Request limit per minute
+      example: 100
+      schema:
+        type: integer
     s-ratelimit-remaining:
       description: Requests remaining this minute
       example: 94
@@ -205,11 +210,6 @@ components:
       example: 0E5QDGJC030000E5QDGJC03000
       schema:
         type: string
-    s-ratelimit-limit:
-      description: Request limit per minute
-      example: 100
-      schema:
-        type: integer
   securitySchemes:
     spruceAPIToken:
       description: API token provided by Spruce should be passed in an "Authorization" header with the value "Bearer <token>"
