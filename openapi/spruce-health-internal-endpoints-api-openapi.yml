@@ -257,29 +257,6 @@ paths:
       - Internal Endpoints
 components:
   schemas:
-    internalEndpoint:
-      properties:
-        additionalMembers:
-          items:
-            anyOf:
-            - $ref: '#/components/schemas/teammate'
-            - $ref: '#/components/schemas/team'
-            - $ref: '#/components/schemas/organization'
-          type: array
-        endpoint:
-          $ref: '#/components/schemas/endpoint'
-        object:
-          $ref: '#/components/schemas/objectType'
-        owner:
-          oneOf:
-          - $ref: '#/components/schemas/teammate'
-          - $ref: '#/components/schemas/team'
-          - $ref: '#/components/schemas/organization'
-      required:
-      - endpoint
-      - owner
-      - object
-      type: object
     organization:
       properties:
         id:
@@ -302,20 +279,6 @@ components:
       - type
       - object
       type: object
-    conversation_messagePost_attachment:
-      properties:
-        attachmentId:
-          description: The id of the attachment. In most cases, this will be a media id returned from posting a file to the [media endpoint](/reference/uploadmedia).
-          example: d7b25969-86ec-7e37-3776-3577-c0637a0c
-          type: string
-        title:
-          description: The title of the attachment
-          example: My Image
-          type: string
-      required:
-      - attachmentId
-      - title
-      type: object
     endpoint_id:
       description: 'The id of the endpoint.
 
@@ -325,39 +288,22 @@ components:
         '
       example: 15555555555
       type: string
-    conversation_messageBodyElement:
-      description: An element of a message body. This can be either a `text` or `page` type element. A `text` element is a string of text to be placed in the message. A `page` element is a reference to an organization member. For a `page` element, the value field should be the Spruce id of the organization member being referenced.
-      properties:
-        type:
-          enum:
-          - text
-          - page
-          example: text
-          type: string
-        value:
-          description: The value of the message body element
-          example: Hello, how are you?
-          type: string
-      required:
-      - type
-      - value
-      type: object
-    error:
-      properties:
-        message:
-          example: Invalid Contact ID
-          type: string
-        statusCode:
-          example: 400
-          type: integer
-        type:
-          example: BAD_PARAMETER
-          type: string
-      required:
-      - message
-      - statusCode
-      - type
-      type: object
+    asyncRequest_id:
+      description: The id of an asynchronous request
+      example: asyncRequest_0D4QABCC06000
+      type: string
+    conversation_messagePost_secureConversationSelection:
+      description: ' `any_available_secure_conversation`: The system will first try to deliver messages using conversations from the specified internal endpoint. Then it will try to deliver to any existing secure conversation with the recipient. Then, if no conversation exists, a new secure conversation will be created.
+
+        `only_conversations_matching_internal_endpoint`: The system will deliver messages in conversations from the specified internal endpoint. If such a conversation doesn''t yet exist, a new one will be created.
+
+        `new_conversation`: This option will create a new conversation, separate from any existing conversation. '
+      enum:
+      - any_available_secure_conversation
+      - only_conversations_matching_internal_endpoint
+      - new_conversation
+      example: only_conversations_matching_internal_endpoint
+      type: string
     endpoint:
       properties:
         channel:
@@ -410,31 +356,20 @@ components:
       - isInternal
       - object
       type: object
-    team:
+    conversation_messagePost_attachment:
       properties:
-        id:
-          description: The id of the team
-          example: entity_0D4QABCC06000
+        attachmentId:
+          description: The id of the attachment. In most cases, this will be a media id returned from posting a file to the [media endpoint](/reference/uploadmedia).
+          example: d7b25969-86ec-7e37-3776-3577-c0637a0c
           type: string
-        name:
-          description: The name of the team
-          example: Billing Team
-          type: string
-        object:
-          $ref: '#/components/schemas/objectType'
-        type:
-          description: This will always be 'team'. This is provided for cases where a team may be in a mixed list with teammtes and/or your organization.
-          example: team
+        title:
+          description: The title of the attachment
+          example: My Image
           type: string
       required:
-      - id
-      - name
-      - type
-      - object
+      - attachmentId
+      - title
       type: object
-    objectType:
-      description: String representing the object's type
-      type: string
     conversation_messagePost:
       properties:
         attachments:
@@ -461,22 +396,68 @@ components:
       required:
       - body
       type: object
+    objectType:
+      description: String representing the object's type
+      type: string
     teammate_id:
       description: The id of the teammate
       example: entity_0E5QDGJC03000
       type: string
-    conversation_messagePost_secureConversationSelection:
-      description: ' `any_available_secure_conversation`: The system will first try to deliver messages using conversations from the specified internal endpoint. Then it will try to deliver to any existing secure conversation with the recipient. Then, if no conversation exists, a new secure conversation will be created.
-
-        `only_conversations_matching_internal_endpoint`: The system will deliver messages in conversations from the specified internal endpoint. If such a conversation doesn''t yet exist, a new one will be created.
-
-        `new_conversation`: This option will create a new conversation, separate from any existing conversation. '
-      enum:
-      - any_available_secure_conversation
-      - only_conversations_matching_internal_endpoint
-      - new_conversation
-      example: only_conversations_matching_internal_endpoint
-      type: string
+    error:
+      properties:
+        message:
+          example: Invalid Contact ID
+          type: string
+        statusCode:
+          example: 400
+          type: integer
+        type:
+          example: BAD_PARAMETER
+          type: string
+      required:
+      - message
+      - statusCode
+      - type
+      type: object
+    conversation_messageBodyElement:
+      description: An element of a message body. This can be either a `text` or `page` type element. A `text` element is a string of text to be placed in the message. A `page` element is a reference to an organization member. For a `page` element, the value field should be the Spruce id of the organization member being referenced.
+      properties:
+        type:
+          enum:
+          - text
+          - page
+          example: text
+          type: string
+        value:
+          description: The value of the message body element
+          example: Hello, how are you?
+          type: string
+      required:
+      - type
+      - value
+      type: object
+    team:
+      properties:
+        id:
+          description: The id of the team
+          example: entity_0D4QABCC06000
+          type: string
+        name:
+          description: The name of the team
+          example: Billing Team
+          type: string
+        object:
+          $ref: '#/components/schemas/objectType'
+        type:
+          description: This will always be 'team'. This is provided for cases where a team may be in a mixed list with teammtes and/or your organization.
+          example: team
+          type: string
+      required:
+      - id
+      - name
+      - type
+      - object
+      type: object
     teammate:
       properties:
         displayName:
@@ -512,19 +493,33 @@ components:
       - type
       - object
       type: object
-    asyncRequest_id:
-      description: The id of an asynchronous request
-      example: asyncRequest_0D4QABCC06000
-      type: string
+    internalEndpoint:
+      properties:
+        additionalMembers:
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/teammate'
+            - $ref: '#/components/schemas/team'
+            - $ref: '#/components/schemas/organization'
+          type: array
+        endpoint:
+          $ref: '#/components/schemas/endpoint'
+        object:
+          $ref: '#/components/schemas/objectType'
+        owner:
+          oneOf:
+          - $ref: '#/components/schemas/teammate'
+          - $ref: '#/components/schemas/team'
+          - $ref: '#/components/schemas/organization'
+      required:
+      - endpoint
+      - owner
+      - object
+      type: object
   headers:
     s-ratelimit-limit:
       description: Request limit per minute
       example: 100
-      schema:
-        type: integer
-    s-ratelimit-remaining:
-      description: Requests remaining this minute
-      example: 94
       schema:
         type: integer
     s-request-id:
@@ -532,6 +527,11 @@ components:
       example: 0E5QDGJC030000E5QDGJC03000
       schema:
         type: string
+    s-ratelimit-remaining:
+      description: Requests remaining this minute
+      example: 94
+      schema:
+        type: integer
   parameters:
     s-idempotency-key:
       description: A unique value generated by the client used to recognize subsequent retries of the same request. Idempotency keys can be up to 255 characters long.

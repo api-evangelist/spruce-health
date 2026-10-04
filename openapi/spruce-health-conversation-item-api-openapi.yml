@@ -129,34 +129,108 @@ paths:
       tags:
       - Conversation Item
 components:
+  headers:
+    s-ratelimit-limit:
+      description: Request limit per minute
+      example: 100
+      schema:
+        type: integer
+    s-request-id:
+      description: The ID of the request
+      example: 0E5QDGJC030000E5QDGJC03000
+      schema:
+        type: string
+    s-ratelimit-remaining:
+      description: Requests remaining this minute
+      example: 94
+      schema:
+        type: integer
   schemas:
-    signedUrl:
+    error:
       properties:
-        expiresAt:
-          description: The date the signed URL expires.
-          format: date-time
+        message:
+          example: Invalid Contact ID
           type: string
-        url:
-          description: The signed URL.
-          format: url
+        statusCode:
+          example: 400
+          type: integer
+        type:
+          example: BAD_PARAMETER
           type: string
       required:
-      - url
-      - expiresAt
+      - message
+      - statusCode
+      - type
       type: object
-    conversationItem_EntityProfileAttachment:
+    endpoint:
       properties:
-        title:
-          description: The title associated with the attached entity profile.
-          example: John Smith
+        channel:
+          description: The channel of the endpoint (e.g. 'email', 'phone', 'fax', etc.). More endpoint channels may be added in the future, so ensure while parsing this that you gracefully handle any new/unexpected values.
+          enum:
+          - email
+          - phone
+          - fax
+          - secure
           type: string
-        url:
-          description: The URL of the entity profile.
+        displayValue:
+          description: The display value of the endpoint. This is the value that should be displayed to the user when showing the endpoint, along with the label if it's populated.
+          example:
+            email:
+              value: patient@example.com
+            phone:
+              value: (555) 555-5555
+            secure:
+              value: spruce.care/123456
+          type: string
+        id:
+          $ref: '#/components/schemas/endpoint_id'
+        isInternal:
+          description: Internal endpoints are endpoints that are owned by your organization, such as your organization's Spruce Phone Numbers or Spruce Links.
+          example: false
+          type: boolean
+        label:
+          description: The optional label of the endpoint
+          example:
+          - Home
+          - Work
+          type: string
+        object:
+          $ref: '#/components/schemas/objectType'
+        rawValue:
+          description: The raw value of the endpoint. This can be used for programmatically comparing contact values, and is the stable identifier to use when matching a secure endpoint on a conversation back to the corresponding Spruce Link returned by the list internal endpoints API. The raw value for a phone/fax number will be in E164 format.
+          example:
+            email:
+              value: patient@example.com
+            phone:
+              value: 15555555555
+            secure:
+              value: https://spruce.care/123456
           type: string
       required:
-      - title
-      - url
+      - id
+      - channel
+      - displayValue
+      - rawValue
+      - isInternal
+      - object
       type: object
+    conversationItem_ImageAttachment:
+      properties:
+        mimetype:
+          description: The mimetype of the image attachment.
+          example: image/png
+          type: string
+        signedUrl:
+          $ref: '#/components/schemas/signedUrl'
+          description: The URL used to fetch the image attachment.
+      required:
+      - mimetype
+      - signedUrl
+      type: object
+    teammate_id:
+      description: The id of the teammate
+      example: entity_0E5QDGJC03000
+      type: string
     conversationItem_PhoneCallEvent:
       properties:
         answered:
@@ -199,215 +273,6 @@ components:
       - inbound
       - spam
       type: object
-    conversation_id:
-      description: Spruce's conversation ID
-      example: t_0E5QDGJC03000
-      type: string
-    conversationItem_Transcription:
-      properties:
-        id:
-          description: The id of the transcription job. Pass this to the [Transcription endpoint](/reference/transcription) to fetch the full transcription text.
-          type: string
-        status:
-          description: The current status of the transcription. When `pending`, the transcription is still being processed.
-          enum:
-          - completed
-          - pending
-          - failed
-          - noSpeech
-          type: string
-        summarizationStatus:
-          description: The current status of the summarization, if the transcription is being summarized. Null when no summarization was requested.
-          enum:
-          - completed
-          - pending
-          - failed
-          type: string
-      required:
-      - id
-      - status
-      type: object
-    conversation_tag:
-      properties:
-        id:
-          $ref: '#/components/schemas/conversation_tagId'
-        object:
-          $ref: '#/components/schemas/objectType'
-        value:
-          $ref: '#/components/schemas/conversation_tagValue'
-      required:
-      - id
-      - value
-      - object
-      type: object
-    conversationItem_Page:
-      properties:
-        id:
-          description: The id of the page.
-          type: string
-        memberId:
-          description: The id of the teammate being paged.
-          example: entity_0D4QABCC06000
-          type: string
-        resolved:
-          description: If the page has been resolved.
-          type: boolean
-        resolvedAt:
-          description: The date time the page was resolved at.
-          example: '2020-04-01T00:00:00Z'
-          format: date-time
-          type: string
-        resolvedByMemberId:
-          description: The id of the teammate that resolved the page.
-          example: entity_0D4QABCC06000
-          type: string
-      required:
-      - id
-      - memberId
-      - resolved
-      type: object
-    conversationItem_Attachment:
-      properties:
-        data:
-          anyOf:
-          - $ref: '#/components/schemas/conversationItem_AudioAttachment'
-          - $ref: '#/components/schemas/conversationItem_DocumentAttachment'
-          - $ref: '#/components/schemas/conversationItem_EntityProfileAttachment'
-          - $ref: '#/components/schemas/conversationItem_ImageAttachment'
-          - $ref: '#/components/schemas/conversationItem_VideoAttachment'
-        title:
-          description: The title of the attachment.
-          example: example.pdf
-          type: string
-        type:
-          description: The type of the attachment.
-          enum:
-          - audio
-          - carePlan
-          - document
-          - entityProfile
-          - genericUrl
-          - image
-          - paymentRequest
-          - video
-          - visit
-          type: string
-      required:
-      - title
-      - type
-      type: object
-    conversationItem_VideoCallEvent:
-      properties:
-        answered:
-          description: If the call was answered.
-          type: boolean
-        duration:
-          description: The duration of the call in seconds.
-          type: integer
-        initiatedBy:
-          $ref: '#/components/schemas/teammate_id'
-          description: The Spruce is of the teammate that initiated it..
-      required:
-      - answered
-      - duration
-      - initiatedBy
-      type: object
-    objectType:
-      description: String representing the object's type
-      type: string
-    teammate_id:
-      description: The id of the teammate
-      example: entity_0E5QDGJC03000
-      type: string
-    conversationItem_VideoAttachment:
-      properties:
-        mimetype:
-          description: The mimetype of the video attachment.
-          example: video/mp4
-          type: string
-        signedUrl:
-          $ref: '#/components/schemas/signedUrl'
-          description: The URL used to fetch the video attachment.
-      required:
-      - mimetype
-      - signedUrl
-      type: object
-    conversation_tagValue:
-      description: The text value of a conversation tag
-      example: Smith
-      type: string
-    initiatedBy:
-      properties:
-        lineId:
-          description: the ID of the phone line on the Spruce system this call was initiated by
-          type: string
-        teammateID:
-          $ref: '#/components/schemas/teammate_id'
-      type: object
-    asyncRequest_id:
-      description: The id of an asynchronous request
-      example: asyncRequest_0D4QABCC06000
-      type: string
-    conversationItem_id:
-      description: The id of a conversation item.
-      example: ti_0D4QABCC06000
-      type: string
-    deviceInformation:
-      properties:
-        accessID:
-          description: The access ID of API credentials used to make the request.
-          type: string
-        appVersion:
-          description: The version of the app.
-          type: string
-        device:
-          description: The type of the device.
-          type: string
-        deviceId:
-          description: The id of the device.
-          type: string
-        deviceModel:
-          description: The model of the device.
-          type: string
-        platform:
-          description: The platform of the device.
-          type: string
-      type: object
-    conversation_tagId:
-      description: Spruce's conversation tag ID
-      example: tag_0E5QDGJC03000
-      type: string
-    error:
-      properties:
-        message:
-          example: Invalid Contact ID
-          type: string
-        statusCode:
-          example: 400
-          type: integer
-        type:
-          example: BAD_PARAMETER
-          type: string
-      required:
-      - message
-      - statusCode
-      - type
-      type: object
-    conversationItem_Author:
-      properties:
-        deviceInformation:
-          $ref: '#/components/schemas/deviceInformation'
-        displayName:
-          type: string
-        id:
-          description: 'The id of the entity that authored the conversation item, populated only when it identifies a stable Spruce entity. It will be set for items authored by a teammate, team, or your organization, and for items received from a saved contact through Spruce secure messaging (where the id matches the contact id). It will be omitted for items received from a contact over a standard channel (SMS, voice, email, or fax) because the sender''s identity is derived from an endpoint (such as a phone number or email address) that can be reassigned to a different contact over time. It may also be omitted for system-generated items or when the author entity could not be resolved.
-
-            '
-          example: entity_0D4QABCC06000
-          type: string
-      required:
-      - displayName
-      type: object
     conversationItem_AudioAttachment:
       properties:
         mimetype:
@@ -424,48 +289,45 @@ components:
       - mimetype
       - signedUrl
       type: object
-    conversationItem_Event:
+    conversationItem_Author:
       properties:
-        data:
-          anyOf:
-          - $ref: '#/components/schemas/conversationItem_PhoneCallEvent'
-          - $ref: '#/components/schemas/conversationItem_VideoCallEvent'
-        type:
-          description: The type of the event. Additional events will be added in the future, so any parsing of this field should gracefully handle unexpected values.
-          enum:
-          - inboundCall
-          - inboundVideoCall
-          - outboundCall
-          - outboundVideoCall
+        deviceInformation:
+          $ref: '#/components/schemas/deviceInformation'
+        displayName:
+          type: string
+        id:
+          description: 'The id of the entity that authored the conversation item, populated only when it identifies a stable Spruce entity. It will be set for items authored by a teammate, team, or your organization, and for items received from a saved contact through Spruce secure messaging (where the id matches the contact id). It will be omitted for items received from a contact over a standard channel (SMS, voice, email, or fax) because the sender''s identity is derived from an endpoint (such as a phone number or email address) that can be reassigned to a different contact over time. It may also be omitted for system-generated items or when the author entity could not be resolved.
+
+            '
+          example: entity_0D4QABCC06000
           type: string
       required:
-      - type
+      - displayName
       type: object
-    endpoint_id:
-      description: 'The id of the endpoint.
-
-
-        For secure (Spruce Link) endpoints, the id format depends on where the endpoint is returned: the list internal endpoints API returns the underlying organization invite id, while a secure endpoint that appears on a conversation is returned with a different, derived value. To determine whether a conversation belongs to a particular Spruce Link, compare `endpoint.rawValue` rather than `endpoint.id`. Endpoint ids for phone, fax, and email channels use the same format across responses.
-
-        '
-      example: 15555555555
-      type: string
-    conversationItem_DocumentAttachment:
+    signedUrl:
       properties:
-        mimetype:
-          description: The mimetype of the document attachment.
-          example: application/pdf
+        expiresAt:
+          description: The date the signed URL expires.
+          format: date-time
           type: string
-        name:
-          description: The name associated with the attached document.
+        url:
+          description: The signed URL.
+          format: url
           type: string
-        signedUrl:
-          $ref: '#/components/schemas/signedUrl'
-          description: The URL used to fetch the document attachment.
       required:
-      - name
-      - mimetype
-      - signedUrl
+      - url
+      - expiresAt
+      type: object
+    answeredBy:
+      properties:
+        externalNumber:
+          description: the telephone number external to Spruce this call was answered by
+          type: string
+        lineId:
+          description: the ID of the phone line on the Spruce system this call was answered by
+          type: string
+        teammateID:
+          $ref: '#/components/schemas/teammate_id'
       type: object
     conversation:
       properties:
@@ -582,6 +444,90 @@ components:
       - title
       - object
       type: object
+    endpoint_id:
+      description: 'The id of the endpoint.
+
+
+        For secure (Spruce Link) endpoints, the id format depends on where the endpoint is returned: the list internal endpoints API returns the underlying organization invite id, while a secure endpoint that appears on a conversation is returned with a different, derived value. To determine whether a conversation belongs to a particular Spruce Link, compare `endpoint.rawValue` rather than `endpoint.id`. Endpoint ids for phone, fax, and email channels use the same format across responses.
+
+        '
+      example: 15555555555
+      type: string
+    conversationItem_Event:
+      properties:
+        data:
+          anyOf:
+          - $ref: '#/components/schemas/conversationItem_PhoneCallEvent'
+          - $ref: '#/components/schemas/conversationItem_VideoCallEvent'
+        type:
+          description: The type of the event. Additional events will be added in the future, so any parsing of this field should gracefully handle unexpected values.
+          enum:
+          - inboundCall
+          - inboundVideoCall
+          - outboundCall
+          - outboundVideoCall
+          type: string
+      required:
+      - type
+      type: object
+    conversation_id:
+      description: Spruce's conversation ID
+      example: t_0E5QDGJC03000
+      type: string
+    objectType:
+      description: String representing the object's type
+      type: string
+    initiatedBy:
+      properties:
+        lineId:
+          description: the ID of the phone line on the Spruce system this call was initiated by
+          type: string
+        teammateID:
+          $ref: '#/components/schemas/teammate_id'
+      type: object
+    conversationItem_Attachment:
+      properties:
+        data:
+          anyOf:
+          - $ref: '#/components/schemas/conversationItem_AudioAttachment'
+          - $ref: '#/components/schemas/conversationItem_DocumentAttachment'
+          - $ref: '#/components/schemas/conversationItem_EntityProfileAttachment'
+          - $ref: '#/components/schemas/conversationItem_ImageAttachment'
+          - $ref: '#/components/schemas/conversationItem_VideoAttachment'
+        title:
+          description: The title of the attachment.
+          example: example.pdf
+          type: string
+        type:
+          description: The type of the attachment.
+          enum:
+          - audio
+          - carePlan
+          - document
+          - entityProfile
+          - genericUrl
+          - image
+          - paymentRequest
+          - video
+          - visit
+          type: string
+      required:
+      - title
+      - type
+      type: object
+    conversation_tag:
+      properties:
+        id:
+          $ref: '#/components/schemas/conversation_tagId'
+        object:
+          $ref: '#/components/schemas/objectType'
+        value:
+          $ref: '#/components/schemas/conversation_tagValue'
+      required:
+      - id
+      - value
+      - object
+      type: object
     conversationItem_Button:
       properties:
         id:
@@ -602,71 +548,131 @@ components:
       - text
       - state
       type: object
-    conversationItem_ImageAttachment:
+    conversationItem_VideoCallEvent:
+      properties:
+        answered:
+          description: If the call was answered.
+          type: boolean
+        duration:
+          description: The duration of the call in seconds.
+          type: integer
+        initiatedBy:
+          $ref: '#/components/schemas/teammate_id'
+          description: The Spruce is of the teammate that initiated it..
+      required:
+      - answered
+      - duration
+      - initiatedBy
+      type: object
+    conversationItem_Page:
+      properties:
+        id:
+          description: The id of the page.
+          type: string
+        memberId:
+          description: The id of the teammate being paged.
+          example: entity_0D4QABCC06000
+          type: string
+        resolved:
+          description: If the page has been resolved.
+          type: boolean
+        resolvedAt:
+          description: The date time the page was resolved at.
+          example: '2020-04-01T00:00:00Z'
+          format: date-time
+          type: string
+        resolvedByMemberId:
+          description: The id of the teammate that resolved the page.
+          example: entity_0D4QABCC06000
+          type: string
+      required:
+      - id
+      - memberId
+      - resolved
+      type: object
+    conversationItem_VideoAttachment:
       properties:
         mimetype:
-          description: The mimetype of the image attachment.
-          example: image/png
+          description: The mimetype of the video attachment.
+          example: video/mp4
           type: string
         signedUrl:
           $ref: '#/components/schemas/signedUrl'
-          description: The URL used to fetch the image attachment.
+          description: The URL used to fetch the video attachment.
       required:
       - mimetype
       - signedUrl
       type: object
-    endpoint:
+    deviceInformation:
       properties:
-        channel:
-          description: The channel of the endpoint (e.g. 'email', 'phone', 'fax', etc.). More endpoint channels may be added in the future, so ensure while parsing this that you gracefully handle any new/unexpected values.
-          enum:
-          - email
-          - phone
-          - fax
-          - secure
+        accessID:
+          description: The access ID of API credentials used to make the request.
           type: string
-        displayValue:
-          description: The display value of the endpoint. This is the value that should be displayed to the user when showing the endpoint, along with the label if it's populated.
-          example:
-            email:
-              value: patient@example.com
-            phone:
-              value: (555) 555-5555
-            secure:
-              value: spruce.care/123456
+        appVersion:
+          description: The version of the app.
           type: string
+        device:
+          description: The type of the device.
+          type: string
+        deviceId:
+          description: The id of the device.
+          type: string
+        deviceModel:
+          description: The model of the device.
+          type: string
+        platform:
+          description: The platform of the device.
+          type: string
+      type: object
+    conversation_tagId:
+      description: Spruce's conversation tag ID
+      example: tag_0E5QDGJC03000
+      type: string
+    conversationItem_EntityProfileAttachment:
+      properties:
+        title:
+          description: The title associated with the attached entity profile.
+          example: John Smith
+          type: string
+        url:
+          description: The URL of the entity profile.
+          type: string
+      required:
+      - title
+      - url
+      type: object
+    conversationItem_Transcription:
+      properties:
         id:
-          $ref: '#/components/schemas/endpoint_id'
-        isInternal:
-          description: Internal endpoints are endpoints that are owned by your organization, such as your organization's Spruce Phone Numbers or Spruce Links.
-          example: false
-          type: boolean
-        label:
-          description: The optional label of the endpoint
-          example:
-          - Home
-          - Work
+          description: The id of the transcription job. Pass this to the [Transcription endpoint](/reference/transcription) to fetch the full transcription text.
           type: string
-        object:
-          $ref: '#/components/schemas/objectType'
-        rawValue:
-          description: The raw value of the endpoint. This can be used for programmatically comparing contact values, and is the stable identifier to use when matching a secure endpoint on a conversation back to the corresponding Spruce Link returned by the list internal endpoints API. The raw value for a phone/fax number will be in E164 format.
-          example:
-            email:
-              value: patient@example.com
-            phone:
-              value: 15555555555
-            secure:
-              value: https://spruce.care/123456
+        status:
+          description: The current status of the transcription. When `pending`, the transcription is still being processed.
+          enum:
+          - completed
+          - pending
+          - failed
+          - noSpeech
+          type: string
+        summarizationStatus:
+          description: The current status of the summarization, if the transcription is being summarized. Null when no summarization was requested.
+          enum:
+          - completed
+          - pending
+          - failed
           type: string
       required:
       - id
-      - channel
-      - displayValue
-      - rawValue
-      - isInternal
-      - object
+      - status
       type: object
+    asyncRequest_id:
+      description: The id of an asynchronous request
+      example: asyncRequest_0D4QABCC06000
+      type: string
+    conversationItem_id:
+      description: The id of a conversation item.
+      example: ti_0D4QABCC06000
+      type: string
     conversationItem:
       properties:
         apiURL:
@@ -758,37 +764,31 @@ components:
       - requestId
       - canDelete
       type: object
+    conversation_tagValue:
+      description: The text value of a conversation tag
+      example: Smith
+      type: string
+    conversationItem_DocumentAttachment:
+      properties:
+        mimetype:
+          description: The mimetype of the document attachment.
+          example: application/pdf
+          type: string
+        name:
+          description: The name associated with the attached document.
+          type: string
+        signedUrl:
+          $ref: '#/components/schemas/signedUrl'
+          description: The URL used to fetch the document attachment.
+      required:
+      - name
+      - mimetype
+      - signedUrl
+      type: object
     conversation_tags:
       items:
         $ref: '#/components/schemas/conversation_tag'
       type: array
-    answeredBy:
-      properties:
-        externalNumber:
-          description: the telephone number external to Spruce this call was answered by
-          type: string
-        lineId:
-          description: the ID of the phone line on the Spruce system this call was answered by
-          type: string
-        teammateID:
-          $ref: '#/components/schemas/teammate_id'
-      type: object
-  headers:
-    s-ratelimit-limit:
-      description: Request limit per minute
-      example: 100
-      schema:
-        type: integer
-    s-ratelimit-remaining:
-      description: Requests remaining this minute
-      example: 94
-      schema:
-        type: integer
-    s-request-id:
-      description: The ID of the request
-      example: 0E5QDGJC030000E5QDGJC03000
-      schema:
-        type: string
   securitySchemes:
     spruceAPIToken:
       description: API token provided by Spruce should be passed in an "Authorization" header with the value "Bearer <token>"
