@@ -1,0 +1,16 @@
+generated: '2026-10-12'
+method: none
+source:
+- https://zapier.com/apps/spruce-health/integrations
+- https://n8n.io/integrations/spruce-health/
+- https://composio.dev/toolkits/spruce-health
+- https://monid.ai/tools/spruce-health
+checked:
+- https://composio.dev/toolkits/spruce-health
+- https://monid.ai/tools/spruce-health
+- https://n8n.io/integrations/spruce-health/
+- https://zapier.com/apps/spruce-health/integrations
+summary: null
+marketplace_apps: []
+edges: []
+templates: []
